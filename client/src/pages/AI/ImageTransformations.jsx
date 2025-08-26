@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Sparkles, Trash2, Wand2 } from 'lucide-react';
 import useApi from '../../hooks/useApi';
 import { toast } from 'react-toastify';
-import { AiToolsData } from '../../assets/assets';
+import { AiToolsData } from '../../assets';
 
 const ImageTransformations = () => {
   const [image, setImage] = useState(null);

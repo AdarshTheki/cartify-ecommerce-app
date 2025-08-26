@@ -47,7 +47,6 @@ export default function Item({ delay = '100ms', ...item }) {
         <NavLink to={`/products/${item._id}`}>
           <LazyImage
             src={item.thumbnail}
-            fallback={'/placeholder.jpg'}
             className="w-full h-[200px] object-cover transform group-hover:scale-105 transition duration-500"
           />
         </NavLink>

@@ -1,5 +1,5 @@
 import { Star } from 'lucide-react';
-import { lovedByCreators } from '../../assets/assets';
+import { lovedByCreators } from '../../assets';
 import { Avatar } from '../../utils';
 
 const Testimonial = () => {

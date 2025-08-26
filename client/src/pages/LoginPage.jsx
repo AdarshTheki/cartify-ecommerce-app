@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Eye, EyeOff, Loader2, UserCircle } from 'lucide-react';
 import useAuth from '../hooks/useAuth';
+import { images } from '../assets';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -47,13 +48,13 @@ const Login = () => {
           <button
             onClick={() => handleOAuthLogin('google')}
             className="flex flex-1 items-center justify-center text-sm font-medium gap-2 hover:opacity-80 duration-200 border px-4 py-2 rounded-xl bg-white text-black hover:shadow-lg">
-            <img src="./google.svg" className="h-4 w-4" /> Google
+            <img src={images.google} className="h-4 w-4" /> Google
           </button>
 
           <button
             onClick={() => handleOAuthLogin('github')}
             className="flex flex-1 items-center justify-center text-sm font-medium gap-2 hover:opacity-80 duration-200 border px-4 py-2 rounded-xl bg-black text-white hover:shadow-lg">
-            <img src="./github.svg" className="h-4 w-4" /> GitHub
+            <img src={images.github} className="h-4 w-4" /> GitHub
           </button>
 
           <button

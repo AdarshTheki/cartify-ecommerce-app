@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { images } from '../assets';
 
 const LazyImage = ({
   src,
   placeholder,
-  fallback = '/lazy.png',
+  fallback = images.placeholder,
   alt = '',
   ...rest
 }) => {

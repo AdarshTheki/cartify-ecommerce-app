@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AiToolsData } from '../../assets/assets';
+import { AiToolsData } from '../../assets';
 import { Sparkles } from 'lucide-react';
 import useApi from '../../hooks/useApi';
 import useTypewriter from '../../hooks/useTypewriter';

@@ -1,4 +1,17 @@
 import { SquarePen, Hash, Image, Eraser, FileText } from 'lucide-react';
+import banner from './banner.jpg';
+import placeholder from './placeholder.jpg';
+import github from './github.svg';
+import google from './google.svg';
+import logo from './logo.svg';
+
+export const images = {
+  banner,
+  placeholder,
+  github,
+  google,
+  logo,
+};
 
 export const AiToolsData = [
   {

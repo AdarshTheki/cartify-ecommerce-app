@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { AiToolsData } from '../../assets/assets';
+import { AiToolsData } from '../../assets';
 
 const AITools = () => {
   const navigate = useNavigate();

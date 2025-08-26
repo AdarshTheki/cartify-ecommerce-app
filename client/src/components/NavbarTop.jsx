@@ -1,9 +1,10 @@
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Heart, Menu, Search, ShoppingCart, User, X } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { Avatar } from '../utils';
+import { images } from '../assets';
 
 const menuItems = [
   {
@@ -63,8 +64,8 @@ const NavbarTop = () => {
           {/* Logo  */}
           <h2
             onClick={() => navigate('/')}
-            className="text-xl font-bold text-gray-800 flex gap-2 items-center cursor-pointer">
-            <img src={'./logo.png'} className="w-8 h-6" />
+            className="text-xl font-bold text-gray-700 uppercase flex items-center cursor-pointer">
+            <img src={images.logo} className="w-8 h-6" />
             Cartify
           </h2>
 
