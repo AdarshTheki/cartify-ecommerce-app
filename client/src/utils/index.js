@@ -5,5 +5,15 @@ import LazyImage from './LazyImage';
 import Avatar from './Avatar';
 import NotFound from './NotFound';
 import Button from './Button';
+import Skeleton from './Skeleton';
 
-export { NotFound, Button, Avatar, LazyImage, Loading, Input, Select };
+export {
+  NotFound,
+  Skeleton,
+  Button,
+  Avatar,
+  LazyImage,
+  Loading,
+  Input,
+  Select,
+};

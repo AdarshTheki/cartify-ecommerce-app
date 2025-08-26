@@ -1,5 +1,5 @@
 import React from 'react';
-import { AiToolsData } from '../../assets/assets';
+import { AiToolsData } from '../../assets';
 import { NavLink, Outlet } from 'react-router-dom';
 import { Home } from 'lucide-react';
 import { classNames } from '../../config';

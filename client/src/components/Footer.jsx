@@ -15,7 +15,7 @@ export default function Example() {
     { id: '/ai', label: 'AI Generate' },
   ];
   return (
-    <footer className="flex flex-col bg-slate-50 items-center justify-around w-full pb-5 pt-10 text-sm text-gray-800/70">
+    <footer className="flex flex-col items-center justify-around w-full pb-5 pt-10 text-sm text-gray-800/70">
       <div className="flex items-center sm:gap-8 max-w-[90vw] gap-2 flex-wrap justify-center">
         {menus.map((menu) => (
           <NavLink

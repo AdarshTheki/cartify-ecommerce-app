@@ -1,9 +1,10 @@
-import { NavLink, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Heart, Menu, Search, ShoppingCart, User, X } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { Avatar } from '../utils';
+import { images } from '../assets';
 
 const menuItems = [
   {
@@ -57,14 +58,14 @@ const NavbarTop = () => {
     : 0;
 
   return (
-    <header className="shadow sticky top-0 w-full z-50 bg-white">
+    <header className="sticky top-0 w-full z-50 bg-white/30 backdrop-blur-md shadow-md">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-4">
           {/* Logo  */}
           <h2
             onClick={() => navigate('/')}
-            className="text-xl font-bold text-gray-800 flex gap-2 items-center cursor-pointer">
-            <img src={'./logo.png'} className="w-8 h-6" />
+            className="text-xl font-bold text-gray-700 uppercase flex items-center cursor-pointer">
+            <img src={images.logo} className="w-8 h-6" />
             Cartify
           </h2>
 
@@ -122,7 +123,7 @@ const NavbarTop = () => {
                 <Avatar
                   avatarUrl={user?.avatar}
                   name={user?.fullName}
-                  className="!w-7 !h-7"
+                  className="scale-75"
                 />
               ) : (
                 <User className="w-5 h-5" />

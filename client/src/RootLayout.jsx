@@ -9,6 +9,7 @@ import { fetchProducts } from './redux/productSlice';
 import { fetchCarts } from './redux/cartSlice';
 import { login } from './redux/authSlice';
 import useApi from './hooks/useApi';
+import { images } from './assets';
 
 // Root Layout for main structure and data fetching
 const RootLayout = () => {
@@ -34,13 +35,17 @@ const RootLayout = () => {
   }, [dispatch]);
 
   return (
-    <div className="bg-slate-50 text-slate-700 w-full flex flex-col">
-      <NavbarTop />
-      <main className="min-h-screen w-full">
-        <Outlet />
-        <Footer />
-      </main>
-      <NavbarBottom />
+    <div
+      style={{ background: `url("${images.banner}")` }}
+      className="min-h-screen bg-cover bg-center">
+      <div className="w-full flex flex-col">
+        <NavbarTop />
+        <main className="min-h-screen w-full">
+          <Outlet />
+          <Footer />
+        </main>
+        <NavbarBottom />
+      </div>
     </div>
   );
 };

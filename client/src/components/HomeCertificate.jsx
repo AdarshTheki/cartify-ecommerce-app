@@ -33,12 +33,7 @@ const HomeCertificate = () => {
       <div className="grid bg-pink-100 md:grid-cols-4 grid-cols-2 gap-4 w-full p-6">
         {items.map((item) => (
           <div key={item.id} className="space-y-3">
-            <LazyImage
-              placeholder="/placeholder.jpg"
-              src={item.icon}
-              alt={`icon-${item.id}`}
-              width={30}
-            />
+            <LazyImage src={item.icon} alt={`icon-${item.id}`} width={30} />
             <h4 className="font-medium mt-5">{item.title}</h4>
             <p className="text-xs max-w-[200px]">{item.content}</p>
           </div>

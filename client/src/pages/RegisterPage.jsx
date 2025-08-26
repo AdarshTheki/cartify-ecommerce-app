@@ -8,7 +8,7 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [visible, setVisible] = useState(false);
-  const { registerLoading, handleRegister } = useAuth();
+  const { registerLoading, handleRegister, isError } = useAuth();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -17,10 +17,12 @@ const Register = () => {
 
   return (
     <section className="flex items-center justify-center p-4 min-h-[80vh]">
-      <div className="max-w-md w-full bg-white/70 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-8">
-        <h1 className="text-3xl text-center pb-5 font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent mb-2">
+      <div className="max-w-md w-full bg-white/50 rounded-3xl border border-white/20 shadow-2xl p-8">
+        <h1 className="text-3xl text-center font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent mb-2">
           Create Account
         </h1>
+
+        {isError && <p className="text-red-600 text-center mb-5">{isError}</p>}
 
         <form id="registerForm" className="space-y-4" onSubmit={handleSubmit}>
           <div>
@@ -54,16 +56,17 @@ const Register = () => {
               id="password"
               name="password"
               required
-              className="w-full px-4 py-2 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full py-2 px-4 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               placeholder="Enter your password"
             />
             <button
               type="button"
-              className="absolute top-12 right-3 w-[60px] items-center justify-center flex transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+              className="absolute top-12 right-4 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
               onClick={() => setVisible(!visible)}>
               {visible ? <EyeOff size={20} /> : <Eye size={20} />}
             </button>
           </div>
+
           <div className="relative">
             <label
               htmlFor="confirmPassword"

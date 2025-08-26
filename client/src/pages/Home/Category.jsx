@@ -2,21 +2,26 @@ import { ArrowRightIcon } from 'lucide-react';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import { Skeleton } from '../../utils';
 
-const Category = () => {
+const Category = ({ size = 8 }) => {
   const { items } = useSelector((state) => state.categories);
 
   return (
     <div className="mx-auto container" id="categories">
-      <div className="mb-10 space-y-5 text-center">
-        <h2 className="text-slate-700 text-[42px] font-semibold">Categories</h2>
-        <p className="text-gray-600 max-w-2xl mx-auto">
-          Browse our curated collection of products across popular categories.
+      <div className="text-center mb-8">
+        <h2 className="text-slate-700 text-3xl mb-4 font-semibold">
+          Categories
+        </h2>
+        <p className="text-gray-500 max-w-lg mx-auto">
+          Hot new drops in Fashion, Accessories, Tech & Lifestyle. Don’t miss
+          what’s trending now!
         </p>
       </div>
+
       <div className="sm:grid flex md:grid-cols-4 sm:grid-cols-3 gap-5 grid-cols-2 overflow-x-auto scrollbar-hidden">
         {items &&
-          items?.slice(0, 8).map((item) => (
+          items?.slice(0, size).map((item) => (
             <div
               key={item._id}
               className="group max-sm:min-w-64 relative overflow-hidden rounded-lg shadow-md transform transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
@@ -46,6 +51,14 @@ const Category = () => {
             </div>
           ))}
       </div>
+
+      {!items?.length && (
+        <div className="sm:grid flex md:grid-cols-4 sm:grid-cols-3 gap-5 grid-cols-2 overflow-x-auto scrollbar-hidden">
+          {Array.from({ length: 8 }, (v, i) => (
+            <Skeleton height={210} key={i} className="max-sm:min-w-64" />
+          ))}
+        </div>
+      )}
 
       <div className="flex justify-center mt-4 md:hidden">
         <div className="flex space-x-2">

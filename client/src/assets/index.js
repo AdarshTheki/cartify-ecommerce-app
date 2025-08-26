@@ -1,6 +1,17 @@
 import { SquarePen, Hash, Image, Eraser, FileText } from 'lucide-react';
+import banner from './banner.jpg';
+import placeholder from './placeholder.jpg';
+import github from './github.svg';
+import google from './google.svg';
+import logo from './logo.svg';
 
-import profile_img from './profile_img_1.png';
+export const images = {
+  banner,
+  placeholder,
+  github,
+  google,
+  logo,
+};
 
 export const AiToolsData = [
   {
@@ -45,9 +56,9 @@ export const AiToolsData = [
   },
 ];
 
-export const dummyTestimonialData = [
+export const lovedByCreators = [
   {
-    image: profile_img,
+    id: 1,
     name: 'John Doe',
     title: 'Marketing Director, TechCorp',
     content:
@@ -55,7 +66,7 @@ export const dummyTestimonialData = [
     rating: 4,
   },
   {
-    image: profile_img,
+    id: 2,
     name: 'Jane Smith',
     title: 'Content Creator, TechCorp',
     content:
@@ -63,12 +74,36 @@ export const dummyTestimonialData = [
     rating: 5,
   },
   {
-    image: profile_img,
+    id: 3,
     name: 'David Lee',
     title: 'Content Writer, TechCorp',
     content:
       'ContentAI has transformed our content creation process. The AI tools have helped us produce high-quality content faster than ever before.',
     rating: 4,
+  },
+  {
+    id: 4,
+    name: 'Emily Johnson',
+    title: 'Social Media Manager, Brandify',
+    content:
+      'Our team loves ContentAI! Scheduling and writing posts is so much smoother now, and the engagement boost has been incredible.',
+    rating: 5,
+  },
+  {
+    id: 5,
+    name: 'Michael Brown',
+    title: 'Freelance Blogger',
+    content:
+      'As a freelancer, ContentAI saves me tons of time researching and drafting. I can now focus on personalizing my work instead of starting from scratch.',
+    rating: 4,
+  },
+  {
+    id: 6,
+    name: 'Sophia Martinez',
+    title: 'SEO Specialist, RankPro',
+    content:
+      'ContentAI is a game-changer for SEO teams. The keyword optimization and content structure tools are spot-on and deliver results fast.',
+    rating: 5,
   },
 ];
 

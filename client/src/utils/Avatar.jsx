@@ -1,24 +1,25 @@
 import { classNames } from '../config';
+import React, { useState } from 'react';
 
-const Avatar = ({ name, avatarUrl, className }) => {
-  const fallbackLetter = name?.trim()?.charAt(0)?.toUpperCase() ?? '?';
+const Avatar = ({ name = '', avatarUrl, className }) => {
+  const [imgError, setImgError] = useState(false);
+  const fallbackLetter = name.trim().charAt(0).toUpperCase() || '?';
 
   return (
     <div
-      style={{ background: '#777' }}
       className={classNames(
-        'w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-lg font-semibold overflow-hidden',
+        'w-10 h-10 rounded-full bg-gray-400 flex items-center justify-center text-lg font-semibold overflow-hidden text-white',
         className
       )}>
-      {!avatarUrl ? (
-        <span className="font-medium !text-white">{fallbackLetter}</span>
-      ) : (
+      {avatarUrl && !imgError ? (
         <img
           src={avatarUrl}
-          alt={name}
+          alt={name || 'Avatar'}
           className="w-full h-full object-cover"
-          onError={(e) => (e.currentTarget.style.display = 'none')}
+          onError={() => setImgError(true)}
         />
+      ) : (
+        <span>{fallbackLetter}</span>
       )}
     </div>
   );

@@ -67,12 +67,12 @@ const ChatMessagesPage = () => {
   };
 
   return (
-    <div className="fixed top-12 w-full sm:bottom-0 bottom-10 pt-4 pb-2 bg-slate-50">
+    <div className="h-[85vh]">
       <div className="flex max-sm:flex-col h-full">
         {/* Chat Left Side */}
         <div
           className={classNames(
-            '!sm:max-w-[280px] max-sm:w-full h-full overflow-y-auto',
+            'max-sm:w-full h-full overflow-y-scroll',
             mobileChatOpen && chat?._id && 'max-sm:hidden'
           )}>
           {/* Create Group Modal */}
@@ -86,92 +86,95 @@ const ChatMessagesPage = () => {
             />
           )}
 
-          {/* Search Bar */}
-          <div className="relative flex items-center p-2 bg-white">
-            <Search className="h-5 w-5 mx-2" />
-            <Input
-              name="search"
-              title="search chat user"
-              placeholder="Search..."
-              className="border-none !w-full outline-none"
-              onChange={(e) => setSearchUserChat(e.target.value)}
-              value={searchUserChat}
-            />
-            {!!searchUserChat && (
-              <button className="btn" onClick={() => setSearchUserChat('')}>
-                <X size={16} />
+          <div className="flex flex-col relative">
+            {/* Search Bar */}
+            <div className="flex items-center pl-4 py-4 w-full">
+              <Search />
+              <Input
+                name="search"
+                title="search chat user"
+                placeholder="Search..."
+                className="border-none flex-1 outline-none"
+                onChange={(e) => setSearchUserChat(e.target.value)}
+                value={searchUserChat}
+              />
+              <button
+                title={searchUserChat ? 'Add new chat' : 'Close'}
+                className="bg-indigo-600 hover:opacity-80 text-white w-[80px] py-2 gap-2 flex items-center justify-center rounded-2xl"
+                onClick={() =>
+                  searchUserChat ? setSearchUserChat('') : setOpenAddChat(true)
+                }>
+                {searchUserChat ? <X size={16} /> : <Plus size={18} />}
+                <small>{searchUserChat ? 'Close' : 'Add'}</small>
               </button>
-            )}
-            <button
-              title="Add new chat"
-              className="!py-2.5 text-sm text-nowrap !px-4 flex gap-1 items-center border-none font-medium btn-primary !rounded-2xl"
-              onClick={() => setOpenAddChat(true)}>
-              <Plus size={16} /> Add Chat
-            </button>
-          </div>
-
-          {/* Display Search User Listing*/}
-          {!!searchUserChat?.length && (
-            <div className="flex flex-col absolute z-10 w-[350px] bg-white h-1/2 overflow-y-auto">
-              {[...users]
-                .filter((i) =>
-                  i?.fullName?.toLowerCase().includes(searchUserChat)
-                )
-                .map((item) => (
-                  <button
-                    onClick={() => {
-                      onCreateOrGetChat(item._id);
-                      setSearchUserChat('');
-                    }}
-                    className="text-left w-full flex gap-2 items-center hover:bg-gray-100 py-1 px-4 rounded-2xl"
-                    key={item?._id}>
-                    <div className="scale-75">
-                      <Avatar name={item?.fullName} avatarUrl={item?.avatar} />
-                    </div>
-                    <span>{item?.fullName}</span>
-                  </button>
-                ))}
             </div>
-          )}
 
-          {chatsLoading && <Loading />}
+            {/* Display Search User Listing*/}
+            {!!searchUserChat?.length && (
+              <div className="flex flex-col absolute top-14 shadow-md z-10 w-full min-h-[300px] bg-white">
+                {[...users]
+                  .filter((i) =>
+                    i?.fullName?.toLowerCase().includes(searchUserChat)
+                  )
+                  .map((item) => (
+                    <button
+                      onClick={() => {
+                        onCreateOrGetChat(item._id);
+                        setSearchUserChat('');
+                      }}
+                      className="text-left w-full flex gap-2 items-center hover:bg-gray-100 py-1 pl-5"
+                      key={item?._id}>
+                      <div className="scale-75">
+                        <Avatar
+                          name={item?.fullName}
+                          avatarUrl={item?.avatar}
+                        />
+                      </div>
+                      <span>{item?.fullName}</span>
+                    </button>
+                  ))}
+              </div>
+            )}
 
-          {/* Display Chats */}
-          {[...chats].map((item) => (
-            <ChatsCard
-              key={item?._id}
-              item={item}
-              unreadCount={
-                [...unReadMessages].filter((n) => n.chat === item._id).length
-              }
-              isActive={chat?._id === item?._id}
-              onUpdate={() => {
-                setUpdateChat(item);
-                setOpenAddChat(true);
-              }}
-              onDelete={() => handleChatDeleted(item._id)}
-              onLeave={(chatId) => {
-                setChats((prev) => prev.filter((c) => c._id !== chatId));
-                if (chat?._id === chatId) {
-                  setChat(null);
+            {chatsLoading && <Loading />}
+
+            {/* Display Chats */}
+            {[...chats].map((item) => (
+              <ChatsCard
+                key={item?._id}
+                item={item}
+                unreadCount={
+                  [...unReadMessages].filter((n) => n.chat === item._id).length
                 }
-              }}
-              onClick={() => {
-                setMobileChatOpen(true);
-                socket.emit(JOIN_CHAT_EVENT, item._id);
-                setChat({ ...item });
-                onFetchMessages(item._id);
-                setUnReadMessages((prev) =>
-                  prev.filter((n) => n.chat !== item._id)
-                );
-              }}
-            />
-          ))}
+                isActive={chat?._id === item?._id}
+                onUpdate={() => {
+                  setUpdateChat(item);
+                  setOpenAddChat(true);
+                }}
+                onDelete={() => handleChatDeleted(item._id)}
+                onLeave={(chatId) => {
+                  setChats((prev) => prev.filter((c) => c._id !== chatId));
+                  if (chat?._id === chatId) {
+                    setChat(null);
+                  }
+                }}
+                onClick={() => {
+                  setMobileChatOpen(true);
+                  socket.emit(JOIN_CHAT_EVENT, item._id);
+                  setChat({ ...item });
+                  onFetchMessages(item._id);
+                  setUnReadMessages((prev) =>
+                    prev.filter((n) => n.chat !== item._id)
+                  );
+                }}
+              />
+            ))}
+          </div>
         </div>
 
         {!chat?._id && (
-          <div className="w-full max-sm:hidden flex items-center justify-center border-l border-slate-200 overflow-y-auto flex-col">
-            <p className="flex items-center justify-center">
+          <div className="w-full max-sm:hidden flex items-center justify-center">
+            <p className="flex items-center h-[50vh] justify-center">
               Get chat messages
             </p>
           </div>
@@ -181,10 +184,10 @@ const ChatMessagesPage = () => {
         {!!chat?._id && (
           <div
             className={classNames(
-              'w-full max-sm:hidden border-l border-slate-200 overflow-y-auto flex flex-col',
+              'w-full max-sm:hidden overflow-y-auto flex flex-col',
               mobileChatOpen && '!flex'
             )}>
-            <div className="py-2 px-4 flex bg-white items-center gap-3 top-0 sticky z-10">
+            <div className="py-2 px-4 flex items-center gap-3 top-0 sticky z-10">
               <button
                 className="svg-btn !p-2"
                 onClick={() => setMobileChatOpen(false)}>
@@ -249,8 +252,8 @@ const ChatMessagesPage = () => {
                 setAttachments([]);
                 setPreviews([]);
               }}
-              className="w-full py-2 px-4 flex gap-2 items-center sticky -bottom-1 bg-white">
-              <div className="h-[40px] px-2 rounded-2xl border border-gray-300 w-full flex items-center">
+              className="w-full py-2 px-4 flex gap-2 items-center sticky -bottom-1">
+              <div className="h-[40px] px-2 rounded-2xl border border-gray-400 shadow-sm w-full flex items-center">
                 <Input
                   className="border-none"
                   name="message"

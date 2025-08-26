@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import useApi from '../hooks/useApi';
 import useDebounce from '../hooks/useDebounce';
-import { Loading, Input } from '../utils';
+import { Input, Skeleton } from '../utils';
 import { ProductItem } from '../components';
 import { useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
@@ -397,12 +397,12 @@ const ProductListing = () => {
             </button>
           </div>
 
-          {loading && <Loading className="h-[70vh]" />}
-
-          {!loading && !data?.totalDocs && (
-            <p className="flex items-center justify-center min-h-[50dvh]">
-              Product not found
-            </p>
+          {(loading || !data?.totalDocs) && (
+            <div className={`grid md:grid-cols-3 grid-cols-2 gap-2 px-2`}>
+              {Array.from({ length: 10 }, (v, i) => (
+                <Skeleton key={i} height={210} />
+              ))}
+            </div>
           )}
 
           {/* <!-- Products Grid --> */}

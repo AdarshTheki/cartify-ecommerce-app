@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AiToolsData } from '../../assets/assets';
+import { AiToolsData } from '../../assets';
 import { toast } from 'react-toastify';
 import AIToolLayout from './AIToolLayout';
 import useApi from '../../hooks/useApi';

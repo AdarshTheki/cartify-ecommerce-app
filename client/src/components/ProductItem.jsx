@@ -41,14 +41,12 @@ export default function Item({ delay = '100ms', ...item }) {
 
   return (
     <div
-      className="w-full bg-white rounded-lg shadow-sm hover:shadow-md transition duration-300 group animate-fadeIn"
+      className="w-full rounded-xl my-2 bg-white/40 shadow-sm hover:-translate-y-1 transition duration-300 group animate-fadeIn"
       style={{ animationDelay: delay }}>
       <div className="relative overflow-hidden rounded-t-lg">
         <NavLink to={`/products/${item._id}`}>
           <LazyImage
             src={item.thumbnail}
-            fallback={'/placeholder.jpg'}
-            alt={item.title}
             className="w-full h-[200px] object-cover transform group-hover:scale-105 transition duration-500"
           />
         </NavLink>
@@ -74,7 +72,7 @@ export default function Item({ delay = '100ms', ...item }) {
             <span className="ml-1 text-sm text-gray-600">{item?.rating}</span>
           </div>
         </div>
-        <p className="sm:text-lg text-base text-gray-600 leading-[1.4] font-medium sm:line-clamp-1 line-clamp-2">
+        <p className="sm:text-lg text-base text-gray-600 leading-[1.4] font-medium sm:line-clamp-1 max-sm:min-h-[50px] line-clamp-2">
           {item.title}
         </p>
         <p className="text-gray-600 text-sm mb-3 max-sm:hidden flex gap-2 justify-between capitalize">

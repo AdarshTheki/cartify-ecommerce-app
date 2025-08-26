@@ -87,7 +87,7 @@ export const getChatObjectMetadata = (
     // Return metadata specific to group chats.
     return {
       // Default avatar for group chats.
-      avatar: '/placeholder.jpg',
+      avatar: '',
       title: chat.name, // Group name serves as the title.
       description: `${chat?.participants.length} members in the chat`, // Description indicates the number of members.
       lastMessage: chat?.lastMessage
