@@ -60,7 +60,7 @@ const ChatItem = ({
         )}
         {/* <Avatar name={item?.isGroupChat ? item?.name : chatWith?.fullName} /> */}
         <button
-          className="flex-1 cursor-pointer text-left ml-2"
+          className="flex-1 text-left ml-2 relative cursor-pointer"
           onClick={onClick}>
           <p className="line-clamp-1">
             {getChatObjectMetadata(item, user).title}
@@ -68,18 +68,17 @@ const ChatItem = ({
           <small className="line-clamp-1 text-gray-500">
             {getChatObjectMetadata(item, user).lastMessage || 'No messages yet'}
           </small>
+          <p className="flex items-center justify-between">
+            <small className="line-clamp-1 text-gray-500">
+              {formatChatTime(item?.updatedAt)}
+            </small>
+            {unreadCount <= 0 ? null : (
+              <span className="bg-green-600 h-2 w-2 aspect-square flex-shrink-0 p-2 text-white text-xs rounded-full inline-flex justify-center items-center">
+                {unreadCount > 9 ? '9+' : unreadCount}
+              </span>
+            )}
+          </p>
         </button>
-        <p className="text-center">
-          <small className="text-nowrap">
-            {formatChatTime(item?.updatedAt)}
-          </small>
-          {unreadCount <= 0 ? null : (
-            <span className="bg-green-600 h-2 w-2 aspect-square flex-shrink-0 p-2 text-white text-xs rounded-full inline-flex justify-center items-center">
-              {unreadCount > 9 ? '9+' : unreadCount}
-            </span>
-          )}
-        </p>
-
         <button className="svg-btn !p-2" onClick={() => setIsOpen(!isOpen)}>
           <EllipsisVertical />
         </button>

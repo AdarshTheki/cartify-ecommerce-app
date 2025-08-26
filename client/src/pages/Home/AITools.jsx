@@ -4,7 +4,8 @@ import { AiToolsData } from '../../assets/assets';
 const AITools = () => {
   const navigate = useNavigate();
   return (
-    <div className="mx-auto max-w-6xl">
+    <div className="container mx-auto relative">
+      {/* Heading */}
       <div className="text-center">
         <h2 className="text-slate-700 text-3xl mb-4 font-semibold">
           Powerful AI Tools
@@ -14,22 +15,26 @@ const AITools = () => {
           cutting-edge AI technology.
         </p>
       </div>
-      <div className="grid md:grid-cols-3 sm:grid-cols-2 sm:gap-4 gap-2 mt-10">
+
+      {/* AI Tools */}
+      <div className="grid md:grid-cols-3 sm:grid-cols-2 sm:gap-4 gap-2 mt-8">
         {AiToolsData.map((item, index) => (
           <div
             key={index}
             onClick={() => navigate(item.path)}
-            className="p-8 w-full rounded-lg bg-[#FDFDFE] shadow-lg border border-gray-100 hover:-translate-y-1 transition-all duration-300 cursor-pointer">
+            className="p-8 z-10 w-full bg-white/40 flex gap-4 max-lg:flex-col items-start rounded-lg shadow-lg hover:-translate-y-1 transition duration-300 cursor-pointer">
             <item.Icon
-              className="lucide lucide-square-pen w-12 h-12 p-3 text-white rounded-xl"
+              className="lucide lucide-square-pen min-w-12 h-12 p-3 text-white rounded-xl"
               style={{
                 background: `linear-gradient(to bottom, ${item.bg.from}, ${item.bg.to})`,
               }}
             />
-            <p className="mt-6 mb-3 text-lg font-semibold">{item.title}</p>
-            <p className="text-gray-400 text-sm max-w-[95%]">
-              {item.description}
-            </p>
+            <div>
+              <p className="text-lg font-semibold">{item.title}</p>
+              <p className="text-gray-400 text-sm max-w-[95%]">
+                {item.description}
+              </p>
+            </div>
           </div>
         ))}
       </div>

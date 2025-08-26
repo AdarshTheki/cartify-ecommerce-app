@@ -65,7 +65,6 @@ const ImageUpload = () => {
         {!!preview && (
           <div className="w-full relative">
             <LazyImage
-              placeholder="/placeholder.jpg"
               src={preview}
               alt={`file_preview`}
               className="w-full h-full"

@@ -1,40 +1,54 @@
 import React, { useState, useRef, useEffect } from 'react';
 
-const LazyImage = ({ src, placeholder, fallback, ...rest }) => {
-  const [imgSrc, setImgSrc] = useState(placeholder || '');
+const LazyImage = ({
+  src,
+  placeholder,
+  fallback = '/lazy.png',
+  alt = '',
+  ...rest
+}) => {
+  const [imgSrc, setImgSrc] = useState(placeholder || fallback);
   const imgRef = useRef(null);
 
   useEffect(() => {
-    const img = new Image();
-    img.src = src;
+    let observer;
+    let didCancel = false;
 
-    const handleLoad = () => {
-      setImgSrc(src);
-    };
+    if (imgRef.current && src) {
+      if (IntersectionObserver) {
+        observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (!didCancel && entry.isIntersecting) {
+                const img = new Image();
+                img.src = src;
 
-    img.onload = handleLoad;
-    img.onerror = () => fallback && setImgSrc(fallback);
+                img.onload = () => !didCancel && setImgSrc(src);
+                img.onerror = () => !didCancel && setImgSrc(fallback);
 
-    // Optional: lazy loading with IntersectionObserver
-    if (imgRef.current) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting) {
-            handleLoad();
-            observer.disconnect();
-          }
-        },
-        { threshold: 0.1 }
-      );
-      observer.observe(imgRef.current);
-      return () => observer.disconnect();
-    } else {
-      // fallback if no IntersectionObserver
-      handleLoad();
+                observer.unobserve(imgRef.current);
+              }
+            });
+          },
+          { threshold: 0.1 }
+        );
+        observer.observe(imgRef.current);
+      } else {
+        // Fallback if IntersectionObserver not supported
+        const img = new Image();
+        img.src = src;
+        img.onload = () => !didCancel && setImgSrc(src);
+        img.onerror = () => !didCancel && setImgSrc(fallback);
+      }
     }
+
+    return () => {
+      didCancel = true;
+      if (observer && observer.disconnect) observer.disconnect();
+    };
   }, [src, fallback]);
 
-  return <img ref={imgRef} src={imgSrc || '/placeholder.jpg'} {...rest} />;
+  return <img ref={imgRef} src={imgSrc} alt={alt} {...rest} />;
 };
 
 export default LazyImage;

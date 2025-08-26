@@ -1,8 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { ProductItem } from '../../components';
-import { NavLink } from 'react-router-dom';
-import { ChevronRight } from 'lucide-react';
+import { Skeleton } from '../../utils';
 
 const Trending = ({ heading = 'Trending Products', size = 8 }) => {
   const { items } = useSelector((s) => s.product);
@@ -20,20 +19,34 @@ const Trending = ({ heading = 'Trending Products', size = 8 }) => {
 
   return (
     <div className="container mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <p className="text-xl md:text-2xl font-semibold">{heading}</p>
-        <NavLink
-          to="/products"
-          className="text-indigo-600 hover:text-indigo-800 flex items-center transition duration-300">
-          View All
-          <ChevronRight className="ml-2 w-5 h-5" />
-        </NavLink>
+      <div className="text-center">
+        <h2 className="text-slate-700 text-3xl mb-4 font-semibold">
+          {heading}
+        </h2>
+        <p className="text-gray-500 max-w-lg mx-auto">
+          Discover new arrivals today! Trendy, stylish, and fresh picks waiting
+          just for you.
+        </p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 sm:gap-4 gap-2">
-        {shuffledItems.map((item, i) => (
-          <ProductItem key={item._id} {...item} delay={i + 1 + '00ms'} />
-        ))}
+      <div className="sm:grid flex md:grid-cols-4 sm:grid-cols-3 gap-5 grid-cols-2 overflow-x-auto scrollbar-hidden mt-8">
+        {shuffledItems?.length
+          ? shuffledItems.map((item, i) => (
+              <div className="max-sm:min-w-64 w-full" key={item._id}>
+                <ProductItem {...item} delay={i + 1 + '00ms'} />
+              </div>
+            ))
+          : Array.from({ length: size }, (v, i) => (
+              <Skeleton height={210} key={i} className={'max-sm:min-w-64 '} />
+            ))}
+      </div>
+
+      <div className="flex justify-center mt-4 md:hidden">
+        <div className="flex space-x-2">
+          <div className="w-8 h-2 bg-indigo-600 rounded-full"></div>
+          <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
+          <div className="w-2 h-2 bg-gray-300 rounded-full"></div>
+        </div>
       </div>
     </div>
   );

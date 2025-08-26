@@ -26,20 +26,20 @@ const Hero = () => {
               </NavLink>
               <a
                 href="#categories"
-                className="bg-white border flex-1 border-gray-300 hover:border-indigo-600 text-gray-800 hover:text-indigo-600 px-8 py-3 rounded-md font-medium transition-all duration-300">
+                className="bg-white/50 border flex-1 border-gray-300 hover:border-indigo-600 text-gray-800 hover:text-indigo-600 px-8 py-3 rounded-md font-medium transition-all duration-300">
                 Explore Categories
               </a>
             </div>
 
             {/* Featured Tags  */}
             <div className="mt-10 flex flex-wrap gap-3">
-              <span className="bg-gray-100 text-gray-800 px-4 py-1 rounded-full text-sm">
+              <span className="bg-white/50 text-gray-800 px-4 py-1 rounded-full text-sm">
                 Free Shipping
               </span>
-              <span className="bg-gray-100 text-gray-800 px-4 py-1 rounded-full text-sm">
+              <span className="bg-white/50 text-gray-800 px-4 py-1 rounded-full text-sm">
                 Premium Quality
               </span>
-              <span className="bg-gray-100 text-gray-800 px-4 py-1 rounded-full text-sm">
+              <span className="bg-white/50 text-gray-800 px-4 py-1 rounded-full text-sm">
                 30-Day Returns
               </span>
             </div>
@@ -59,15 +59,15 @@ const Hero = () => {
 
               {/* Background decorative elements  */}
               <div
-                className="absolute top-[5%] right-[5%] w-40 h-40 bg-indigo-100 rounded-full opacity-60 animate-pulse"
+                className="absolute top-[5%] right-[5%] w-40 h-40 bg-indigo-200 rounded-full opacity-60 animate-pulse"
                 style={{ animationDuration: '3000ms' }}></div>
               <div
-                className="absolute bottom-[10%] left-[5%] w-32 h-32 bg-blue-100 rounded-full opacity-60 animate-pulse"
+                className="absolute bottom-[10%] left-[5%] w-32 h-32 bg-pink-200 rounded-full opacity-60 animate-pulse"
                 style={{ animationDuration: '4000ms' }}></div>
 
               {/* Product Highlight Card  */}
               <div
-                className="absolute -bottom-4 -right-4 md:bottom-10 md:right-0 bg-white p-4 rounded-lg shadow-lg w-48 transition-all duration-500 animate-slide-in-bottom"
+                className="absolute -bottom-4 -right-4 md:bottom-10 md:right-0 bg-white/50 p-4 rounded-lg shadow-lg w-48 transition-all duration-500 animate-slide-in-bottom"
                 style={{
                   animationDuration: '3000ms',
                   animationDelay: '400ms',

@@ -34,13 +34,15 @@ const RootLayout = () => {
   }, [dispatch]);
 
   return (
-    <div className="bg-slate-50 text-slate-700 w-full flex flex-col">
-      <NavbarTop />
-      <main className="min-h-screen w-full">
-        <Outlet />
-        <Footer />
-      </main>
-      <NavbarBottom />
+    <div className="min-h-screen bg-[url('/banner.jpg')] bg-cover bg-center">
+      <div className="w-full flex flex-col">
+        <NavbarTop />
+        <main className="min-h-screen w-full">
+          <Outlet />
+          <Footer />
+        </main>
+        <NavbarBottom />
+      </div>
     </div>
   );
 };

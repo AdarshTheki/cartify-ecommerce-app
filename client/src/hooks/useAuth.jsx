@@ -11,14 +11,38 @@ const useAuth = () => {
   const navigate = useNavigate();
 
   const [avatarLoading, setAvatarLoading] = useState(false);
+  const [isError, setIsError] = useState(null);
   const [loginLoading, setLoginLoading] = useState(false);
   const [registerLoading, setRegisterLoading] = useState(false);
 
+  const setErrorHandler = (error) => {
+    const { response, request, message } = error || {};
+    if (response) {
+      const status = response.status;
+      const errorMsg = response.data?.message || 'Something went wrong.';
+
+      if (status === 401) {
+        setIsError('Unauthorized access. Please login again.');
+      } else if (status === 403) {
+        setIsError("Forbidden. You don't have permission.");
+      } else if (status === 404) {
+        setIsError('Requested resource not found.');
+      } else {
+        setIsError(errorMsg);
+      }
+    } else if (request) {
+      setIsError('No response, Please check your network.');
+    } else {
+      setIsError(message || 'An unexpected error occurred.');
+    }
+  };
+
   const handleLogin = async (email, password, rememberMe) => {
     try {
+      setIsError(null);
       setLoginLoading(true);
       if (!email || !password) {
-        toast.error('Please fill in all fields.');
+        setIsError('Please fill in all fields.');
         return;
       }
 
@@ -35,7 +59,7 @@ const useAuth = () => {
         window.location.href = '/';
       }
     } catch (error) {
-      errorHandler(error);
+      setErrorHandler(error);
     } finally {
       setLoginLoading(false);
     }
@@ -45,12 +69,12 @@ const useAuth = () => {
     try {
       setRegisterLoading(true);
       if (!fullName || !email || !password || !confirmPassword) {
-        toast.error('Please fill in all fields.');
+        setIsError('Please fill in all fields.');
         return;
       }
 
       if (password !== confirmPassword) {
-        toast.error('Passwords do not match.');
+        setIsError('Passwords do not match.');
         return;
       }
 
@@ -65,7 +89,7 @@ const useAuth = () => {
         toast.success('check your email to verify users');
       }
     } catch (error) {
-      errorHandler(error);
+      setErrorHandler(error);
     } finally {
       setRegisterLoading(false);
     }
@@ -126,6 +150,7 @@ const useAuth = () => {
     avatarLoading,
     registerLoading,
     loginLoading,
+    isError,
     handleResendVerifyUser,
     handleUpdateProfile,
     handleUploadAvatar,

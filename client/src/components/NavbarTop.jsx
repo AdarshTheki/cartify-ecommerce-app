@@ -57,7 +57,7 @@ const NavbarTop = () => {
     : 0;
 
   return (
-    <header className="shadow sticky top-0 w-full z-50 bg-white">
+    <header className="sticky top-0 w-full z-50 bg-white/30 backdrop-blur-md shadow-md">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between py-4">
           {/* Logo  */}
@@ -122,7 +122,7 @@ const NavbarTop = () => {
                 <Avatar
                   avatarUrl={user?.avatar}
                   name={user?.fullName}
-                  className="!w-7 !h-7"
+                  className="scale-75"
                 />
               ) : (
                 <User className="w-5 h-5" />

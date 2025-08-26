@@ -8,7 +8,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
   const [visible, setVisible] = useState(false);
-  const { loginLoading, handleLogin } = useAuth();
+  const { loginLoading, handleLogin, isError } = useAuth();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -35,10 +35,12 @@ const Login = () => {
 
   return (
     <section className="flex items-center justify-center p-4 min-h-[80dvh]">
-      <div className="max-w-md w-full bg-white/70 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-8">
+      <div className="max-w-md w-full bg-white/50 rounded-3xl border border-white/20 shadow-2xl p-8">
         <h1 className="text-3xl text-center font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent mb-2">
           Sign In
         </h1>
+
+        {isError && <p className="text-red-600 text-center py-2">{isError}</p>}
 
         {/* OAuth Login */}
         <div className="flex gap-1 my-5">

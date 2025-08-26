@@ -118,7 +118,9 @@ export default function S3FileManager() {
 
             {files.length === 0 && (
               <tr>
-                <td colSpan={4} className="text-center text-gray-500 py-6">
+                <td
+                  colSpan={4}
+                  className="text-center text-gray-500 py-[100px]">
                   No files found for this prefix
                 </td>
               </tr>
