@@ -11,7 +11,7 @@ import CommentReply from './CommentReply';
 import useApi from '../../hooks/useApi';
 import { Loading } from '../../utils';
 
-const ProductComment = () => {
+const COmmentListing = () => {
   const { id } = useParams();
   const [createText, setCreateText] = useState('');
   const userId = useSelector((state) => state?.auth?.user?._id);
@@ -39,7 +39,7 @@ const ProductComment = () => {
       errorHandler(error);
     }
   };
-
+  /*
   const updateComment = async (commentId, text) => {
     try {
       if (!text.trim()) return toast.error('Please fill the text input');
@@ -53,7 +53,7 @@ const ProductComment = () => {
       errorHandler(error);
     }
   };
-
+*/
   const deleteComment = async (commentId) => {
     try {
       const res = await axios.delete(`/comment/${commentId}`);
@@ -167,4 +167,4 @@ const ProductComment = () => {
   );
 };
 
-export default ProductComment;
+export default COmmentListing;
