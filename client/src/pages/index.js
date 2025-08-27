@@ -10,13 +10,14 @@ import OrderSuccess from './OrderSuccess';
 import ShippingAddress from './ShippingAddress';
 import ImageGalleryPage from './Gallery/ImageGalleryPage';
 import SettingPage from './SettingPage';
-import ChatMessagesPage from './Chat/ChatMessagesPage';
+import ChatMessagesPage from './ChatMessagesPage';
 import ResetPasswordPage from './ResetPasswordPage';
 import ForgotPasswordPage from './ForgotPasswordPage';
 import EmailVerifyPage from './EmailVerifyPage';
 import FileManagePage from './FileManagePage';
 
 export {
+  ChatMessagesPage,
   FileManagePage,
   EmailVerifyPage,
   ResetPasswordPage,
@@ -33,5 +34,4 @@ export {
   SingleProductPage,
   SettingPage,
   ImageGalleryPage,
-  ChatMessagesPage,
 };

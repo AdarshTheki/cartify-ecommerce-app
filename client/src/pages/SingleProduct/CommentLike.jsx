@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { ThumbsUp } from 'lucide-react';
 import { errorHandler, axios } from '../../config';
 
-const ProductReviewLike = ({ reviewId, likes }) => {
+const CommentLiked = ({ reviewId, likes }) => {
   const userId = useSelector((state) => state?.auth?.user?._id);
   const [like, setLike] = useState(userId ? likes?.includes(userId) : false);
   const [totalLike, setTotalLike] = useState(likes?.length);
@@ -27,4 +27,4 @@ const ProductReviewLike = ({ reviewId, likes }) => {
   );
 };
 
-export default ProductReviewLike;
+export default CommentLiked;

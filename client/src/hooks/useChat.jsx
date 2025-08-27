@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import useApi from '../hooks/useApi';
 import { axios, errorHandler, socket } from '../config';
 import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
 
 const NEW_CHAT_EVENT = 'newChat';
 const LEAVE_CHAT_EVENT = 'leaveChat';
@@ -11,6 +12,7 @@ const MESSAGE_DELETE_EVENT = 'messageDeleted';
 const SOCKET_ERROR_EVENT = 'socketError';
 
 const useChat = () => {
+  const { user } = useSelector((s) => s.auth);
   const currentChat = useRef(null);
   const [chat, setChat] = useState(null);
   const [unReadMessages, setUnReadMessages] = useState([]);
@@ -78,9 +80,9 @@ const useChat = () => {
 
   const onMessageRetrieved = (msg) => {
     if (msg?.chat === currentChat.current?._id) {
-      setMessages((prev) => [...prev, msg]);
+      setMessages((prev) => (prev ? [...prev, msg] : []));
     } else {
-      setUnReadMessages((prev) => [...prev, msg]);
+      setUnReadMessages((prev) => (prev ? [...prev, msg] : []));
     }
   };
 
@@ -195,7 +197,7 @@ const useChat = () => {
     messagesLoading,
     chatsLoading,
     unReadMessages,
-    users: users?.docs || [],
+    users: users?.docs?.filter((i) => i?._id !== user?._id) || [],
     chats: chats || [],
     messages: messages || [],
     chat,

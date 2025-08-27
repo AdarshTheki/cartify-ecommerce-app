@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 import CommentLike from './CommentLike';
-import { CircleAlert, MessageSquare, MessageSquareDiff } from 'lucide-react';
+import { MessageSquare, MessageSquareDiff } from 'lucide-react';
 
 const CommentReply = ({ item, onReplyComment }) => {
   const [text, setText] = useState('');
