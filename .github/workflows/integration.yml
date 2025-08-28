@@ -57,8 +57,10 @@ jobs:
 
       - name: Run server tests with MongoDB
         env:
-          MONGO_URI: mongodb://localhost:27017/cartify
+          MONGODB_URI: mongodb://localhost:27017/cartify
           NODE_ENV: DEVELOPMENT
+          CLIENT_REDIRECT_URL: http://localhost:3000
+          SERVER_REDIRECT_URL: http://localhost:8000
           STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
           STRIPE_API_SECRET: ${{ secrets.STRIPE_API_SECRET }}
           GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
