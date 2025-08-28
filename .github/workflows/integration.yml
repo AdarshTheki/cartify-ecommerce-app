@@ -59,5 +59,10 @@ jobs:
         env:
           MONGO_URI: mongodb://localhost:27017/cartify
           NODE_ENV: DEVELOPMENT
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+          STRIPE_API_SECRET: ${{ secrets.STRIPE_API_SECRET }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
         run: npm run dev
         working-directory: server
