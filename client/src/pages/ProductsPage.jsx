@@ -134,7 +134,7 @@ const ProductListing = () => {
             {/* Search Filter */}
             <div className="flex flex-col w-full text-sm relative">
               <fieldset className="border border-gray-300 rounded-md px-4">
-                <legend className="font-medium uppercase">Search</legend>
+                <legend className="font-medium capitalize">Search</legend>
                 <div className="flex w-full items-center">
                   <Search className="w-4 h-4" />
                   <Input
@@ -158,7 +158,7 @@ const ProductListing = () => {
             {/* sort product */}
             <div className="flex flex-col w-full text-sm relative">
               <fieldset className="border border-gray-300 rounded-md py-2 px-4">
-                <legend className="font-medium uppercase">Sort By</legend>
+                <legend className="font-medium capitalize">Sort By</legend>
                 <button
                   type="button"
                   onClick={() =>
@@ -197,7 +197,7 @@ const ProductListing = () => {
             {/* Category product */}
             <div className="flex flex-col w-full text-sm relative">
               <fieldset className="border border-gray-300 rounded-md py-2 px-4">
-                <legend className="font-medium uppercase">Category</legend>
+                <legend className="font-medium capitalize">Category</legend>
                 <button
                   type="button"
                   onClick={() =>
@@ -238,7 +238,7 @@ const ProductListing = () => {
             {/* Brand product */}
             <div className="flex flex-col w-full text-sm relative">
               <fieldset className="border border-gray-300 rounded-md py-2 px-4">
-                <legend className="font-medium uppercase">Brand</legend>
+                <legend className="font-medium capitalize">Brand</legend>
                 <button
                   type="button"
                   onClick={() =>
@@ -276,7 +276,7 @@ const ProductListing = () => {
             {/* <!-- Price Range --> */}
             <div className="flex flex-col w-full text-sm relative">
               <fieldset className="border border-gray-300 rounded-md py-2 px-4">
-                <legend className="font-medium uppercase">Price</legend>
+                <legend className="font-medium capitalize">Price</legend>
                 <input
                   type="range"
                   className="w-full"
@@ -307,7 +307,7 @@ const ProductListing = () => {
             {/* <!-- Rating Filter --> */}
             <div className="flex flex-col w-full text-sm relative">
               <fieldset className="border border-gray-300 rounded-md py-2 px-4">
-                <legend className="font-medium uppercase">Rating</legend>
+                <legend className="font-medium capitalize">Rating</legend>
                 {[3, 4, 5].map((it) => (
                   <label
                     htmlFor={it}
@@ -369,10 +369,14 @@ const ProductListing = () => {
           {/* Pagination */}
           <div className="flex gap-4 justify-between items-center card !px-2">
             <p className="text-sm pl-2">
-              <span className="max-sm:hidden">Showing</span>{' '}
-              {(page - 1) * limit + 1} to{' '}
-              {Math.min(page * limit, data?.totalDocs || 0)} of{' '}
-              {data?.totalDocs}
+              <span className="max-sm:hidden">Showing</span>
+              {' ' +
+                (page - 1) * limit +
+                1 +
+                ' to ' +
+                Math.min(page * limit, data?.totalDocs || 0) +
+                ' of ' +
+                data?.totalDocs}
             </p>
             <div className="flex gap-2 items-center justify-center">
               <button

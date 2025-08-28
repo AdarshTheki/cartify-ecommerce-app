@@ -9,6 +9,8 @@ import {
   Trash2Icon,
   X,
   EllipsisVertical,
+  Users,
+  MessageCircle,
 } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import {
@@ -21,53 +23,58 @@ import { Avatar, Input, Loading } from '../utils';
 import useChat from '../hooks/useChat';
 import useDropdown from '../hooks/useDropdown';
 import { toast } from 'react-toastify';
+import { ImagePreview } from '../components';
 
 // Optimized Message Component with React.memo
-const Message = React.memo(({ item, onDelete, sender }) => (
-  <div
-    className={classNames(
-      'flex flex-col gap-2 mb-2',
-      !sender ? 'justify-start' : 'items-end'
-    )}>
+const Message = React.memo(({ item, onDelete, sender }) => {
+  const [imageOpen, setImageOpen] = useState('');
+
+  return (
     <div
       className={classNames(
-        'relative cursor-pointer group w-fit py-2 px-5 shadow',
-        sender
-          ? '!bg-indigo-100 rounded-l-4xl rounded-t-4xl'
-          : 'bg-white rounded-r-4xl rounded-b-4xl'
+        'flex flex-col gap-2 mb-2',
+        !sender ? 'justify-start' : 'items-end'
       )}>
-      <button
-        onClick={onDelete}
-        className="text-red-600 hidden group-hover:block absolute right-2 top-1 p-2 rounded-full bg-white">
-        <Trash2Icon size={18} />
-      </button>
-      <div className="flex gap-2 items-end">
-        {item?.content && <p>{item?.content}</p>}
-        <small className="text-nowrap" style={{ fontWeight: 400 }}>
-          {formatChatTime(item?.updatedAt)}
-        </small>
-      </div>
-      {item?.attachments?.length > 0 && (
-        <div className="grid grid-cols-2 gap-2 max-w-[200px]">
-          {item.attachments.map((attachment, index) => (
-            <a
-              href={attachment}
-              target="_blank"
-              rel="noopener noreferrer"
-              key={index}>
-              <img
-                src={attachment}
-                alt={`attachment-${index}`}
-                className="aspect-square w-full border border-gray-300 object-cover"
-                loading="lazy"
-              />
-            </a>
-          ))}
+      <div
+        className={classNames(
+          'relative cursor-pointer group w-fit py-2 px-5 shadow',
+          sender
+            ? '!bg-indigo-100 rounded-l-4xl rounded-t-4xl'
+            : 'bg-white rounded-r-4xl rounded-b-4xl'
+        )}>
+        <button
+          onClick={onDelete}
+          className="text-red-600 hidden group-hover:block absolute right-2 top-1 p-2 rounded-full bg-white">
+          <Trash2Icon size={18} />
+        </button>
+        <div className="flex gap-2 items-end">
+          {item?.content && <p>{item?.content}</p>}
+          <small className="text-nowrap" style={{ fontWeight: 400 }}>
+            {formatChatTime(item?.updatedAt)}
+          </small>
         </div>
-      )}
+        {item?.attachments?.length > 0 && (
+          <div className="grid grid-cols-2 gap-2 max-w-[200px]">
+            {item.attachments.map((attachment, index) => (
+              <div key={index} onClick={() => setImageOpen(attachment)}>
+                <img
+                  src={attachment}
+                  alt={`attachment-${index}`}
+                  className="aspect-square w-full border border-gray-300 object-cover"
+                  loading="lazy"
+                />
+              </div>
+            ))}
+          </div>
+        )}
+        <ImagePreview
+          preview={imageOpen}
+          closePreview={() => setImageOpen('')}
+        />
+      </div>
     </div>
-  </div>
-));
+  );
+});
 
 // Optimized ChatItem Component with React.memo
 const ChatItem = React.memo(
@@ -132,11 +139,8 @@ const ChatItem = React.memo(
           <button
             className="flex-1 text-left ml-2 relative cursor-pointer"
             onClick={onClick}>
-            <p className="line-clamp-1">{chatMetadata.title}</p>
-            <small className="line-clamp-1 text-gray-500">
-              {chatMetadata.lastMessage || 'No messages yet'}
-            </small>
             <div className="flex items-center justify-between">
+              <p className="line-clamp-1">{chatMetadata.title}</p>
               <small className="line-clamp-1 text-gray-500">
                 {formatChatTime(item?.updatedAt)}
               </small>
@@ -146,6 +150,9 @@ const ChatItem = React.memo(
                 </span>
               )}
             </div>
+            <small className="line-clamp-1 text-gray-500">
+              {chatMetadata.lastMessage || 'No messages yet'}
+            </small>
           </button>
 
           {/* Menu Button */}
@@ -159,7 +166,7 @@ const ChatItem = React.memo(
               <button
                 onClick={() => onLeave(item._id)}
                 className="btn hover:bg-slate-100">
-                Leave {item?.isGroupChat ? 'Group' : 'Chat'}
+                Close {item?.isGroupChat ? 'Group' : 'Chat'}
               </button>
               {item?.isGroupChat && item?.admin === user?._id && (
                 <>
@@ -201,7 +208,6 @@ const ChatModal = React.memo(
     const handleCheckboxChange = useCallback(
       (event) => {
         const { value, checked } = event.target;
-
         if (isGroupChat) {
           setSelectedValues((prev) =>
             checked ? [...prev, value] : prev.filter((val) => val !== value)
@@ -215,7 +221,7 @@ const ChatModal = React.memo(
       [isGroupChat]
     );
 
-    const handleSubmit = useCallback(async () => {
+    const handleSubmit = useCallback(() => {
       if (isGroupChat) {
         if (!groupName || selectedValues.length === 0) {
           toast.error('Please provide a Group Name and add Participants');
@@ -244,42 +250,71 @@ const ChatModal = React.memo(
     if (!isOpen) return null;
 
     return (
-      <div className="fixed inset-0 bg-black/10 flex justify-center items-center h-full z-50">
-        <div className="bg-white rounded-xl p-6 w-96 shadow-xl space-y-5">
-          <p className="text-xl font-medium">
-            {chat?._id ? 'Update Group Chat' : 'Create Chat'}
-          </p>
+      <div className="fixed inset-0 flex justify-center items-center bg-black/30 backdrop-blur-sm z-50">
+        <div className="bg-white rounded-2xl p-6 w-[420px] shadow-2xl animate-in fade-in zoom-in-95 space-y-5 relative">
+          {/* Header */}
+          <div className="flex justify-between items-center border-b pb-3 border-gray-300">
+            <h2 className="text-lg font-semibold flex items-center gap-2">
+              {isGroupChat ? (
+                <>
+                  <Users className="w-5 h-5 text-indigo-500" />
+                  {chat?._id ? 'Update Group Chat' : 'Create Group Chat'}
+                </>
+              ) : (
+                <>
+                  <MessageCircle className="w-5 h-5 text-green-500" />
+                  {chat?._id ? 'Update Chat' : 'Start New Chat'}
+                </>
+              )}
+            </h2>
+            <button
+              onClick={onClose}
+              className="p-1 rounded-full hover:bg-gray-100 transition">
+              <X className="w-5 h-5 text-gray-500" />
+            </button>
+          </div>
 
+          {/* Group Chat Toggle */}
           {!chat?._id && (
-            <label htmlFor="group-chat" className="flex gap-2 items-center">
+            <label className="flex items-center gap-2 text-sm cursor-pointer">
               <input
-                onChange={() => setIsGroupChat(!isGroupChat)}
                 type="checkbox"
-                id="group-chat"
                 checked={isGroupChat}
+                onChange={() => setIsGroupChat(!isGroupChat)}
+                className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
               />
-              Create Group Chat ?
+              <span>Create Group Chat</span>
             </label>
           )}
 
+          {/* Group Name Input */}
           {isGroupChat && (
-            <Input
-              label="Group Name"
-              type="text"
-              placeholder="Enter Group Name"
-              value={groupName}
-              onChange={(e) => setGroupName(e.target.value)}
-            />
+            <div>
+              <label className="block text-sm mb-1 font-medium text-gray-700">
+                Group Name
+              </label>
+              <input
+                type="text"
+                placeholder="Enter group name..."
+                value={groupName}
+                onChange={(e) => setGroupName(e.target.value)}
+                className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400"
+              />
+            </div>
           )}
 
-          <div className="max-h-[200px] overflow-y-auto">
-            <p className="mb-1">Participants:</p>
-            {users?.map((option) => (
-              <div key={option._id}>
-                <label htmlFor={option._id} className="block">
+          {/* Participants */}
+          <div className="max-h-[220px] overflow-y-auto border border-gray-300 rounded-lg p-2">
+            <p className="text-sm font-medium text-gray-600 mb-2">
+              Participants
+            </p>
+            <div className="space-y-2">
+              {users?.map((option) => (
+                <label
+                  key={option._id}
+                  className="flex items-center gap-2 cursor-pointer text-sm">
                   <input
                     type="checkbox"
-                    id={option._id}
                     value={option._id}
                     checked={
                       isGroupChat
@@ -287,20 +322,24 @@ const ChatModal = React.memo(
                         : selectUserId === option._id
                     }
                     onChange={handleCheckboxChange}
+                    className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                   />
-                  <span className="pl-2 py-2 text-sm">{option.fullName}</span>
+                  <span>{option.fullName}</span>
                 </label>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
-          <div className="flex gap-5 text-center font-medium">
+          {/* Actions */}
+          <div className="flex gap-4 pt-3">
             <button
-              className="btn text-red-600 border border-red-600 flex-1"
-              onClick={onClose}>
+              onClick={onClose}
+              className="flex-1 px-4 py-2 border rounded-lg text-red-600 border-red-500 hover:bg-red-50 transition">
               Cancel
             </button>
-            <button className="btn-primary flex-1" onClick={handleSubmit}>
+            <button
+              onClick={handleSubmit}
+              className="flex-1 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition">
               {chat?._id ? 'Update' : 'Create'}
             </button>
           </div>
@@ -398,7 +437,7 @@ const ChatApplication = () => {
   );
 
   return (
-    <div className="h-screen">
+    <div className="h-[90vh] border-b border-gray-300">
       <div className="flex max-sm:flex-col h-full">
         {/* Chat Sidebar */}
         <div
@@ -518,9 +557,13 @@ const ChatApplication = () => {
                 <p className="font-medium">
                   {getChatObjectMetadata(chat, user).title}
                 </p>
-                {chat.isGroupChat && (
+                {chat.isGroupChat ? (
                   <p className="text-xs font-light text-gray-500">
-                    {chat.participants?.length} members
+                    Group {chat.participants?.length} members
+                  </p>
+                ) : (
+                  <p className="text-xs font-light text-gray-500">
+                    one-on-one chat
                   </p>
                 )}
               </div>
@@ -569,10 +612,10 @@ const ChatApplication = () => {
             {/* Message Input */}
             <form
               onSubmit={handleSendMessage}
-              className="w-full py-2 px-4 flex gap-2 items-center sticky bottom-0">
-              <div className="h-[40px] px-2 rounded-2xl shadow-md w-full flex items-center">
+              className="w-full sticky sm:bottom-0 bottom-12 p-2 bg-white/40">
+              <div className="h-[40px] w-full flex items-center gap-1">
                 <Input
-                  className="border-none"
+                  className="border-none outline outline-gray-300"
                   name="message"
                   placeholder="Enter a message"
                   value={message}
@@ -581,8 +624,9 @@ const ChatApplication = () => {
                 <label
                   title="Attach files (max 5)"
                   htmlFor="attachments"
-                  className="cursor-pointer p-2">
-                  <ImageUp className="w-5 h-5" />
+                  className="bg-indigo-600 text-white flex gap-2 rounded-lg px-4 h-full items-center hover:opacity-80">
+                  <ImageUp size={16} />
+                  <small className="max-sm:hidden font-medium">Upload</small>
                   <input
                     type="file"
                     multiple
@@ -592,18 +636,18 @@ const ChatApplication = () => {
                     className="hidden"
                   />
                 </label>
+                <button
+                  disabled={sendMessageLoading}
+                  type="submit"
+                  className="bg-indigo-600 text-white flex gap-2 rounded-lg px-4 h-full items-center hover:opacity-80 disabled:opacity-50">
+                  {sendMessageLoading ? (
+                    <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
+                  ) : (
+                    <Send size={16} />
+                  )}
+                  <small className="max-sm:hidden font-medium">Send</small>
+                </button>
               </div>
-              <button
-                disabled={sendMessageLoading}
-                type="submit"
-                className="bg-indigo-600 text-white h-[40px] flex gap-2 rounded-2xl px-5 hover:opacity-80 items-center disabled:opacity-50">
-                {sendMessageLoading ? (
-                  <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full" />
-                ) : (
-                  <Send size={16} />
-                )}
-                <span className="max-sm:hidden">Send</span>
-              </button>
             </form>
           </div>
         )}

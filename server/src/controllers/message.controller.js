@@ -34,18 +34,18 @@ export const getMessagesByChat = asyncHandler(async (req, res) => {
 export const createMessage = asyncHandler(async (req, res) => {
   const { content } = req.body;
   const { chatId } = req.params;
-  const attachments = req.files;
+  const { attachments } = req.files;
 
   if (!isValidObjectId(chatId)) {
     throw new ApiError(400, 'Invalid chat ID');
   }
 
-  if (!content && (!attachments || attachments.length === 0)) {
+  if (!content && !Array.isArray(attachments)) {
     throw new ApiError(400, 'Content or attachments are required');
   }
 
   let uploadedAttachments = [];
-  if (attachments && attachments.length > 0) {
+  if (Array.isArray(attachments) && attachments.length > 0) {
     uploadedAttachments = await uploadMultiImg(attachments);
     if (!uploadedAttachments?.length) {
       throw new ApiError(500, 'Attachment upload failed');

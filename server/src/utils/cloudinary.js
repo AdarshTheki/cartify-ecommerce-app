@@ -4,39 +4,39 @@ import { logger } from '../middlewares/logger.middleware.js';
 
 // Configs
 cloudinary.config({
-  cloud_name: 'dlf3lb48n',
-  api_key: '996239776893621',
-  api_secret: 'i_PNYOejURBRtp8Rx3DKRoSCd5Q',
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
-
-const defaultFolder = 'cartify';
+const folder = 'cartify';
 
 // Upload Single Image
-const uploadSingleImg = async (localFilePath = '', folder = '') => {
+const uploadSingleImg = async (localFilePath = '') => {
   if (!localFilePath) return false;
 
   try {
     const result = await cloudinary.uploader.upload(localFilePath, {
-      folder: folder || defaultFolder,
+      folder,
     });
-
-    fs.unlinkSync(localFilePath); // Clean temp file
     return result.secure_url;
   } catch (error) {
     logger.error('Upload Error:', error.message);
     return false;
+  } finally {
+    fs.unlinkSync(localFilePath); // Clean temp file
   }
 };
 
 // Upload Multiple Images
-const uploadMultiImg = async (images = [], folder = '') => {
+const uploadMultiImg = async (images = []) => {
   if (!Array.isArray(images) || images.length === 0) return [];
+  const tempFiles = images.map((img) => img.path);
 
   try {
     const uploadResults = await Promise.allSettled(
       images.map((file) =>
         cloudinary.uploader.upload(file.path, {
-          folder: folder || defaultFolder,
+          folder: folder,
         })
       )
     );
@@ -45,12 +45,16 @@ const uploadMultiImg = async (images = [], folder = '') => {
       .filter((res) => res.status === 'fulfilled')
       .map((res) => res.value.secure_url);
 
-    images.forEach((img) => fs.unlinkSync(img.path)); // Clean all temp files
-
     return urls;
   } catch (error) {
-    logger.error('Upload Error:', error.message);
+    logger.error('Upload Error:', error); // log full error
     return [];
+  } finally {
+    await Promise.all(
+      tempFiles.map((file) => {
+        fs.unlinkSync(file);
+      })
+    );
   }
 };
 
@@ -99,12 +103,10 @@ const extractPublicId = (url = '') => {
   // Expected format: https://res.cloudinary.com/xxx/image/upload/v12345678/folder/filename.jpg
   const parts = url.split('/');
   const filename = parts.pop()?.split('.')[0];
-  const folder =
-    parts.slice(-1)[0] === defaultFolder
-      ? defaultFolder
-      : parts.slice(-2).join('/');
+  const folderName =
+    parts.slice(-1)[0] === folder ? folder : parts.slice(-2).join('/');
 
-  return `${folder}/${filename}`;
+  return `${folderName}/${filename}`;
 };
 
 export {

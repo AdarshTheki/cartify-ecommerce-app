@@ -1,91 +1,88 @@
 @import 'tailwindcss';
 
-:root {
-  --primary: rgb(79, 70, 229);
-}
-
 html {
   scroll-behavior: smooth;
 }
 
 *:focus-visible {
-  @apply outline-indigo-300;
+  @apply outline-indigo-300 ring-2 ring-indigo-300 ring-offset-2;
 }
 
-/* Disable taiwind class */
+/* Reset Tailwind classes for specific components */
 .reset-tw,
 .reset-tw * {
   all: revert !important;
 }
 
+/* Scrollbar utilities */
 .scrollbar-hidden::-webkit-scrollbar {
   display: none;
 }
-
 .scrollbar-hidden {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
 
 .scrollbar::-webkit-scrollbar {
-  width: 1px;
-  height: 1px;
+  width: 6px;
+  height: 6px;
 }
-
 .scrollbar::-webkit-scrollbar-track {
-  border-radius: 2px;
+  border-radius: 6px;
+  background: transparent;
+}
+.scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 6px;
+}
+.scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.4);
 }
 
-.scrollbar::-webkit-scrollbar-thumb {
-  background: #fff;
-  cursor: pointer;
-  border-radius: 5px;
+/* Buttons */
+.btn {
+  @apply inline-flex items-center justify-center font-medium rounded-lg px-4 py-2 
+         transition duration-200 ease-in-out focus:outline-none focus:ring-2;
 }
 
 .btn-primary {
-  @apply bg-indigo-500 text-white font-medium py-2 px-4 rounded hover:bg-indigo-600;
+  @apply bg-indigo-500 text-white hover:bg-indigo-600 focus:ring-indigo-300;
 }
 
 .btn-secondary {
-  @apply bg-gray-800 text-white font-medium py-2 px-4 rounded hover:bg-gray-700;
-}
-
-.card {
-  @apply bg-white sm:p-3 p-2 rounded-lg shadow-md;
-}
-
-button {
-  @apply border-gray-300 cursor-pointer;
-}
-
-.btn {
-  @apply px-4 py-2 rounded duration-200 ease-in hover:opacity-80;
+  @apply bg-gray-800 text-white hover:bg-gray-700 focus:ring-gray-400;
 }
 
 .svg-btn {
   @apply w-9 h-9 flex items-center justify-center rounded-full hover:bg-slate-200/50;
 }
 
+/* Card */
+.card {
+  @apply bg-white sm:p-4 p-3 rounded-xl shadow-md hover:shadow-lg transition;
+}
+
+/* Status Badges */
+.status {
+  @apply px-2 py-1 text-xs font-medium rounded-full capitalize;
+}
 .status-active {
-  @apply px-2 py-1 font-medium capitalize text-xs bg-green-100 text-green-700 rounded-full;
+  @apply bg-green-100 text-green-700;
 }
-
 .status-pending {
-  @apply px-2 py-1 font-medium capitalize text-xs bg-yellow-100 text-yellow-700 rounded-full;
+  @apply bg-yellow-100 text-yellow-700;
 }
-
 .status-inactive {
-  @apply px-2 py-1 font-medium capitalize text-xs bg-red-100 text-red-700 rounded-full;
+  @apply bg-red-100 text-red-700;
 }
-
 .status-processing {
-  @apply px-2 py-1 font-medium capitalize text-xs bg-blue-100 text-blue-700 rounded-full;
+  @apply bg-blue-100 text-blue-700;
 }
 
+/* Animations */
 .animate-fadeIn {
   animation: fadeIn 0.5s ease-out forwards;
 }
-
 @keyframes fadeIn {
   0% {
     opacity: 0;
@@ -97,6 +94,9 @@ button {
   }
 }
 
+.animate-loadingBar {
+  animation: loadingBar 1.2s ease-out forwards;
+}
 @keyframes loadingBar {
   0% {
     width: 0%;
@@ -104,7 +104,4 @@ button {
   100% {
     width: 100%;
   }
-}
-.animate-loadingBar {
-  animation: loadingBar 1s ease-out forwards;
 }

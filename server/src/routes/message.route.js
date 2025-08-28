@@ -12,7 +12,11 @@ const router = Router();
 router
   .route('/:chatId')
   .get(getMessagesByChat)
-  .post(verifyJWT(), upload.array('attachments', 5), createMessage);
+  .post(
+    verifyJWT(),
+    upload.fields([{ name: 'attachments', maxCount: 5 }]),
+    createMessage
+  );
 
 router.route('/:messageId').delete(verifyJWT(), deleteMessage);
 
