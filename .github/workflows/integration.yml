@@ -52,7 +52,7 @@ jobs:
 
       # Install Server
       - name: Install server dependencies
-        run: npm ci
+        run: npm install
         working-directory: server
 
       - name: Run server tests with MongoDB
