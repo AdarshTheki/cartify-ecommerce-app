@@ -5,41 +5,12 @@ import { Heart, Menu, Search, ShoppingCart, User, X } from 'lucide-react';
 import { useSelector } from 'react-redux';
 import { Avatar } from '../utils';
 import { images } from '../assets';
-
-const menuItems = [
-  {
-    id: 1,
-    name: 'Home',
-    path: '/',
-  },
-  {
-    id: 2,
-    name: 'Product',
-    path: '/products',
-  },
-  {
-    id: 6,
-    name: 'File Manager',
-    path: '/file-manager',
-  },
-  {
-    id: 3,
-    name: 'Gallery',
-    path: '/gallery',
-  },
-  {
-    id: 4,
-    name: 'Message',
-    path: '/message',
-  },
-  {
-    id: 5,
-    name: 'AI Generate',
-    path: '/ai',
-  },
-];
+import { menuItems as menus } from '../assets';
 
 const NavbarTop = () => {
+  const menuItems = menus.filter(
+    (i) => !['Wishlist', 'Setting'].includes(i.name)
+  );
   const [mobileView, setMobileView] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -60,7 +31,7 @@ const NavbarTop = () => {
   return (
     <header className="sticky top-0 w-full z-50 bg-white/30 backdrop-blur-md shadow-md">
       <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between py-4">
+        <div className="flex h-[10vh] items-center justify-between">
           {/* Logo  */}
           <h2
             onClick={() => navigate('/')}
@@ -150,7 +121,7 @@ const NavbarTop = () => {
           className={`lg:hidden border-t border-gray-300 overflow-hidden transition-all duration-500 ease-in-out ${
             mobileView ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
           }`}>
-          <ul className="flex py-5 flex-col mx-auto w-64 gap-4">
+          <ul className="flex py-5 flex-col gap-4">
             {menuItems.map((link) => (
               <li
                 key={link.id}
@@ -158,7 +129,8 @@ const NavbarTop = () => {
                   setMobileView(false);
                   navigate(link.path);
                 }}
-                className="cursor-pointer py-2 font-medium block rounded-2xl text-center duration-300 ease-in text-slate-600 hover:bg-indigo-600 hover:text-white">
+                className="cursor-pointer flex items-center justify-center gap-2 py-2 font-medium rounded-2xl text-center duration-300 ease-in text-slate-600 hover:bg-indigo-600 hover:text-white">
+                <link.Icon size={20} />
                 {link.name}
               </li>
             ))}
@@ -171,24 +143,24 @@ const NavbarTop = () => {
             searchOpen ? 'max-h-20 opacity-100' : 'max-h-0 opacity-0'
           }`}>
           <div className="p-2 flex gap-2 items-center justify-center left-0 w-full">
-            <div className="flex items-center border pl-4 gap-2 bg-white border-gray-500/30 h-[40px] rounded-full overflow-hidden max-w-md w-full">
-              <Search className="w-5 h-5" />
+            <div className="max-w-md w-full relative flex items-center justify-between">
+              <Search size={18} className="absolute top-2 left-2" />
               <input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 type="text"
                 placeholder="Search"
-                className="w-full h-full outline-none text-gray-500 placeholder-gray-500 text-sm"
+                className="!outline border-none !outline-indigo-100 w-full rounded-lg px-10 py-1"
               />
+              <button
+                onClick={() => {
+                  navigate(`/products?title=${searchQuery}`);
+                  setSearchOpen(false);
+                }}
+                className="btn-primary px-4 absolute h-full top-0 right-0 rounded-lg">
+                Search
+              </button>
             </div>
-            <button
-              onClick={() => {
-                navigate(`/products?title=${searchQuery}`);
-                setSearchOpen(false);
-              }}
-              className="btn-primary h-[40px] text-sm !rounded-full">
-              Search
-            </button>
           </div>
         </div>
       </div>

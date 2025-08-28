@@ -4,6 +4,67 @@ import placeholder from './placeholder.jpg';
 import github from './github.svg';
 import google from './google.svg';
 import logo from './logo.svg';
+import {
+  Home,
+  MessagesSquare,
+  Heart,
+  Bot,
+  Settings,
+  GalleryHorizontal,
+  Package,
+  FolderKanban,
+} from 'lucide-react';
+
+export const menuItems = [
+  {
+    id: 1,
+    name: 'Home',
+    path: '/',
+    Icon: Home,
+  },
+  {
+    id: 2,
+    name: 'Product',
+    path: '/products',
+    Icon: Package,
+  },
+  {
+    id: 3,
+    name: 'Gallery',
+    path: '/gallery',
+    Icon: GalleryHorizontal,
+  },
+  {
+    id: 4,
+    name: 'Message',
+    path: '/message',
+    Icon: MessagesSquare,
+  },
+  {
+    id: 5,
+    name: 'Wishlist',
+    path: '/favorite',
+    Icon: Heart,
+  },
+  {
+    id: 6,
+    name: 'File Manager',
+    path: '/file-manager',
+    Icon: FolderKanban,
+  },
+  {
+    id: 7,
+    name: 'AI Generate',
+    path: '/ai',
+    Icon: Bot,
+  },
+  {
+    id: 8,
+    name: 'Setting',
+    path: '/setting',
+    Icon: Settings,
+  },
+];
 
 export const images = {
   banner,

@@ -12,6 +12,17 @@ jobs:
       matrix:
         node-version: [18.x, 20.x, 22.x]
 
+    services:
+      mongo:
+        image: mongo:6
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd="mongosh --eval 'db.runCommand({ping:1})'"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
@@ -38,3 +49,22 @@ jobs:
       - name: Build admin (React + Vite + TS)
         run: npm run build
         working-directory: admin
+
+      # Install Server
+      - name: Install server dependencies
+        run: npm install
+        working-directory: server
+
+      - name: Run server tests with MongoDB
+        env:
+          MONGODB_URI: mongodb://localhost:27017/cartify
+          NODE_ENV: DEVELOPMENT
+          CLIENT_REDIRECT_URL: http://localhost:3000
+          SERVER_REDIRECT_URL: http://localhost:8000
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+          STRIPE_API_SECRET: ${{ secrets.STRIPE_API_SECRET }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+        run: npm start
+        working-directory: server

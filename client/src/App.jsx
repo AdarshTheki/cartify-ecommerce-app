@@ -67,11 +67,6 @@ const ProtectedLayout = () => {
 
 const router = createBrowserRouter([
   {
-    path: '/message',
-    element: <ProtectedLayout />,
-    children: [{ index: true, element: <ChatMessagesPage /> }],
-  },
-  {
     path: '/',
     element: <RootLayout />,
     children: [
@@ -94,7 +89,7 @@ const router = createBrowserRouter([
           { path: 'shipping-address', element: <ShippingAddress /> },
           { path: 'setting', element: <SettingPage /> },
           { path: 'favorite', element: <FavoritePage /> },
-          // { path: 'message', element: <ChatMessagesPage /> },
+          { path: 'message', element: <ChatMessagesPage /> },
           {
             path: 'ai',
             element: <AILayout />,
