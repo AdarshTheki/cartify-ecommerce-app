@@ -19,7 +19,10 @@ const useAuth = () => {
     const { response, request, message } = error || {};
     if (response) {
       const status = response.status;
-      const errorMsg = response.data?.message || 'Something went wrong.';
+      const errorMsg =
+        typeof response.data === 'string'
+          ? response.data
+          : response.data?.message || 'Something went wrong.';
 
       if (status === 401) {
         setIsError('Unauthorized access. Please login again.');

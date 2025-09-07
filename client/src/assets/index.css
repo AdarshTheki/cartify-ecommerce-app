@@ -4,10 +4,6 @@ html {
   scroll-behavior: smooth;
 }
 
-*:focus-visible {
-  @apply outline-indigo-300 ring-2 ring-indigo-300 ring-offset-2;
-}
-
 /* Reset Tailwind classes for specific components */
 .reset-tw,
 .reset-tw * {
