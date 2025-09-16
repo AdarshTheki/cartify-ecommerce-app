@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  ChevronDown,
-  ChevronUp,
-  Heart,
-  Sparkles,
-  Trash2Icon,
-} from 'lucide-react';
+import { Sparkles } from 'lucide-react';
 import useApi from '../../hooks/useApi';
 import { Loading } from '../../utils';
 import DashboardCard from './DashboardCard';
@@ -31,13 +25,11 @@ const AIDashboard = () => {
     }
   };
 
-  if (loading) return <Loading />;
-
   return (
     <div className="mx-auto container p-4 space-y-5">
-      <div className="card flex items-center w-64 !px-6">
+      <div className="card flex items-center sm:w-84 !px-6">
         <div className="text-lg font-medium space-y-2 w-full">
-          <p>Total Creations</p>
+          <p className="text-xl font-medium">Total Creations</p>
           <p>{data?.length}</p>
         </div>
         <div className="p-2 rounded-lg bg-gradient-to-br from-[#3588F2] to-[#0BB0D7] text-white flex justify-center items-center">
@@ -49,7 +41,7 @@ const AIDashboard = () => {
       <p>Recent Creations</p>
 
       <div className="flex flex-col gap-5">
-        {data &&
+        {!loading ? (
           data?.map((item) => (
             <DashboardCard
               key={item._id}
@@ -62,7 +54,10 @@ const AIDashboard = () => {
               onDelete={() => handleDeletePost(item._id)}
               item={item}
             />
-          ))}
+          ))
+        ) : (
+          <Loading className="!h-[300px]" />
+        )}
       </div>
     </div>
   );

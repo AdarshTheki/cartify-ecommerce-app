@@ -42,7 +42,10 @@ const GenerateImage = () => {
       5. Generate the image in high quality.
     `;
 
-    const result = await callApi('/openai/generate-image', { prompt: payload });
+    const result = await callApi('/openai/generate-image', {
+      prompt: payload,
+      userText: prompt,
+    });
     if (result) {
       setData(result);
       setPrompt('');

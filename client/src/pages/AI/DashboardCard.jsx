@@ -1,9 +1,9 @@
-import React from 'react';
-import { format } from 'date-fns';
-import { ChevronDown, ChevronUp, Heart, Trash2Icon } from 'lucide-react';
-import Markdown from 'react-markdown';
 import { useState } from 'react';
+import { format } from 'date-fns';
+import Markdown from 'react-markdown';
+import { ChevronDown, ChevronUp, Heart, Trash2Icon } from 'lucide-react';
 import { useSelector } from 'react-redux';
+
 import { axios, errorHandler } from '../../config';
 
 const DashboardCard = ({ isActive, onActive, item, onDelete }) => {
@@ -24,8 +24,10 @@ const DashboardCard = ({ isActive, onActive, item, onDelete }) => {
   };
 
   return (
-    <div className="card w-full !pt-4 pb-2" key={item?._id}>
-      <div className="w-full flex justify-between gap-2 items-center">
+    <div className="card w-full !p-2" key={item?._id}>
+      <div
+        onClick={onActive}
+        className="w-full rounded-lg p-2 flex justify-between gap-2 items-center hover:bg-gray-100 duration-150 cursor-pointer">
         <div className="flex flex-col gap-1">
           <p className={`font-medium ${isActive ? '' : 'line-clamp-1'}`}>
             {item?.prompt}
@@ -34,31 +36,31 @@ const DashboardCard = ({ isActive, onActive, item, onDelete }) => {
             <span className="lowercase pr-4">#{item?.model}</span>
             {format(new Date(item?.createdAt), 'dd MMM yyyy, h:mm a')}
           </div>
-          <div className="flex items-center">
-            <button
-              onClick={handleLikeToggle}
-              className="btn flex gap-2 items-center hover:bg-gray-100 !rounded-full">
-              <Heart
-                className={`w-4 h-4 text-red-600`}
-                fill={isLiked ? ' oklch(57.7% 0.245 27.325)' : '#fff'}
-              />
-              {likes}
-            </button>
-            <button
-              className="btn text-indigo-600 hover:bg-gray-100 !rounded-full"
-              onClick={onDelete}>
-              <Trash2Icon className="w-4 h-4" />
-            </button>
-          </div>
         </div>
-        <div className="cursor-pointer" onClick={onActive}>
-          {isActive ? (
-            <ChevronUp className="min-w-6 min-h-6" />
-          ) : (
-            <ChevronDown className="min-w-6 min-h-6" />
-          )}
-        </div>
+        <button>
+          {isActive ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
+        </button>
       </div>
+
+      <div className="flex items-center py-2 gap-5">
+        <button
+          onClick={handleLikeToggle}
+          className="flex gap-2 items-center hover:bg-gray-200 cursor-pointer shadow border rounded-full py-2 px-4 border-gray-300 text-sm">
+          <Heart
+            size={16}
+            className={`text-red-600`}
+            fill={isLiked ? 'oklch(57.7% 0.245 27.325)' : '#fff'}
+          />
+          Likes {likes}
+        </button>
+        <button
+          className="flex gap-2 items-center hover:bg-gray-200 cursor-pointer shadow border rounded-full py-2 px-4 border-gray-300 text-sm"
+          onClick={onDelete}>
+          <Trash2Icon size={16} className="text-indigo-700" />
+          Delete
+        </button>
+      </div>
+
       {isActive && item?.model !== 'text-to-image' && (
         <div className="p-2 w-full text-sm">
           <div className="reset-tw">

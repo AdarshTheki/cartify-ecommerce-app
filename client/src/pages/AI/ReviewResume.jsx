@@ -18,7 +18,7 @@ const ReviewResume = () => {
       return toast.error('Pdf file size under 5MB');
     }
     const formData = new FormData();
-    formData.append('file', input);
+    formData.append('pdfFile', input);
     const result = await callApi('/openai/resume-reviewer', formData);
     if (result) {
       setData(result);

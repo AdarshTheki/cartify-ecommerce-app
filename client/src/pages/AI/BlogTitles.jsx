@@ -40,7 +40,10 @@ const BlogTitles = () => {
   `;
 
   const handleSubmit = async () => {
-    const result = await callApi('/openai/generate-text', { prompt });
+    const result = await callApi('/openai/generate-text', {
+      prompt,
+      userText: input,
+    });
     if (result) {
       setData(result);
       setSelected(styleData[0]);

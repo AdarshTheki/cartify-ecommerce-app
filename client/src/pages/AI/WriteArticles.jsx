@@ -45,7 +45,10 @@ const WriteArticle = () => {
       6. Use simple, clear, and engaging language suitable for a broad audience.  
   `;
 
-    const result = await callApi('/openai/generate-text', { prompt });
+    const result = await callApi('/openai/generate-text', {
+      prompt,
+      userText: input,
+    });
     if (result) {
       setData(result);
       setSelected(styleData[0]);

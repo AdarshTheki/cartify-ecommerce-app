@@ -11,8 +11,6 @@ const errorHandler = (error) => {
       toast.error('Unauthorized access. Please login again.');
     } else if (status === 403) {
       toast.error("Forbidden. You don't have permission.");
-    } else if (status === 404) {
-      toast.error('Requested resource not found.');
     } else {
       toast.error(errorMsg);
     }
