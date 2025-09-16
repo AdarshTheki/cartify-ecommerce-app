@@ -1,4 +1,5 @@
 import express from 'express';
+import https from 'https';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import http from 'http';
@@ -32,6 +33,8 @@ import s3BucketRoute from './routes/s3Bucket.route.js';
 import { stripeWebhook } from './controllers/order.controller.js';
 
 const app = express();
+
+https.globalAgent = new https.Agent({ family: 4 });
 
 app.post(
   '/api/v1/order/stripe-webhook',

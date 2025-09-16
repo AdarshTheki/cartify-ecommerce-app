@@ -31,10 +31,10 @@ const openai = new OpenAI({
 // @route   POST /api/v1/openai/generate-text
 // @access  Private
 export const generateText = asyncHandler(async (req, res) => {
-  const { prompt } = req.body;
+  const { prompt, userText } = req.body;
 
   if (!prompt) {
-    throw new ApiError(400, 'Prompt is required');
+    throw new ApiError(400, 'Prompt & User Text is required');
   }
 
   const response = await openai.chat.completions.create({
@@ -47,10 +47,10 @@ export const generateText = asyncHandler(async (req, res) => {
 
   const newAIModel = await AIModel.create({
     response: aiResponse,
-    prompt,
     createdBy: req.user._id,
     model: 'generate-text',
     publish: true,
+    prompt: userText || prompt,
   });
 
   return res
@@ -62,9 +62,9 @@ export const generateText = asyncHandler(async (req, res) => {
 // @route   POST /api/v1/openai/generate-image
 // @access  Private
 export const generateTextToImage = asyncHandler(async (req, res) => {
-  const { prompt } = req.body;
+  const { prompt, userText } = req.body;
 
-  if (!prompt) {
+  if (!prompt || !userText) {
     throw new ApiError(400, 'Prompt is required to generate an image');
   }
 
@@ -92,10 +92,10 @@ export const generateTextToImage = asyncHandler(async (req, res) => {
 
   const newAIModel = await AIModel.create({
     response: cloudinaryUpload.secure_url,
-    prompt,
     createdBy: req.user._id,
     model: 'text-to-image',
     publish: true,
+    prompt: userText,
   });
 
   return res
@@ -148,7 +148,7 @@ export const resumeReviewer = asyncHandler(async (req, res) => {
 
   const newAIModel = await AIModel.create({
     response: feedback,
-    prompt: parsed?.text?.substring(0, 500),
+    prompt: 'Create a professional career coach and resume reviewer',
     createdBy: req.user._id,
     model: 'generate-text',
     publish: true,

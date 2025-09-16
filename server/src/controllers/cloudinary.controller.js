@@ -1,9 +1,9 @@
+import fs from 'fs';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
-import { cloudinary, extractPublicId } from '../utils/cloudinary.js';
+import { extractPublicId, cloudinary, folder } from '../utils/cloudinary.js';
 import { AIModel } from '../models/ai.model.js';
-import fs from 'fs';
 
 // @desc    Apply Cloudinary image effect
 // @route   POST /api/v1/openai/image-effect
@@ -21,11 +21,18 @@ export const imageEffect = asyncHandler(async (req, res) => {
   }
 
   // 1. Upload the image to Cloudinary
-  const uploadResult = await cloudinary.uploader.upload(imagePath);
-  const publicId = uploadResult.public_id;
+  let uploadResult;
 
-  fs.unlinkSync(imagePath);
-
+  try {
+    uploadResult = await cloudinary.uploader.upload(imagePath, {
+      resource_type: 'image',
+      folder,
+    });
+    fs.unlinkSync(imagePath);
+  } catch (error) {
+    fs.unlinkSync(imagePath);
+    throw new Error(error.message);
+  }
   // 2. Parse the transformations
   const transformationList = JSON.parse(transformations);
 
@@ -35,7 +42,7 @@ export const imageEffect = asyncHandler(async (req, res) => {
 
   // 3. Generate transformed image URLs
   const transformedImages = transformationList.map((transformation) => {
-    const transformedUrl = cloudinary.url(publicId, {
+    const transformedUrl = cloudinary.url(uploadResult.public_id, {
       transformation: [transformation], // Apply a single transformation
     });
 
@@ -78,12 +85,18 @@ export const removeBackground = asyncHandler(async (req, res) => {
   if (!imagePath) {
     throw new ApiError(400, 'Image file is required');
   }
-
-  const result = await cloudinary.uploader.upload(imagePath, {
-    effect: 'background_removal',
-  });
-
-  fs.unlinkSync(imagePath);
+  let result;
+  try {
+    result = await cloudinary.uploader.upload(imagePath, {
+      effect: 'background_removal',
+      resource_type: 'image',
+      folder,
+    });
+    fs.unlinkSync(imagePath);
+  } catch (error) {
+    fs.unlinkSync(imagePath);
+    throw new Error(error.message);
+  }
 
   const newAiModel = await AIModel({
     createdBy: req.user._id,
@@ -112,11 +125,18 @@ export const removeObject = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Prompt is required to describe the object');
   }
 
-  const result = await cloudinary.uploader.upload(imagePath, {
-    transformation: { effect: `gen_remove:${new URLSearchParams(prompt)}` },
-  });
-
-  fs.unlinkSync(imagePath);
+  let result;
+  try {
+    result = await cloudinary.uploader.upload(imagePath, {
+      transformation: { effect: `gen_remove:${new URLSearchParams(prompt)}` },
+      resource_type: 'image',
+      folder,
+    });
+    fs.unlinkSync(imagePath);
+  } catch (error) {
+    fs.unlinkSync(imagePath);
+    throw new Error(error.message);
+  }
 
   const newAiModel = await AIModel({
     createdBy: req.user._id,
@@ -137,14 +157,13 @@ export const getAllImages = asyncHandler(async (req, res) => {
   const sort = req.query?.sort || 'created_at';
   const limit = +req.query?.limit || 10;
 
-  let searchQuery = cloudinary.search
+  const result = await cloudinary.search
     .expression(expression)
     .sort_by(sort, order)
-    .max_results(limit);
+    .max_results(limit)
+    .execute();
 
-  const result = await searchQuery.execute();
-
-  const data = result.resources;
+  const data = result?.resources || [];
 
   res
     .status(200)
@@ -159,22 +178,28 @@ export const removeCloudinaryFile = asyncHandler(async (req, res) => {
 
   const publicId = extractPublicId(imageUrl);
 
-  const result = await cloudinary.uploader.destroy(publicId);
+  const result = await cloudinary.uploader.destroy(publicId, {
+    resource_type: 'image',
+  });
 
   res.status(200).json(new ApiResponse(200, result, 'Delete Image Success'));
 });
 
 export const uploadCloudinaryFile = asyncHandler(async (req, res) => {
-  const { folder } = req.body; // optional folder name
+  const { folder: folderPath } = req.body; // optional folder name
   const imagePath = req?.file?.path;
 
   if (!imagePath) throw new ApiError(404, 'Image filepath is Invalid');
 
-  const result = await cloudinary.uploader.upload(imagePath, {
-    folder: folder || 'cartify',
-  });
-
-  fs.unlinkSync(imagePath);
-
+  let result;
+  try {
+    result = await cloudinary.uploader.upload(imagePath, {
+      folder: folderPath || folder,
+    });
+    fs.unlinkSync(imagePath);
+  } catch (error) {
+    fs.unlinkSync(imagePath);
+    throw new Error(error.message);
+  }
   res.status(200).json(new ApiResponse(200, result, 'Upload Image Success'));
 });

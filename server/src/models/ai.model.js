@@ -7,19 +7,10 @@ const aiSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    prompt: {
-      type: String,
-      required: true,
-    },
-    response: {
-      type: String,
-      required: true,
-    },
+    prompt: { type: String, required: true },
+    response: { type: String, required: true },
     publish: { type: Boolean, default: false },
-    model: {
-      type: String,
-      default: 'gpt-4',
-    },
+    model: { type: String, default: 'gpt-4' },
     likes: [
       {
         type: mongoose.Schema.Types.ObjectId,
