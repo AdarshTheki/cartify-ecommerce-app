@@ -140,6 +140,7 @@ const ProductForm = ({ data }: { data?: ProductType }) => {
         return toast.error('AI to enter at least 50 char entered');
       setAILoading(true);
       const res = await axiosInstance.post('/openai/generate-text', {
+        userText: formData.description,
         prompt: `Generate a e-commerce product description under 1000 characters simple text formate of this context "${formData.description}"`,
       });
       if (res.data.data) {

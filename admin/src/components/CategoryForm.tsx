@@ -44,26 +44,13 @@ const CategoryForm = ({ item }: { item?: CategoryType }) => {
         return toast.error('AI to enter at least 50 char entered');
       setAILoading(true);
       const res = await axiosInstance.post('/openai/generate-text', {
+        userText: formData.description,
         prompt: `
         You are an expert in eCommerce product classification. 
-        Analyze the given text (product name or description) and return the most suitable category from the list.
+        Analyze the given text (product name or description) and generate a best category description of eCommerce app 
         
         Input:  
         - text: ${formData.description}  
-        
-        Available Categories:  
-        1. Electronics  
-        2. Fashion & Apparel  
-        3. Beauty & Personal Care  
-        4. Home & Kitchen  
-        5. Sports & Outdoors  
-        6. Health & Wellness  
-        7. Books & Stationery  
-        8. Toys & Games  
-        9. Automotive  
-        10. Grocery & Food  
-        11. Jewelry & Accessories  
-        12. Pet Supplies  
         
         Rules:  
         1. Choose the single best-matching category.  
