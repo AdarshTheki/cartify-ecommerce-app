@@ -1,13 +1,88 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { User, Lock, LogOut, ListOrdered, PackageSearch } from 'lucide-react';
+import { User, Lock, ListOrdered, PackageSearch } from 'lucide-react';
+import { ForgotPassword, ResendVerifyEmail } from '../components';
+import { format, parseISO } from 'date-fns';
+import { Input } from '../utils';
 import useAuth from '../hooks/useAuth';
 import useApi from '../hooks/useApi';
-import { ForgotPassword } from '../components';
+
+const orderStatusMessages = {
+  pending:
+    'Your order has been placed successfully and is pending confirmation.',
+  shipped: 'Good news! Your order has been shipped and is on its way.',
+  delivered: 'Your order has been delivered. We hope you enjoy your purchase!',
+  cancelled:
+    'Your order has been cancelled. If this was a mistake, please contact support.',
+};
+
+const OrderCard = React.memo(({ order }) => {
+  const formateDate = React.useMemo(() => {
+    const date = order.updatedAt;
+    const d = typeof date === 'string' ? parseISO(date) : new Date();
+    return format(d, 'dd MMMM yyyy');
+  }, [order]);
+
+  return (
+    <div key={order._id} className="border-b border-gray-300 pb-3 mb-6">
+      <h2 className="text-xl font-semibold capitalize">
+        {order.status} on {formateDate}
+      </h2>
+
+      <p className="py-2">{orderStatusMessages[order.status || 'pending']}</p>
+
+      <div className="capitalize mb-2">
+        <p>
+          Payment: {order.payment.method?.toUpperCase()} -{' '}
+          {order.payment.status}
+        </p>
+        <p>Customer: {order.shipping_address.name?.toLowerCase()}</p>
+        <p>Total: ${order?.totalPrice}</p>
+      </div>
+
+      <p className="mb-2">
+        {order.shipping_address.line1}, {order.shipping_address.line2},
+        <br />
+        {order.shipping_address.city} - {order.shipping_address.postal_code},{' '}
+        {order.shipping_address.state}, {order.shipping_address.country}
+      </p>
+
+      <div className="mt-2">
+        <ul className="ml-4 list-disc">
+          {order.items.map((item, index) => (
+            <li key={index} className="flex gap-3 items-center mt-2">
+              <img
+                src={item.product.thumbnail}
+                alt={item.product.title}
+                className="w-16 h-16 object-contain"
+              />
+              <div className="text-sm">
+                <a
+                  className="text-indigo-700"
+                  href={`/products/${item.productId}`}>
+                  {item.product.title}
+                </a>
+                <p>
+                  {item.quantity} x {item.product.price.toFixed(2)}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+});
 
 export default function ProfileSettings() {
   const [activeTab, setActiveTab] = useState('profile');
   const { data, callApi } = useApi();
+
+  const navList = [
+    { name: 'profile', icon: <User size={18} /> },
+    { name: 'security', icon: <Lock size={18} /> },
+    { name: 'orders', icon: <ListOrdered size={18} /> },
+  ];
 
   useEffect(() => {
     callApi('/order/user', {}, 'get');
@@ -16,68 +91,38 @@ export default function ProfileSettings() {
 
   const renderContent = () => {
     switch (activeTab) {
-      case 'profile':
+      case navList[0].name:
         return <ProfileTab />;
-      case 'password':
-        return <PasswordTab />;
-      case 'logout':
-        return <LogoutTab />;
-      case 'orders':
+      case navList[1].name:
+        return <Security />;
+      case navList[2].name:
         return <OrdersTab orders={data || []} />;
       default:
         return null;
     }
   };
 
-  const navList = [
-    { name: 'profile', icon: <User size={18} /> },
-    { name: 'password', icon: <Lock size={18} /> },
-    { name: 'orders', icon: <ListOrdered size={18} /> },
-    { name: 'logout', icon: <LogOut size={18} /> },
-  ];
-
   return (
-    <div className="max-w-4xl mx-auto lg:p-8">
-      <div className="bg-white shadow-lg overflow-hidden rounded-lg">
-        <div className="md:flex">
-          <div className="w-full md:w-1/4 bg-gray-50 p-6">
-            <nav className="space-y-4">
-              {navList.map((li) => (
-                <button
-                  key={li.name}
-                  onClick={() => setActiveTab(li.name)}
-                  className={`w-full flex gap-2 capitalize items-center p-2 px-4 font-medium text-left rounded-lg transition-colors duration-200 ${activeTab === li.name ? 'bg-indigo-600 text-white' : 'text-gray-00 hover:bg-gray-200'}`}>
-                  {li.icon}
-                  {li.name}
-                </button>
-              ))}
-            </nav>
-          </div>
-          <div className="w-full md:w-3/4 p-6 min-h-[80vh]">
-            {renderContent()}
-          </div>
-        </div>
-      </div>
+    <div className="max-w-lg mx-auto">
+      <nav className="flex sm:gap-2 p-4 items-center">
+        {navList.map((li) => (
+          <button
+            key={li.name}
+            onClick={() => setActiveTab(li.name)}
+            className={`flex gap-2 capitalize items-center p-2 px-4 font-medium text-left rounded-lg transition-colors duration-200 ${activeTab === li.name ? 'bg-indigo-600 text-white' : 'text-gray-00 hover:bg-gray-200'}`}>
+            {li.icon}
+            {li.name}
+          </button>
+        ))}
+      </nav>
+      <div className="w-full p-4 min-h-[80vh]">{renderContent()}</div>
     </div>
   );
 }
 
-const PasswordTab = () => {
-  return (
-    <div className="max-w-sm mx-auto">
-      <ForgotPassword />
-    </div>
-  );
-};
-
 const ProfileTab = () => {
-  const {
-    user,
-    handleUpdateProfile,
-    handleUploadAvatar,
-    handleResendVerifyUser,
-    avatarLoading,
-  } = useAuth();
+  const { user, handleUpdateProfile, handleUploadAvatar, avatarLoading } =
+    useAuth();
   const [fullName, setFullName] = useState(user?.fullName || '');
   const [phone, setPhone] = useState(user?.phoneNumber?.split('-')[1] || '');
 
@@ -88,119 +133,88 @@ const ProfileTab = () => {
   };
 
   return (
-    <div className="max-w-sm mx-auto space-y-6">
-      <h3 className="text-xl font-bold text-gray-800 text-center">
-        Profile Information
-      </h3>
-      <div className="flex items-center flex-col">
-        <img
-          src={user?.avatar || 'https://avatar.iran.liara.run/public'}
-          alt="Avatar"
-          className="w-24 h-24 rounded-full object-cover mb-4"
+    <div>
+      <div className="">
+        <h2 className="text-xl font-bold text-gray-800 my-6">Avatar</h2>
+        <div className="flex items-center gap-5">
+          <img
+            src={user?.avatar || 'https://avatar.iran.liara.run/public'}
+            alt="Avatar"
+            className="w-24 h-24 rounded-full object-cover mb-4"
+          />
+          <div>
+            <label
+              htmlFor="avatar-upload"
+              className="cursor-pointer w-80 text-center bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors duration-200">
+              {avatarLoading ? 'Uploading...' : 'Change Avatar'}
+            </label>
+            <input
+              name="avatar-upload"
+              id="avatar-upload"
+              type="file"
+              className="hidden"
+              onChange={onAvatarChange}
+              accept="image/*"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="border-b border-gray-300"></div>
+
+      <div className=" space-y-4">
+        <h2 className="text-xl font-bold text-gray-800 my-6">
+          Other Information
+        </h2>
+        <Input
+          name="fullName"
+          label="fullName"
+          type="text"
+          value={fullName}
+          onChange={(e) => setFullName(e.target.value)}
         />
-        <div>
-          <label
-            htmlFor="avatar-upload"
-            className="cursor-pointer w-80 text-center bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors duration-200">
-            {avatarLoading ? 'Uploading...' : 'Change Avatar'}
-          </label>
-          <input
-            id="avatar-upload"
-            type="file"
-            className="hidden"
-            onChange={onAvatarChange}
-            accept="image/*"
-          />
-        </div>
-      </div>
-      <div>
-        <label
-          htmlFor="fullName"
-          className="block text-sm font-medium text-gray-700">
-          Username / Full Name
-        </label>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            id="fullName"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            className="border border-gray-300 rounded focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full px-4 py-1.5"
-          />
-          <button
-            onClick={() => handleUpdateProfile(fullName, '+91-' + phone)}
-            disabled={user?.fullName === fullName}
-            className="bg-indigo-600 rounded-lg text-sm block text-nowrap text-white w-40 text-center py-1.5 hover:bg-indigo-700 disabled:bg-indigo-300 transition">
-            Save Change
-          </button>
-        </div>
-      </div>
-      <div>
-        <label
-          htmlFor="phoneNumber"
-          className="block text-sm font-medium text-gray-700">
-          Phone Number
-        </label>
-        <div className="flex gap-2">
-          <input
-            type="number"
-            id="phoneNumber"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="border border-gray-300 rounded focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full px-4 py-1.5"
-          />
-          <button
-            onClick={() => handleUpdateProfile(fullName, '+91-' + phone)}
-            disabled={user?.phoneNumber?.split('-')[1] == phone}
-            className="bg-indigo-600 rounded-lg text-sm block text-nowrap text-white w-40 text-center py-1.5 hover:bg-indigo-700 disabled:bg-indigo-300 transition">
-            Save Change
-          </button>
-        </div>
-      </div>
-      <div>
-        <label
-          htmlFor="email"
-          className="block text-sm font-medium text-gray-700">
-          Email at{' '}
-          {user && <span className="status-active">{user?.loginType}</span>}
-        </label>
-        <div className="flex gap-2">
-          <input
-            readOnly
-            type="email"
-            id="email"
-            value={user?.email}
-            className="border border-gray-300 cursor-not-allowed rounded focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 block w-full px-4 py-1.5"
-          />
-          <button
-            onClick={handleResendVerifyUser}
-            disabled={user?.isEmailVerified}
-            className="bg-indigo-600 rounded-lg block text-sm text-nowrap text-white w-40 py-1.5 hover:bg-indigo-700 disabled:bg-indigo-300 transition">
-            {user?.isEmailVerified ? 'verified' : 'Verify'} Email
-          </button>
-        </div>
+        <Input
+          name="phone"
+          label="Mobile No."
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+        />
+        <button
+          className="cursor-pointer text-center bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors duration-200"
+          onClick={() => handleUpdateProfile(fullName, '+91-' + phone)}>
+          Submit
+        </button>
       </div>
     </div>
   );
 };
 
-const LogoutTab = () => {
+const Security = () => {
   const { handleLogout } = useAuth();
   const [showModal, setShowModal] = useState(false);
 
   return (
-    <div className="max-w-sm mx-auto">
-      <h3 className="text-xl text-center font-bold text-gray-800 mb-6">
-        Logout
-      </h3>
-      <p className="text-gray-600 mb-4">
-        Are you sure you want to log out of your account?
-      </p>
-      <button
-        onClick={() => setShowModal(true)}
-        className="px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors duration-200">
-        Logout
-      </button>
+    <div className="mx-auto w-full">
+      <ForgotPassword />
+
+      <div className="border-b border-gray-300 my-5"></div>
+
+      <ResendVerifyEmail />
+
+      <div className="border-b border-gray-300 my-5"></div>
+
+      {/* logout user */}
+      <div className="">
+        <h2 className="text-xl font-bold text-gray-800 my-6"> Logout</h2>
+        <p className="text-gray-600 mb-4">
+          Are you sure you want to log out of your account?
+        </p>
+        <button
+          onClick={() => setShowModal(true)}
+          className="px-4 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors duration-200">
+          Logout
+        </button>
+      </div>
 
       {showModal && (
         <div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
@@ -229,16 +243,6 @@ const LogoutTab = () => {
 };
 
 const OrdersTab = ({ orders = [] }) => {
-  const orderStatusMessages = {
-    pending:
-      'Your order has been placed successfully and is pending confirmation.',
-    shipped: 'Good news! Your order has been shipped and is on its way.',
-    delivered:
-      'Your order has been delivered. We hope you enjoy your purchase!',
-    cancelled:
-      'Your order has been cancelled. If this was a mistake, please contact support.',
-  };
-
   return (
     <div className="container mx-auto">
       {!orders?.length && (
@@ -259,56 +263,7 @@ const OrdersTab = ({ orders = [] }) => {
         </div>
       )}
       {orders?.map((order) => (
-        <div key={order._id} className="border-b border-gray-300 pb-3 mb-6">
-          <h2 className="text-xl font-semibold my-2">Id: {order._id}</h2>
-          <div className="mb-2">
-            <strong>Status:</strong>{' '}
-            <span className="capitalize">
-              {orderStatusMessages[order?.status]}
-            </span>
-          </div>
-
-          <div className="mb-2">
-            <strong>Payment:</strong> {order.payment.method} -{' '}
-            {order.payment.status}
-          </div>
-
-          <div className="mb-2">
-            <strong>Customer:</strong> {order.shipping_address.name} (
-            {order.shipping_address.email})
-          </div>
-
-          <div className="mb-2">
-            <strong>Shipping:</strong>
-            <div className="text-sm ml-2">
-              {order.shipping_address.line1}, {order.shipping_address.line2},
-              <br />
-              {order.shipping_address.city} -{' '}
-              {order.shipping_address.postal_code},{' '}
-              {order.shipping_address.state}, {order.shipping_address.country}
-            </div>
-          </div>
-
-          <div className="mt-2">
-            <strong>Items:</strong>
-            <ul className="ml-4 list-disc">
-              {order.items.map((item, index) => (
-                <li key={index} className="flex gap-3 items-center mt-2">
-                  <img
-                    src={item.product.thumbnail}
-                    alt={item.product.title}
-                    className="w-12 h-12 object-contain"
-                  />
-                  <div>
-                    <p>{item.product.title}</p>
-                    <p>Qty: {item.quantity}</p>
-                    <p>${item.product.price.toFixed(2)}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
+        <OrderCard key={order._id} order={order} />
       ))}
     </div>
   );

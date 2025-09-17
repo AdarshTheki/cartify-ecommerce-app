@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { axios } from '../config';
 import { useSelector } from 'react-redux';
+import { axios } from '../config';
+import { Input } from '../utils';
 
 const ForgotPasswordRequest = () => {
   const { user } = useSelector((s) => s.auth);
@@ -34,21 +35,27 @@ const ForgotPasswordRequest = () => {
         <h2 className="text-xl font-bold text-gray-800 mb-6">
           Forgot Password
         </h2>
+
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium">
-              Email Address
-            </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full mt-1 p-2 border border-gray-300 rounded-lg focus:ring focus:ring-indigo-300"
-              placeholder="Enter your email"
-              required
-            />
-          </div>
+          <Input
+            label="Email Address"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Enter your email"
+            required
+          />
+
+          <p style={{ lineHeight: 1 }} className="text-xs font-light">
+            Note: Reset your password on send to your email address{' '}
+            <a
+              target="_blank"
+              href="https://mailtrap.io/inboxes/3955250/messages"
+              className="text-indigo-700 underline">
+              Click
+            </a>
+          </p>
+
           <button
             type="submit"
             disabled={loading}
@@ -57,7 +64,7 @@ const ForgotPasswordRequest = () => {
           </button>
         </form>
         {message && (
-          <p className="mt-4 text-center text-sm text-gray-800">{message}</p>
+          <p className="mt-4 text-center text-sm text-green-700">{message}</p>
         )}
       </div>
     </div>

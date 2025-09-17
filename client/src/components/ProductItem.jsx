@@ -8,10 +8,11 @@ import { addItem } from '../redux/cartSlice';
 import { axios, errorHandler } from '../config';
 import { toast } from 'react-toastify';
 
-export default function Item({ delay = '100ms', ...item }) {
+const Item = ({ delay = '100ms', ...item }) => {
   const dispatch = useDispatch();
   const { user } = useSelector((s) => s.auth);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const types = [
     { name: 'bestseller', bg: 'bg-green-100', text: 'text-green-800' },
     { name: 'new', bg: 'bg-pink-100', text: 'text-pink-800' },
@@ -20,7 +21,10 @@ export default function Item({ delay = '100ms', ...item }) {
     { name: 'sale', bg: 'bg-red-100', text: 'text-red-800' },
   ];
 
-  const randomType = types[Math.floor(Math.random() * types.length)];
+  const randomType = React.useMemo(
+    () => types[Math.floor(Math.random() * types.length)],
+    [types]
+  );
 
   const handleAddToCart = async () => {
     try {
@@ -91,4 +95,6 @@ export default function Item({ delay = '100ms', ...item }) {
       </div>
     </div>
   );
-}
+};
+
+export default Item;

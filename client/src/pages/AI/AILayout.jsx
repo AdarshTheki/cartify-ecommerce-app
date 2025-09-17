@@ -11,7 +11,7 @@ const AILayout = () => {
     classNames(
       active === path &&
         'bg-gradient-to-r from-blue-600 font-medium to-purple-600 text-white',
-      'p-2 rounded-full text-base items-center px-4 flex gap-2 border border-gray-300 text-nowrap'
+      'p-2 rounded-full text-base items-center px-4 flex gap-2 max-sm:border border-gray-300 text-nowrap'
     );
 
   return (

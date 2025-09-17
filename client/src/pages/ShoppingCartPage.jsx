@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { Button, Loading, NotFound } from '../utils';
 import { HomeCertificate } from '../components';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { axios, errorHandler } from '../config';
 import { useDispatch, useSelector } from 'react-redux';
 import Trending from './Home/Trending';
@@ -61,9 +61,13 @@ const ShoppingCartPage = () => {
 
   const carts = [...items];
 
-  const totals = carts
-    .reduce((p, c) => c?.productId?.price * c?.quantity + p, 0)
-    .toFixed(2);
+  const totals = React.useMemo(
+    () =>
+      [...items]
+        .reduce((p, c) => c?.productId?.price * c?.quantity + p, 0)
+        .toFixed(2),
+    [items]
+  );
 
   if (loading) return <Loading />;
 
@@ -150,64 +154,67 @@ const ShoppingCartPage = () => {
 
 export default ShoppingCartPage;
 
-const CartListing = ({ productId, quantity, onRemove, onQtyChange }) => {
-  const { _id, thumbnail, title, price, category, brand } = productId;
-  const [qty, setQty] = useState(quantity);
-  const navigate = useNavigate();
+const CartListing = React.memo(
+  ({ productId, quantity, onRemove, onQtyChange }) => {
+    const { _id, thumbnail, title, price, category, brand } = productId;
+    const [qty, setQty] = useState(quantity);
+    const navigate = useNavigate();
 
-  return (
-    <div className="flex max-sm:flex-col gap-5 items-start border-b text-slate-700 border-gray-300 py-4">
-      <div
-        onClick={() => navigate(`/products/${_id}`)}
-        className="bg-gray-300 max-sm:w-full cursor-pointer">
-        <img
-          src={thumbnail || 'https://placehold.co/120x120'}
-          alt="Product"
-          className="w-[200px] mx-auto object-cover rounded transition-opacity duration-300 opacity-100"
-        />
-      </div>
-      <div className="sm:flex-1 max-sm:px-4 w-full space-y-2 capitalize">
-        <p className="font-medium text-lg">{title || 'Smartphone X Pro'}</p>
-        <p>Category : {category || 'other'}</p>
-        <p>Brand: {brand || 'other'}</p>
-        <div className="flex items-center my-1">
-          <span>Unit Price:</span>
-          <span className="ml-2 font-semibold">
-            ${price || 79.99} x {qty}
-          </span>
+    return (
+      <div className="flex max-sm:flex-col gap-5 items-start border-b text-slate-700 border-gray-300 py-4">
+        <div
+          onClick={() => navigate(`/products/${_id}`)}
+          className="bg-gray-300 max-sm:w-full cursor-pointer">
+          <img
+            src={thumbnail || 'https://placehold.co/120x120'}
+            alt="Product"
+            className="w-[200px] mx-auto object-cover rounded transition-opacity duration-300 opacity-100"
+          />
         </div>
-        <p>
-          Totals: <span className="font-bold">${(price * qty).toFixed(2)}</span>
-        </p>
-        <div className="flex gap-5 items-center mt-3">
-          <div className="py-1 gap-6 flex items-center justify-center px-6 border border-slate-300 rounded-full w-fit font-medium">
-            <button
-              className="text-center text-xl"
-              onClick={() => {
-                if (qty !== 1) {
-                  onQtyChange(qty - 1);
-                  setQty((prev) => prev - 1);
-                }
-              }}>
-              -
-            </button>
-            <button className="text-center">{qty}</button>
-            <button
-              className="text-center text-xl"
-              onClick={() => {
-                if (qty < 5) {
-                  onQtyChange(qty + 1);
-                  setQty((prev) => prev + 1);
-                }
-              }}>
-              +
+        <div className="sm:flex-1 max-sm:px-4 w-full space-y-2 capitalize">
+          <p className="font-medium text-lg">{title || 'Smartphone X Pro'}</p>
+          <p>Category : {category || 'other'}</p>
+          <p>Brand: {brand || 'other'}</p>
+          <div className="flex items-center my-1">
+            <span>Unit Price:</span>
+            <span className="ml-2 font-semibold">
+              ${price || 79.99} x {qty}
+            </span>
+          </div>
+          <p>
+            Totals:{' '}
+            <span className="font-bold">${(price * qty).toFixed(2)}</span>
+          </p>
+          <div className="flex gap-5 items-center mt-3">
+            <div className="py-1 gap-6 flex items-center justify-center px-6 border border-slate-300 rounded-full w-fit font-medium">
+              <button
+                className="text-center text-xl"
+                onClick={() => {
+                  if (qty !== 1) {
+                    onQtyChange(qty - 1);
+                    setQty((prev) => prev - 1);
+                  }
+                }}>
+                -
+              </button>
+              <button className="text-center">{qty}</button>
+              <button
+                className="text-center text-xl"
+                onClick={() => {
+                  if (qty < 5) {
+                    onQtyChange(qty + 1);
+                    setQty((prev) => prev + 1);
+                  }
+                }}>
+                +
+              </button>
+            </div>
+            <button onClick={onRemove} className="text-red-600 svg-btn !p-2">
+              <Trash2Icon />
             </button>
           </div>
-          <button onClick={onRemove} className="text-red-600 svg-btn !p-2">
-            <Trash2Icon />
-          </button>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  }
+);

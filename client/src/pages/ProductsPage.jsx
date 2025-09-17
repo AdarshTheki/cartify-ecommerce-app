@@ -137,12 +137,12 @@ const ProductListing = () => {
                 <legend className="font-medium capitalize">Search</legend>
                 <div className="flex w-full items-center">
                   <Search className="w-4 h-4" />
-                  <Input
+                  <input
                     name="search"
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     type="text"
-                    className="!w-full !border-none"
+                    className="w-full border-none m-2 outline-none"
                     placeholder="Search products..."
                   />
                   {!!search?.length && (

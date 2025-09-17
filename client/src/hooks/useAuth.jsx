@@ -24,13 +24,7 @@ const useAuth = () => {
           ? response.data
           : response.data?.message || 'Something went wrong.';
 
-      if (status === 401) {
-        setIsError('Unauthorized access. Please login again.');
-      } else if (status === 403) {
-        setIsError("Forbidden. You don't have permission.");
-      } else if (status === 404) {
-        setIsError('Requested resource not found.');
-      } else {
+      if (status >= 400) {
         setIsError(errorMsg);
       }
     } else if (request) {
@@ -137,24 +131,12 @@ const useAuth = () => {
     sessionStorage.removeItem('accessToken');
   };
 
-  const handleResendVerifyUser = async () => {
-    try {
-      const res = await axios.get('/user/resend-verify-email');
-      if (res.data) {
-        toast.success('Mail has been sent to your mail ID');
-      }
-    } catch (error) {
-      errorHandler(error);
-    }
-  };
-
   return {
     user,
     avatarLoading,
     registerLoading,
     loginLoading,
     isError,
-    handleResendVerifyUser,
     handleUpdateProfile,
     handleUploadAvatar,
     handleLogout,

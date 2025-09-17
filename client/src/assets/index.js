@@ -48,7 +48,7 @@ export const menuItems = [
   },
   {
     id: 6,
-    name: 'File Manager',
+    name: 'S3 Files',
     path: '/file-manager',
     Icon: FolderKanban,
   },

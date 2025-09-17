@@ -461,18 +461,18 @@ const ChatApplication = () => {
           <div className="flex flex-col relative">
             {/* Search Bar */}
             <div className="flex items-center px-2 py-2 w-full shadow-sm">
-              <Search />
-              <Input
+              <Search className="min-w-6" />
+              <input
                 name="search"
                 title="search chat user"
                 placeholder="Search..."
-                className="border-none flex-1 outline-none"
+                className="border-none w-full px-2 outline-none"
                 onChange={(e) => setSearchUserChat(e.target.value)}
                 value={searchUserChat}
               />
               <button
                 title={searchUserChat ? 'Close search' : 'Add new chat'}
-                className="bg-indigo-600 hover:opacity-80 text-white w-[100px] py-2 gap-2 flex items-center justify-center rounded-2xl"
+                className="bg-indigo-600 hover:opacity-80 text-white min-w-[100px] py-2 gap-2 flex items-center justify-center rounded-2xl"
                 onClick={() =>
                   searchUserChat ? setSearchUserChat('') : setOpenAddChat(true)
                 }>
@@ -614,8 +614,8 @@ const ChatApplication = () => {
               onSubmit={handleSendMessage}
               className="w-full sticky sm:bottom-0 bottom-12 p-2 bg-white/40">
               <div className="h-[40px] w-full flex items-center gap-1">
-                <Input
-                  className="border-none outline outline-gray-300"
+                <input
+                  className="p-2 w-full px-4 rounded-lg border border-gray-300 outline-indigo-300"
                   name="message"
                   placeholder="Enter a message"
                   value={message}

@@ -1,11 +1,15 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { axios } from '../config';
 
 const EmailVerify = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { verificationToken } = useParams();
   const [status, setStatus] = useState('loading');
   const [message, setMessage] = useState('');
+  const { user } = useSelector((s) => s.auth);
 
   useEffect(() => {
     const verifyEmail = async () => {
@@ -20,9 +24,12 @@ const EmailVerify = () => {
         if (res.data) {
           setStatus('success');
           setMessage('Email verified successfully!');
-          setTimeout(() => {
+          if (user) {
+            dispatch({ ...user, isEmailVerified: true });
+            navigate('/setting');
+          } else {
             window.location.href = '/setting';
-          }, 3000); // Redirect after 3 sec
+          }
         }
       } catch (err) {
         setStatus('error');
@@ -34,7 +41,7 @@ const EmailVerify = () => {
     };
 
     verifyEmail();
-  }, [verificationToken]);
+  }, [verificationToken, user, dispatch, navigate]);
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50">
