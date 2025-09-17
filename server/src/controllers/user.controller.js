@@ -200,13 +200,15 @@ export const signUp = asyncHandler(async (req, res) => {
   user.emailVerificationExpiry = tokenExpiry;
   await user.save({ validateBeforeSave: false });
 
-  await sendEmail({
+  sendEmail({
     to: user.email,
     subject: 'Please verify your email',
     mailgenContent: emailVerificationMailgenContent(
       user.fullName,
       `${process.env.CLIENT_REDIRECT_URL}/verify-email/${unHashedToken}`
     ),
+  }).catch((err) => {
+    console.error('Failed to send verification email:', err.message);
   });
 
   return res
@@ -367,7 +369,7 @@ export const verifyEmail = asyncHandler(async (req, res) => {
   });
 
   if (!user) {
-    throw new ApiError(489, 'Token is invalid or expired');
+    throw new ApiError(400, 'Token is invalid or expired');
   }
 
   user.emailVerificationToken = undefined;

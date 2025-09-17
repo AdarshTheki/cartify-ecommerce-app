@@ -54,12 +54,12 @@ app.use(express.static('public'));
 
 app.use(cookieParser());
 
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 200, // max 100 requests per windowMs
-});
+// const limiter = rateLimit({
+//   windowMs: 15 * 60 * 1000, // 15 minutes
+//   max: 200, // max 100 requests per windowMs
+// });
 
-app.use(limiter);
+// app.use(limiter);
 
 app.use(morganMiddleware);
 

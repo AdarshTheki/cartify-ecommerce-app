@@ -1,7 +1,12 @@
 import Mailgen from 'mailgen';
 import nodemailer from 'nodemailer';
+import { logger } from '../middlewares/logger.middleware.js';
 
 const sendEmail = async ({ mailgenContent = '', to = '', subject = '' }) => {
+  if (!to || !subject || !mailgenContent) {
+    throw new Error('Invalid sendEmail arguments');
+  }
+
   const mailGenerator = new Mailgen({
     theme: 'default',
     product: {
@@ -30,8 +35,9 @@ const sendEmail = async ({ mailgenContent = '', to = '', subject = '' }) => {
       text: emailText,
       html: emailBody,
     });
+    logger.info(`Verification email sent to ${to}`);
   } catch (error) {
-    console.log(error.message);
+    logger.error(`Failed to send verification email: ${error.message}`);
   }
 };
 
