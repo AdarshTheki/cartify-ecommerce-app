@@ -83,8 +83,13 @@ export const createOrGetChat = asyncHandler(async (req, res) => {
 // ----search available users-----
 export const searchUsers = asyncHandler(async (req, res) => {
   const users = await User.aggregate([
-    { $match: { _id: { $ne: req.user._id } } },
-    { $project: { avatar: 1, username: 1, fullName: 1, email: 1 } },
+    {
+      $match: {
+        $nor: [{ _id: req.user._id }, { role: 'admin' }],
+      },
+    },
+    { $project: { avatar: 1, fullName: 1, email: 1 } },
+    { $limit: 10 },
   ]);
   res.status(200).json(users);
 });

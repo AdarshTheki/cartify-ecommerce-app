@@ -10,6 +10,16 @@ import {
   uploadSingleImg,
 } from '../utils/cloudinary.js';
 
+const selectedProduct = {
+  title: 1,
+  category: 1,
+  brand: 1,
+  status: 1,
+  thumbnail: 1,
+  price: 1,
+  rating: 1,
+};
+
 // @desc    Get all products with filters
 // @route   GET /api/v1/products
 // @access  Public
@@ -54,6 +64,7 @@ export const getAllProducts = asyncHandler(async (req, res) => {
     page: parseInt(page),
     limit: parseInt(limit),
     sort: { [sortBy]: order === 'asc' ? 1 : -1 },
+    select: Object.keys(selectedProduct).join(' '),
   };
 
   const products = await Product.paginate(query, options);
@@ -234,14 +245,22 @@ export const getProductsByFilter = asyncHandler(async (req, res) => {
 export const searchProducts = asyncHandler(async (req, res) => {
   const { q } = req.query;
   if (!q) {
-    throw new ApiError(400, 'Search query is required');
+    return res
+      .status(200)
+      .json(new ApiResponse(200, [], 'Products searched successfully'));
   }
 
-  const regex = new RegExp(q, 'i');
+  const regexQuery = {
+    $or: [
+      { name: { $regex: q, $options: 'i' } },
+      { brand: { $regex: q, $options: 'i' } },
+      { category: { $regex: q, $options: 'i' } },
+    ],
+  };
 
-  const products = await Product.find({
-    $or: [{ title: regex }, { category: regex }, { brand: regex }],
-  });
+  const products = await Product.find(regexQuery)
+    .select(selectedProduct)
+    .limit(10);
 
   return res
     .status(200)

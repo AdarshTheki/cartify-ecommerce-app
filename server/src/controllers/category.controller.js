@@ -21,6 +21,7 @@ export const getAllCategories = asyncHandler(async (req, res) => {
     page,
     limit,
     sort: { [sort]: order === 'asc' ? 1 : -1 },
+    select: 'title status thumbnail createdBy',
   };
 
   const query = title ? { title: { $regex: title, $options: 'i' } } : {};

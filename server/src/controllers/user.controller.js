@@ -17,6 +17,16 @@ const cookiePayload = {
   secure: process.env.NODE_ENV === 'PRODUCTION',
 };
 
+const selectedUser = {
+  email: 1,
+  role: 1,
+  status: 1,
+  phoneNumber: 1,
+  fullName: 1,
+  avatar: 1,
+  loginType: 1,
+};
+
 // @desc    Get all users (admin only)
 // @route   GET /api/v1/users
 // @access  Admin
@@ -28,18 +38,20 @@ export const getAllUserByAdmin = asyncHandler(async (req, res) => {
   const sort = req.query?.sort || 'fullName';
   const order = req.query?.order || 'asc';
 
-  const query = [
-    {
-      $and: [
-        { role: { $ne: 'admin' } },
-        { fullName: { $regex: q, $options: 'i' } },
-        { status: { $in: status ? [status] : ['active', 'inactive'] } },
-      ],
-    },
-    { page, limit, sort: { [sort]: order === 'asc' ? 1 : -1 } },
-  ];
+  const query = {
+    role: { $ne: 'admin' },
+    fullName: { $regex: q, $options: 'i' },
+    status: { $in: status ? [status] : ['active', 'inactive'] },
+  };
 
-  const users = await User.paginate(...query);
+  const options = {
+    page: parseInt(page),
+    limit: parseInt(limit),
+    sort: { [sort]: order === 'asc' ? 1 : -1 },
+    select: Object.keys(selectedUser).join(' '),
+  };
+
+  const users = await User.paginate(query, options);
 
   return res
     .status(200)
@@ -55,7 +67,7 @@ export const getUserIdByAdmin = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Invalid user ID');
   }
 
-  const user = await User.findById(id).select('-password -refreshToken');
+  const user = await User.findById(id).select(selectedUser);
 
   if (!user) {
     throw new ApiError(404, 'User not found');
@@ -90,9 +102,7 @@ export const createUserByAdmin = asyncHandler(async (req, res) => {
     fullName,
   });
 
-  const createdUser = await User.findById(user?._id).select(
-    '-password -refreshToken -__v'
-  );
+  const createdUser = await User.findById(user?._id).select(selectedUser);
 
   if (!createdUser) {
     throw new ApiError(500, 'User creation failed');
@@ -126,9 +136,13 @@ export const updateUserByAdmin = asyncHandler(async (req, res) => {
 
   await user.save({ validateBeforeSave: false });
 
+  const newUser = await User.findById(user._id).select(selectedUser);
+
+  if (!newUser) throw new ApiError(404, 'updated user not found!');
+
   return res
     .status(200)
-    .json(new ApiResponse(200, user, 'User updated successfully'));
+    .json(new ApiResponse(200, newUser, 'User updated successfully'));
 });
 
 // @desc    Delete a user (admin only)
@@ -148,16 +162,15 @@ export const deleteUserByAdmin = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, user, 'User deleted successfully'));
+    .json(new ApiResponse(200, {}, 'User deleted successfully'));
 });
 
 // @desc    Get current logged-in user
 // @route   GET /api/v1/users/current
 // @access  Private
 export const getCurrentUser = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id).select(
-    '-refreshToken -password -__v'
-  );
+  const user = await User.findById(req.user._id).select(selectedUser);
+
   if (!user) {
     throw new ApiError(404, 'User not found');
   }
@@ -198,6 +211,7 @@ export const signUp = asyncHandler(async (req, res) => {
 
   user.emailVerificationToken = hashedToken;
   user.emailVerificationExpiry = tokenExpiry;
+
   await user.save({ validateBeforeSave: false });
 
   sendEmail({
@@ -211,9 +225,14 @@ export const signUp = asyncHandler(async (req, res) => {
     console.error('Failed to send verification email:', err.message);
   });
 
+  const updatedUser = await User.findById(user._id).select(selectedUser);
+
+  if (!updatedUser)
+    throw new ApiError(404, 'user not updated when token generated!');
+
   return res
     .status(201)
-    .json(new ApiResponse(201, user, 'User registered successfully'));
+    .json(new ApiResponse(201, updatedUser, 'User registered successfully'));
 });
 
 // @desc    Authenticate user and get token
@@ -230,6 +249,7 @@ export const signIn = asyncHandler(async (req, res) => {
     email,
     loginType: 'EMAIL_PASSWORD',
   }).select('+password');
+
   if (!user) {
     throw new ApiError(404, 'User not found');
   }
@@ -245,9 +265,7 @@ export const signIn = asyncHandler(async (req, res) => {
   user.refreshToken = refreshToken;
   await user.save({ validateBeforeSave: false });
 
-  const loggedInUser = await User.findById(user._id).select(
-    '-password -refreshToken -__v'
-  );
+  const loggedInUser = await User.findById(user._id).select(selectedUser);
 
   return res
     .status(200)
@@ -290,7 +308,11 @@ export const changeCurrentPassword = asyncHandler(async (req, res) => {
   }
 
   if (
-    ['guest-user@gmail.com', 'useradmin@gmail.com'].includes(req.user?.email)
+    [
+      'guest-user@gmail.com',
+      'useradmin@gmail.com',
+      'admin-user@gmail.com',
+    ].includes(req.user?.email)
   ) {
     throw new ApiError(404, 'Access denied for this user');
   }
@@ -480,7 +502,7 @@ export const assignRole = asyncHandler(async (req, res) => {
 export const updateUserProfile = asyncHandler(async (req, res) => {
   const { phoneNumber, fullName } = req.body;
 
-  const user = await User.findById(req.user?._id);
+  const user = await User.findById(req.user?._id).select(selectedUser);
   if (!user) {
     throw new ApiError(404, 'User not found');
   }
@@ -527,9 +549,7 @@ export const refreshToken = asyncHandler(async (req, res) => {
     user.refreshToken = newRefreshToken;
     await user.save({ validateBeforeSave: false });
 
-    const refreshedUser = await User.findById(user._id).select(
-      '-password -refreshToken'
-    );
+    const refreshedUser = await User.findById(user._id).select(selectedUser);
 
     return res
       .status(200)
@@ -543,7 +563,7 @@ export const refreshToken = asyncHandler(async (req, res) => {
         )
       );
   } catch (error) {
-    throw new ApiError(401, error?.message || 'Invalid refresh token');
+    throw new ApiError(401, error.message);
   }
 });
 

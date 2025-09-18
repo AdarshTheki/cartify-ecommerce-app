@@ -16,6 +16,7 @@ const userSchema = new Schema(
       type: String,
       required: [true, 'FullName is required!'],
       trim: true,
+      index: true,
     },
     email: {
       type: String,
@@ -61,6 +62,8 @@ const userSchema = new Schema(
   },
   { timestamps: true }
 );
+
+userSchema.index({ fullName: 'text', email: 'text' });
 
 userSchema.plugin(mongoosePaginate);
 

@@ -9,6 +9,7 @@ const productSchema = new mongoose.Schema(
       trim: true,
       minlength: 3,
       maxlength: 100,
+      index: true,
     },
     category: {
       type: String,
@@ -61,7 +62,11 @@ const productSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-productSchema.index({ title: 'text' });
+productSchema.index({
+  title: 'text',
+  brand: 'text',
+  category: 'text',
+});
 
 productSchema.plugin(mongoosePaginate);
 

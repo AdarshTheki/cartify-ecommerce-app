@@ -4,13 +4,27 @@ import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 
+const selectedProduct = {
+  _id: 1,
+  title: 1,
+  category: 1,
+  brand: 1,
+  status: 1,
+  thumbnail: 1,
+  price: 1,
+  rating: 1,
+};
+
 // @desc    Get user's cart
 // @route   GET /api/v1/cart
 // @access  Private
 export const getCart = asyncHandler(async (req, res) => {
   const createdBy = req.user._id;
 
-  const cart = await Cart.findOne({ createdBy }).populate('items.productId');
+  const cart = await Cart.findOne({ createdBy }).populate({
+    path: 'items.productId',
+    select: Object.keys(selectedProduct).join(' '),
+  });
 
   if (!cart || cart.items.length === 0) {
     return res
