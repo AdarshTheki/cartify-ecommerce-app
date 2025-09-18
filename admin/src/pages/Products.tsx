@@ -8,19 +8,19 @@ import useDebounce from '../hooks/useDebounce';
 import useFetch from '../hooks/useFetch';
 import { useTitle } from '@/hooks';
 
-const sortByOptions = [
-  { label: 'Title (A-Z)', value: 'title-asc' },
-  { label: 'Title (Z-A)', value: 'title-desc' },
-  { label: 'Price (Low to High)', value: 'price-asc' },
-  { label: 'Price (High to Low)', value: 'price-desc' },
-  { label: 'Stock (High to Low)', value: 'stock-desc' },
-  { label: 'Stock (Low to High)', value: 'stock-asc' },
-  { label: 'Status (A-Z)', value: 'status-asc' },
-  { label: 'Status (Z-A)', value: 'status-desc' },
+const productOptions = [
+  { label: 'Title: A → Z', value: 'title-asc' },
+  { label: 'Title: Z → A', value: 'title-desc' },
+  { label: 'Price: Low → High', value: 'price-asc' },
+  { label: 'Price: High → Low', value: 'price-desc' },
+  { label: 'Stock: High → Low', value: 'stock-desc' },
+  { label: 'Stock: Low → High', value: 'stock-asc' },
+  { label: 'Status: A → Z', value: 'status-asc' },
+  { label: 'Status: Z → A', value: 'status-desc' },
 ];
 
 export default function Product() {
-  const [sortBy, setSortBy] = useState<string>('title-asc');
+  const [sortBy, setSortBy] = useState<string>('Title: A → Z');
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
   const [searchParams] = useSearchParams();
@@ -29,10 +29,15 @@ export default function Product() {
 
   useTitle('Cartify: Products Listing');
 
+  function getLabelByValue(value: string) {
+    const item = productOptions.find((el) => el.label === value);
+    return item ? item.value : 'Unknown';
+  }
+
   const { data, loading, error } = useFetch<PaginationType<ProductType>>(
     `/product?title=${query}&page=${page}&limit=${limit}&sortBy=${
-      sortBy.split('-')[0]
-    }&order=${sortBy.split('-')[1]}`
+      getLabelByValue(sortBy)?.split('-')[0]
+    }&order=${getLabelByValue(sortBy)?.split('-')[1]}`
   );
 
   useEffect(() => {
@@ -64,11 +69,9 @@ export default function Product() {
           />
           <Select
             className="!w-[200px] max-sm:right-0 max-h-[400px]"
-            selected={
-              sortByOptions.find((i) => sortBy === i.value)?.label || 'Select'
-            }
-            label="Filters"
-            list={sortByOptions.map((i) => i.value)}
+            selected={sortBy}
+            label={'Filters'}
+            list={productOptions.map((i) => i.label)}
             onSelected={setSortBy}
           />
         </div>

@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DeleteModal } from './ui';
 import { SquarePen, Trash2 } from 'lucide-react';
-import Select from './ui/Select';
 
 export default function UserCard({ items }: { items: UserType[] }) {
   const [users, setUsers] = useState<UserType[]>(() => items || []);
@@ -58,8 +57,8 @@ export default function UserCard({ items }: { items: UserType[] }) {
             <th className="text-left sm:py-3 sm:px-4">#</th>
             <th className="text-left py-3 px-4">Users</th>
             <th className="text-left py-3 px-4">Creation</th>
-            <th className="text-center py-3 px-4">Role</th>
-            <th className="text-center py-3 px-4">Status</th>
+            <th className="text-left py-3 px-4">Role</th>
+            <th className="text-left py-3 px-4">Status</th>
             <th className="text-right py-3 px-4">Action</th>
           </tr>
         </thead>
@@ -69,11 +68,11 @@ export default function UserCard({ items }: { items: UserType[] }) {
               key={index}
               className="border-b text-sm border-gray-100 hover:bg-gray-50 capitalize">
               <td className="sm:py-3 sm:px-4">{index + 1}</td>
-              <td className="py-3 px-4 flex items-center gap-2 min-w-[200px]">
+              <td className="py-3 px-4 flex items-center gap-2 min-w-[180px]">
                 <img
                   src={category.avatar || '/placeholder.jpg'}
                   alt={'category_' + index}
-                  className="w-12 h-12 rounded-lg object-cover"
+                  className="w-12 h-12 rounded-lg object-cover border bg-gray-300"
                 />
                 <p>{category.fullName}</p>
               </td>
@@ -84,22 +83,34 @@ export default function UserCard({ items }: { items: UserType[] }) {
                 )}
               </td>
               <td className="px-4">
-                <Select
-                  onSelected={(e) =>
-                    handleRoleChange(category._id, e as UserRole)
-                  }
-                  list={['customer', 'seller', 'user']}
-                  selected={category.role}
-                />
+                <select
+                  className="border-b border-gray-600 p-1 cursor-pointer"
+                  name="role"
+                  id="role"
+                  value={category.role}
+                  onChange={(e) =>
+                    handleRoleChange(category._id, e.target.value as UserRole)
+                  }>
+                  <option value="customer">Customer</option>
+                  <option value="seller">Seller</option>
+                  <option value="user">User</option>
+                </select>
               </td>
               <td className="px-4">
-                <Select
-                  onSelected={(e) =>
-                    handleStatusChange(category._id, e as ActiveOrInActive)
-                  }
-                  list={['active', 'inactive']}
-                  selected={category.status}
-                />
+                <select
+                  className="border-b border-gray-600 p-1 cursor-pointer"
+                  name="status"
+                  id="status"
+                  value={category.status}
+                  onChange={(e) =>
+                    handleStatusChange(
+                      category._id,
+                      e.target.value as ActiveOrInActive
+                    )
+                  }>
+                  <option value="active">Active</option>
+                  <option value="inactive">In-Active</option>
+                </select>
               </td>
               <td className="flex items-center pb-5 justify-end">
                 <DeleteModal

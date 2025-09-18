@@ -28,8 +28,8 @@ const Select: React.FC<SelectProp> = ({
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className={`w-full flex items-center justify-between gap-2.5 text-left px-4 pr-2 py-2 border rounded-md border-gray-400 ${
-          isOpen && 'outline-1'
+        className={`flex h-10 rounded-md w-full border items-center px-4 gap-2 !border-gray-400 ${
+          isOpen && 'outline-gray-800 outline ring-offset-1'
         }`}>
         <span className="text-nowrap capitalize">
           {(label || selected).substring(0, 18)}
@@ -57,7 +57,7 @@ const Select: React.FC<SelectProp> = ({
 
       {isOpen && (
         <ul
-          className={`top-10 absolute max-h-[300px] overflow-y-auto z-30 bg-white border border-gray-200 shadow-lg w-full rounded-lg mt-1 py-2 ${className}`}>
+          className={`top-10 absolute max-h-[300px] overflow-y-auto z-30 bg-white border border-gray-300 w-full rounded-md shadow-lg mt-1 py-2 ${className}`}>
           {list.map((country) => (
             <li
               key={country}

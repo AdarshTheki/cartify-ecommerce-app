@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { DeleteModal } from './ui';
 import { SquarePen, Trash2 } from 'lucide-react';
-import { Select } from '@/components/ui';
 
 export default function ProductCard({ items }: { items: ProductType[] }) {
   const [products, setProducts] = useState<ProductType[]>(() => items || []);
@@ -70,11 +69,13 @@ export default function ProductCard({ items }: { items: ProductType[] }) {
           <tr className="border-b border-gray-300 text-slate-700">
             <th className="text-left sm:py-3 sm:px-4">#</th>
             <th className="text-left py-3 px-4">Products</th>
-            <th className="text-center py-3 px-4">Category</th>
-            <th className="text-center py-3 px-4">Brand</th>
+            <th className="text-left py-3 px-4">
+              Category ({categories.length})
+            </th>
+            <th className="text-left py-3 px-4">Brand ({brands.length})</th>
             <th className="text-left py-3 px-4">Stock</th>
-            <th className="text-center py-3 px-4">Status</th>
-            <th className="text-right py-3 px-4">Action</th>
+            <th className="text-left py-3 px-4">Status</th>
+            <th className="text-center py-3 px-4">Action</th>
           </tr>
         </thead>
         <tbody>
@@ -92,33 +93,56 @@ export default function ProductCard({ items }: { items: ProductType[] }) {
                 <p className=" line-clamp-2">{product.title}</p>
               </td>
               <td className="py-3 px-2">
-                <Select
-                  className="!w-[200px]"
-                  onSelected={(e: string) =>
-                    handleCategoryChange(product._id, e)
-                  }
-                  list={categories}
-                  selected={product.category}
-                />
+                <select
+                  className="border-b border-gray-600 p-1 cursor-pointer"
+                  name="category"
+                  id="category"
+                  value={product.category}
+                  onChange={(e) =>
+                    handleCategoryChange(product._id, e.target.value)
+                  }>
+                  {categories.map((i, index) => (
+                    <option className="capitalize" key={i} value={i}>
+                      {index + 1}. {i}
+                    </option>
+                  ))}
+                </select>
               </td>
               <td className="py-3 px-2 max-w-fit">
-                <Select
-                  className="!w-[200px]"
-                  onSelected={(e: string) => handleBrandChange(product._id, e)}
-                  list={brands}
-                  selected={product.brand || '--select--'}
-                />
+                <select
+                  className="border-b border-gray-600 p-1 cursor-pointer"
+                  name="brand"
+                  id="brand"
+                  value={product.brand}
+                  onChange={(e) =>
+                    handleBrandChange(product._id, e.target.value)
+                  }>
+                  {brands.map((i, index) => (
+                    <option className="capitalize" key={i} value={i}>
+                      {index + 1}. {i}
+                    </option>
+                  ))}
+                </select>
               </td>
               <td className="py-3 px-4">{product.stock}</td>
               <td className="px-2">
-                <Select
-                  className="!w-[150px]"
-                  onSelected={(e: string) =>
-                    handleStatusChange(product._id, e as ProductStatus)
-                  }
-                  list={statusOptions}
-                  selected={product.status}
-                />
+                <select
+                  className="border-b border-gray-600 p-1 cursor-pointer"
+                  name="status"
+                  id="status"
+                  value={product.status}
+                  onChange={(e) =>
+                    handleStatusChange(
+                      product._id,
+                      e.target.value as ProductStatus
+                    )
+                  }>
+                  {statusOptions.map((i) => (
+                    <option className="capitalize" key={i} value={i}>
+                      {i}
+                    </option>
+                  ))}
+                </select>
               </td>
               <td className="flex items-center pb-5 justify-end">
                 <DeleteModal

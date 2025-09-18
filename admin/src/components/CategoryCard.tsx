@@ -5,7 +5,6 @@ import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { DeleteModal } from './ui';
 import { SquarePen, Trash2 } from 'lucide-react';
-import { Select } from '@/components/ui';
 
 export default function CategoryList({ items }: { items: CategoryType[] }) {
   const [categories, setCategories] = useState<CategoryType[]>(
@@ -46,9 +45,9 @@ export default function CategoryList({ items }: { items: CategoryType[] }) {
         <thead>
           <tr className="border-b border-gray-300 text-slate-700">
             <th className="text-left sm:py-3 sm:px-4">#</th>
-            <th className="text-left py-3 px-4 min-w-[200px]">Category</th>
+            <th className="text-left py-3 px-4 min-w-[180px]">Category</th>
             <th className="text-left py-3 px-4">Date</th>
-            <th className="text-center py-3 px-4">Status</th>
+            <th className="text-left py-3 px-4">Status</th>
             <th className="py-3 px-4 text-right">Action</th>
           </tr>
         </thead>
@@ -72,13 +71,20 @@ export default function CategoryList({ items }: { items: CategoryType[] }) {
                 {format(new Date(category.updatedAt), 'MMM d, yyyy')}
               </td>
               <td className="px-4">
-                <Select
-                  onSelected={(e: string) =>
-                    handleStatusChange(category._id, e as ActiveOrInActive)
-                  }
-                  list={['active', 'inactive']}
-                  selected={category.status}
-                />
+                <select
+                  className="border-b border-gray-600 p-1 cursor-pointer"
+                  name="status"
+                  id="status"
+                  value={category.status}
+                  onChange={(e) =>
+                    handleStatusChange(
+                      category._id,
+                      e.target.value as ActiveOrInActive
+                    )
+                  }>
+                  <option value="active">Active</option>
+                  <option value="inactive">In-Active</option>
+                </select>
               </td>
               <td className="flex items-center pb-5 justify-end">
                 <DeleteModal

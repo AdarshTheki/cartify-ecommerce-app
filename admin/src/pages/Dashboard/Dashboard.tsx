@@ -137,7 +137,7 @@ const DashboardStatCard: React.FC<DashboardStatCardProps> = ({
   isCurrency,
 }) => {
   return (
-    <div className="p-4 rounded-lg border">
+    <div className="p-4 rounded-lg border shadow">
       <div className="flex flex-col gap-2 justify-start">
         <p className="text-sm text-slate-800">{title}</p>
         <h3 className="text-2xl font-semibold flex items-center justify-between">

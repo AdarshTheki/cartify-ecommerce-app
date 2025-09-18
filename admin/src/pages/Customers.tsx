@@ -6,29 +6,34 @@ import { useFetch, useTitle } from '../hooks';
 import { Input, Loading, NotFound, Select } from '../components/ui';
 import { UserCard } from '@/components';
 
-const sortByOptions = [
-  { label: 'Name (A-Z)', value: 'fullName-asc' },
-  { label: 'Name (Z-A)', value: 'fullName-desc' },
-  { label: 'Email (A-Z)', value: 'email-asc' },
-  { label: 'Email (Z-A)', value: 'email-desc' },
-  { label: 'Creation a-z', value: 'createdAt-asc' },
-  { label: 'Creation z-a', value: 'createdAt-desc' },
+const customerOptions = [
+  { label: 'Name: A → Z', value: 'fullName-asc' },
+  { label: 'Name: Z → A', value: 'fullName-desc' },
+  { label: 'Email: A → Z', value: 'email-asc' },
+  { label: 'Email: Z → A', value: 'email-desc' },
+  { label: 'Created: Oldest First', value: 'createdAt-asc' },
+  { label: 'Created: Newest First', value: 'createdAt-desc' },
 ];
 
 const Customers = () => {
-  const [sortBy, setSortBy] = useState<string>('fullName-asc');
+  const [sortBy, setSortBy] = useState<string>('Name: A → Z');
   const [search, setSearch] = useState<string>('');
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(10);
 
   useTitle('Cartify: Users Listing');
 
+  function getLabelByValue(value: string) {
+    const item = customerOptions.find((el) => el.label === value);
+    return item ? item.value : 'Unknown';
+  }
+
   const params = new URLSearchParams({
     limit: String(limit),
     page: String(page),
     query: search || '',
-    sort: sortBy.split('-')[0],
-    order: sortBy.split('-')[1],
+    sort: getLabelByValue(sortBy)?.split('-')[0],
+    order: getLabelByValue(sortBy)?.split('-')[1],
   });
 
   const { data, error, loading } = useFetch<PaginationType<UserType>>(
@@ -58,12 +63,10 @@ const Customers = () => {
             placeholder="User search..."
           />
           <Select
-            className="!w-[150px] max-md:right-0"
-            selected={
-              sortByOptions.find((i) => sortBy === i.value)?.label || 'Select'
-            }
-            label="Filters"
-            list={sortByOptions.map((i) => i.value)}
+            className="!w-[200px] max-sm:right-0 max-h-[400px]"
+            selected={sortBy}
+            label={'Filters'}
+            list={customerOptions.map((i) => i.label)}
             onSelected={setSortBy}
           />
         </div>

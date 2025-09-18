@@ -5,7 +5,7 @@ import useAuth from '../hooks/useAuth';
 
 const Login = () => {
   const [email, setEmail] = useState('guest-user@gmail.com');
-  const [password, setPassword] = useState('12345');
+  const [password, setPassword] = useState('123456');
   const [rememberMe, setRememberMe] = useState(false);
   const [visible, setVisible] = useState(false);
   const { loginLoading, handleLogin } = useAuth();
