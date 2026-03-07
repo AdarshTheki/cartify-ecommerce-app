@@ -648,15 +648,7 @@ export const toggleFavorite = asyncHandler(async (req, res) => {
     { new: true }
   );
 
-  return res
-    .status(200)
-    .json(
-      new ApiResponse(
-        200,
-        { favorites: updatedUser.favorite },
-        isFavorite ? 'Removed from favorites' : 'Added to favorites'
-      )
-    );
+  return res.status(200).json(updatedUser.favorite);
 });
 
 // @desc    Get all favorite products for current user

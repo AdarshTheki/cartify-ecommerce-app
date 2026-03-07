@@ -3,6 +3,7 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import type { AxiosInstance, AxiosError } from 'axios';
 import { toast } from 'react-toastify';
+import { differenceInDays, format, isToday, isYesterday } from 'date-fns';
 
 export const errorHandler = (error: AxiosError) => {
   if (error && typeof error === 'object' && 'isAxiosError' in error) {
@@ -190,4 +191,26 @@ export const downloadCategoriesAsCSV = (categories: CategoryType[], filename = '
   });
   const csv = [headers.join(','), ...rows].join('\n');
   blobDownload(csv, filename);
+};
+
+export const formateTime = (date: string): string => {
+  const messageDate = new Date(date);
+  const now = new Date();
+
+  if (isToday(messageDate)) {
+    // Returns "10:45 AM"
+    return format(messageDate, 'p');
+  }
+
+  if (isYesterday(messageDate)) {
+    return 'Yesterday';
+  }
+
+  if (differenceInDays(now, messageDate) < 7) {
+    // Returns "Tuesday"
+    return format(messageDate, 'eeee');
+  }
+
+  // Returns "15/09/2024"
+  return format(messageDate, 'dd/MM/yyyy');
 };

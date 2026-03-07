@@ -8,9 +8,13 @@ const router = createBrowserRouter([
     path: '/',
     element: <RootLayout />,
     children: [
+      { index: true, element: <Page.HomePage /> },
       { path: 'login', element: <Page.AuthLogin /> },
       { path: 'register', element: <Page.AuthRegister /> },
-      { path: 'contact', element: <h2>Conact Page</h2> },
+      {
+        element: <ProtectedRoute role='customer' />,
+        children: [{ path: '/cart', element: <h2>Cart Page</h2> }],
+      },
       {
         path: 'admin',
         element: <ProtectedRoute role='admin' />,

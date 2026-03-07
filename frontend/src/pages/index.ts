@@ -9,8 +9,10 @@ import ProfileSetting from './ProfileSetting';
 import AdminDashboard from './AdminDashboard';
 import AuthLogin from './AuthLogin';
 import AuthRegister from './AuthRegister';
+import HomePage from './Home/HomePage';
 
 export {
+  HomePage,
   CategoryListing,
   CategoryUpdating,
   CustomerListing,

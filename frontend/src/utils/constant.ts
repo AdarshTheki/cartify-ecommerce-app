@@ -38,12 +38,12 @@ export const countries = [
 ];
 
 export const adminMenu = [
-  { id: 1, title: 'Dashboard', path: '/admin', icon: LayoutDashboard }, // Better than HousePlug
-  { id: 2, title: 'Brands', path: '/admin/brands', icon: Tags }, // Tags is a better fit for Brands
-  { id: 3, title: 'Products', path: '/admin/products', icon: Boxes }, // Boxes or Package work well
-  { id: 4, title: 'Categories', path: '/admin/categories', icon: Package }, // Grouped package for categories
-  { id: 5, title: 'Users', path: '/admin/users', icon: Users },
-  { id: 6, title: 'Orders', path: '/admin/orders', icon: ShoppingCart }, // ShoppingCart is more intuitive
+  { id: 1, name: 'Dashboard', path: '/admin', Icon: LayoutDashboard }, // Better than HousePlug
+  { id: 2, name: 'Brands', path: '/admin/brands', Icon: Tags }, // Tags is a better fit for Brands
+  { id: 3, name: 'Products', path: '/admin/products', Icon: Boxes }, // Boxes or Package work well
+  { id: 4, name: 'Categories', path: '/admin/categories', Icon: Package }, // Grouped package for categories
+  { id: 5, name: 'Users', path: '/admin/users', Icon: Users },
+  { id: 6, name: 'Orders', path: '/admin/orders', Icon: ShoppingCart }, // ShoppingCart is more intuitive
 ];
 
 export const productStatus = ['active', 'inactive', 'out-of-stock', 'pending'];
@@ -162,8 +162,8 @@ export const ecommerceMenu = [
   },
   {
     id: 4,
-    name: 'Message',
-    path: '/message',
+    name: 'Messenger',
+    path: '/chat-messenger',
     Icon: MessagesSquare,
   },
   {
@@ -180,8 +180,8 @@ export const ecommerceMenu = [
   },
   {
     id: 7,
-    name: 'AI Generate',
-    path: '/ai',
+    name: 'AI Generator',
+    path: '/ai-generator',
     Icon: Bot,
   },
   {

@@ -58,6 +58,7 @@ interface UserType {
   createdAt: Date;
   updatedAt: Date;
   createdBy: string;
+  isEmailVerified?: boolean;
 }
 
 interface AddressType {

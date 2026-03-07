@@ -1,8 +1,7 @@
 import { AxiosError } from 'axios';
-import { format } from 'date-fns';
 import { Download, Loader } from 'lucide-react';
 import { useState } from 'react';
-import { downloadOrdersAsCSV, axiosInstance, cn, errorHandler } from '../../utils';
+import { downloadOrdersAsCSV, axiosInstance, cn, errorHandler, formateTime } from '../../utils';
 import { Skeleton } from '../../ui';
 import { useFetch } from '../../hooks';
 
@@ -89,9 +88,7 @@ export default function RecentOrders() {
                             0,
                           )}
                         </td>
-                        <td className='py-3 text-nowrap'>
-                          {format(new Date(order.updatedAt), 'MMM d, yyyy')}
-                        </td>
+                        <td className='py-3 text-nowrap'>{formateTime(order.updatedAt)}</td>
                       </tr>
                     );
                   })

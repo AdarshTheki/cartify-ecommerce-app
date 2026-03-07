@@ -1,6 +1,5 @@
-import { axiosInstance, errorHandler } from '../utils';
+import { axiosInstance, errorHandler, formateTime } from '../utils';
 import { AxiosError } from 'axios';
-import { format } from 'date-fns';
 import { PackageSearch } from 'lucide-react';
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
@@ -97,10 +96,8 @@ export default function OrderCard({ items }: { items: OrderType[] }) {
                 />
               </td>
               <td className='px-4 py-3'>
-                <p className='text-nowrap'>
-                  {format(new Date(category.createdAt), 'dd MMM yy h:mm aaa')}
-                </p>
-                <p>{format(new Date(category.updatedAt), 'dd MMM yy h:mm aaa')}</p>
+                <p className='text-nowrap'>{formateTime(category.createdAt)}</p>
+                <p>{formateTime(category.updatedAt)}</p>
               </td>
             </tr>
           ))}

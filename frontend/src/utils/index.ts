@@ -7,6 +7,7 @@ import {
   getSalesPerMonth,
   axiosInstance,
   errorHandler,
+  formateTime,
 } from './actions';
 
 import {
@@ -31,6 +32,7 @@ export {
   downloadProductsAsCSV,
   getSalesPerMonth,
   errorHandler,
+  formateTime,
   axiosInstance,
   brands,
   categories,

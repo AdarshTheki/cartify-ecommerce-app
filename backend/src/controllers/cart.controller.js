@@ -58,9 +58,7 @@ export const addToCart = asyncHandler(async (req, res) => {
 
   await cart.save();
 
-  return res
-    .status(201)
-    .json(new ApiResponse(201, cart, 'Item added to cart successfully'));
+  return res.status(201).json(cart);
 });
 
 // @desc    Remove item from cart
@@ -113,11 +111,7 @@ export const updateCartItemQuantity = asyncHandler(async (req, res) => {
   if (itemIndex > -1) {
     cart.items[itemIndex].quantity = quantity;
     await cart.save();
-    return res
-      .status(200)
-      .json(
-        new ApiResponse(200, cart, 'Cart item quantity updated successfully')
-      );
+    return res.status(200).json(cart);
   } else {
     throw new ApiError(404, 'Item not found in cart');
   }

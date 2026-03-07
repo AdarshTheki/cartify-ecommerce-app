@@ -1,13 +1,20 @@
-import { useSelector } from 'react-redux';
-import type { RootState } from './redux/store';
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { Loading } from './ui';
 import { useEffect, useState } from 'react';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { useAppSelector } from './redux/store';
+import { Loading } from './ui';
 
-const ProtectedRoute = ({ role }: { role?: string }) => {
+interface ProtectedRouteProp {
+  role: string;
+}
+
+const ProtectedRoute = ({ role }: ProtectedRouteProp) => {
   const [loading, setLoading] = useState(true);
-  const { isAuthenticated, loading: loadingAuth } = useSelector((s: RootState) => s.auth);
+  const { isAuthenticated } = useAppSelector((s) => s.auth);
   const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -17,7 +24,7 @@ const ProtectedRoute = ({ role }: { role?: string }) => {
     return () => clearTimeout(timer);
   }, []);
 
-  if (loading || loadingAuth) return <Loading />;
+  if (loading) return <Loading />;
 
   if (!role || !isAuthenticated) {
     return <Navigate to='/login' state={{ from: location }} replace />;
