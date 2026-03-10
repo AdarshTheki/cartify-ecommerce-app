@@ -22,9 +22,11 @@ import {
   ecommerceMenu,
   images,
   lovedByCreators,
+  socialFormats,
 } from './constant';
 
 export {
+  socialFormats,
   cn,
   blobDownload,
   downloadCategoriesAsCSV,

@@ -1,24 +1,29 @@
+import type { AxiosInstance, AxiosError } from 'axios';
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
-import type { AxiosInstance, AxiosError } from 'axios';
-import { toast } from 'react-toastify';
 import { differenceInDays, format, isToday, isYesterday } from 'date-fns';
 
-export const errorHandler = (error: AxiosError) => {
+export function errorHandler(error: AxiosError) {
   if (error && typeof error === 'object' && 'isAxiosError' in error) {
     const axiosError = error as AxiosError<{ message: string }>;
     if (axiosError.response) {
-      toast.error(`${axiosError.response.data.message || axiosError.response.statusText}`);
+      toast.error(
+        cn(
+          axiosError.response.data.message || axiosError.response.statusText,
+          axiosError.response.status,
+        ),
+      );
     } else if (axiosError.request) {
-      toast.error('No response received from server');
+      toast.error('Error: No response received from server!');
     } else {
-      toast.error(`Error: ${axiosError.message}`);
+      toast.error(cn('Error:', axiosError.message));
     }
   } else {
-    toast.error('An unexpected error occurred.');
+    toast.error('Error: An unexpected error occurred!');
   }
-};
+}
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -27,9 +32,7 @@ export function cn(...inputs: ClassValue[]) {
 export const axiosInstance: AxiosInstance = axios.create({
   baseURL: `${import.meta.env.VITE_API_URL}`,
   timeout: 50000,
-  headers: {
-    Authorization: `Bearer ${localStorage.getItem('accessToken') ?? sessionStorage.getItem('accessToken')}`,
-  },
+  withCredentials: true,
 });
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -123,12 +126,12 @@ export const downloadOrdersAsCSV = (orders: OrderType[], filename = 'orders') =>
       payment_method: order.payment?.method || '',
       shipping_name: order.shipping_address.name,
       shipping_email: order.shipping_address.email,
-      shipping_line1: order.shipping_address.line1,
-      shipping_line2: order.shipping_address.line2 || '',
+      shipping_line1: order.shipping_address.addressLine1,
+      shipping_line2: order.shipping_address.addressLine2 || '',
       shipping_city: order.shipping_address.city,
       shipping_state: order.shipping_address.state,
       shipping_country: order.shipping_address.country,
-      shipping_postal: order.shipping_address.postal_code,
+      shipping_postal: order.shipping_address.postalCode,
       item_count: order.items.length.toString(),
       item_ids: itemIds,
       item_quantities: itemQuantities,
@@ -196,21 +199,17 @@ export const downloadCategoriesAsCSV = (categories: CategoryType[], filename = '
 export const formateTime = (date: string): string => {
   const messageDate = new Date(date);
   const now = new Date();
-
   if (isToday(messageDate)) {
     // Returns "10:45 AM"
     return format(messageDate, 'p');
   }
-
   if (isYesterday(messageDate)) {
     return 'Yesterday';
   }
-
   if (differenceInDays(now, messageDate) < 7) {
     // Returns "Tuesday"
     return format(messageDate, 'eeee');
   }
-
   // Returns "15/09/2024"
   return format(messageDate, 'dd/MM/yyyy');
 };

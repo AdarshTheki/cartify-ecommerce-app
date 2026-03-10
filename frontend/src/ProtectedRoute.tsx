@@ -3,11 +3,7 @@ import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAppSelector } from './redux/store';
 import { Loading } from './ui';
 
-interface ProtectedRouteProp {
-  role: string;
-}
-
-const ProtectedRoute = ({ role }: ProtectedRouteProp) => {
+const ProtectedRoute = ({ role }: { role: string }) => {
   const [loading, setLoading] = useState(true);
   const { isAuthenticated } = useAppSelector((s) => s.auth);
   const location = useLocation();

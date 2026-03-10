@@ -16,7 +16,7 @@ const initialState: CategoryState = {
 };
 
 // Async thunk with typed response
-export const fetchCategories = createAsyncThunk<BrandType[], void, { rejectValue: string }>(
+export const fetchCategories = createAsyncThunk<CategoryType[], void, { rejectValue: string }>(
   'categories/fetchCategories',
   async (_, { rejectWithValue }) => {
     try {

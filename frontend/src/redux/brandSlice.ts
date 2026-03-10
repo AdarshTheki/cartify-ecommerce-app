@@ -2,15 +2,15 @@ import { axiosInstance } from '../utils';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 // Define the type for the state
-interface BrandState {
-  brands: BrandType[];
+interface BrandStateProps {
+  items: BrandType[];
   loading: boolean;
   error: string | null;
 }
 
 // Initial state with type
-const initialState: BrandState = {
-  brands: [],
+const initialState: BrandStateProps = {
+  items: [],
   loading: false,
   error: null,
 };
@@ -42,7 +42,7 @@ const brandSlice = createSlice({
       })
       .addCase(fetchBrands.fulfilled, (state, action) => {
         state.loading = false;
-        state.brands = action.payload;
+        state.items = action.payload;
       })
       .addCase(fetchBrands.rejected, (state, action) => {
         state.loading = false;

@@ -14,7 +14,7 @@ export default function RootLayout() {
 }
 
 const EcommerceLayout = () => {
-  const menuItems = ecommerceMenu.filter((i) => !['Wishlist', 'Setting'].includes(i.name));
+  const menuItems = ecommerceMenu.filter((i) => !['Favorite', 'Profile'].includes(i.name));
   const [mobileView, setMobileView] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');

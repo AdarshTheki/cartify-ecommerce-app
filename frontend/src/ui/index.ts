@@ -9,8 +9,10 @@ import Counter from './Counter';
 import Select from './Select';
 import Skeleton from './Skeleton';
 import { Input } from './InputText';
+import Button from './Button';
 
 export {
+  Button,
   DeleteModal,
   LazyImage,
   Loading,

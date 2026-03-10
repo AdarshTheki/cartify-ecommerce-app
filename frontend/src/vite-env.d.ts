@@ -1,5 +1,3 @@
-/// <reference types="vite/client" />
-
 enum OrderStatusEnum {
   pending = 'pending',
   shipped = 'shipped',
@@ -26,8 +24,8 @@ enum ProductStatusEnum {
 }
 
 interface UserActivityType {
-  userId: ObjectId;
-  productId: ObjectId;
+  userId: string;
+  productId: string;
   action: 'view' | 'cart' | 'like' | 'purchase';
   createdAt: Date;
 }
@@ -48,7 +46,6 @@ interface UserType {
   _id: string;
   fullName: string;
   email: string;
-  password?: string;
   role: UserRoleEnum;
   status: StatusEnum;
   avatar: string;
@@ -58,19 +55,24 @@ interface UserType {
   createdAt: Date;
   updatedAt: Date;
   createdBy: string;
+  password?: string;
   isEmailVerified?: boolean;
 }
 
 interface AddressType {
-  _id: string;
-  createdBy: UserType | string;
-  status: StatusEnum;
+  phone: number;
   addressLine1: string;
-  addressLine2: string;
   city: string;
   state: string;
-  pinCode: number;
+  postalCode: number;
   country: string;
+  default: boolean;
+  status?: StatusEnum;
+  _id?: string;
+  name?: string;
+  email?: string;
+  createdBy?: UserType;
+  addressLine2?: string;
 }
 
 interface ProductType {
@@ -114,34 +116,67 @@ interface CategoryType {
 }
 
 interface ItemsType {
-  productId: string;
+  _id: string;
+  productId: ProductType;
   quantity: number;
-  product?: ProductType;
 }
 
 interface OrderType {
   _id: string;
   customer: string;
   totalPrice: number;
-  status: OrderStatus;
+  status: OrderStatusEnum;
   items: ItemsType[];
   payment: {
     id: string;
     status: string;
     method: string;
   };
-  shipping_address: ShippingAddressType;
+  shipping_address: AddressType;
   createdAt: string;
   updatedAt: string;
 }
 
-interface ShippingAddressType {
-  name: string;
-  email: string;
-  line1: string;
-  line2: string;
-  city: string;
-  country: string;
-  postal_code: string;
-  state: string;
+type ReplyType = {
+  createdBy: UserType;
+  text: string;
+  createdAt: Date;
+  _id?: string;
+};
+
+type ReportType = {
+  createdBy: UserType;
+  reason: string;
+  reportedAt: Date;
+  _id?: string;
+};
+
+interface CommentItemType {
+  productId: string;
+  createdBy: UserType;
+  text: string;
+  likes: string[];
+  replies: ReplyType[];
+  reports: ReportType[];
+  createdAt: Date;
+  updatedAt: Date;
+  _id?: string;
+}
+
+interface CloudinaryFileType {
+  created_at: string;
+  updated_at: string;
+  uploaded_at: string;
+  public_id: string;
+  bytes: number;
+  width: number;
+  height: number;
+  format: string;
+  resource_type: string;
+  type: string;
+  tags?: string[];
+  filename: string;
+  access_mode: string;
+  secure_url: string;
+  folder: string;
 }

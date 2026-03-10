@@ -1,14 +1,13 @@
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { AxiosError } from 'axios';
 import { axiosInstance, errorHandler } from '../utils';
 import { login } from '../redux/authSlice';
-import { type RootState } from '../redux/store';
+import { useAppDispatch, useAppSelector } from '../redux/store';
 
 const useAuth = () => {
-  const dispatch = useDispatch();
-  const { user } = useSelector((state: RootState) => state.auth);
+  const dispatch = useAppDispatch();
+  const { user } = useAppSelector((state) => state.auth);
 
   const [avatarLoading, setAvatarLoading] = useState(false);
   const [fullNameAndEmailLoading, setFullNameAndEmailLoading] = useState(false);
