@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Loader, Sparkle, Trash2 } from 'lucide-react';
-import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 
-import { errorHandler, axiosInstance } from '../utils';
+import { errorHandler, axiosInstance } from '../services';
 import { Input, Textarea, Select } from './ui';
 import useTitle from '../hooks/useTitle';
 
@@ -60,7 +59,7 @@ const CategoryForm = ({ item }: { item: CategoryType | null }) => {
         setFormData({ ...formData, description: res.data.data.response });
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     } finally {
       setAILoading(false);
     }
@@ -95,7 +94,7 @@ const CategoryForm = ({ item }: { item: CategoryType | null }) => {
         navigate(`/${path}`);
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     } finally {
       setLoading(false);
     }

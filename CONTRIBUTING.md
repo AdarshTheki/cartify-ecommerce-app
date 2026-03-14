@@ -16,12 +16,12 @@ cd cartify
 Install both backend and frontend dependencies:
 
 ```bash
-# Backend
-cd backend
+# Backend (Server APIs)
+cd /backend
 npm install
 
-# Frontend
-cd ../frontend
+# Frontend (Website App)
+cd /frontend
 npm install
 ```
 

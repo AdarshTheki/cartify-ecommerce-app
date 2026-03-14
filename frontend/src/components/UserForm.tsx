@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { AxiosError } from 'axios';
 
 import { useTitle } from '../hooks';
-import { axiosInstance, countries, errorHandler } from '../utils';
+import { countries } from '../utils';
 import { Select, Input } from './ui';
+import { axiosInstance, errorHandler } from '../services';
 
 const UserForm = ({ userData }: { userData: UserType | null }) => {
   const [user, setUser] = React.useState({
@@ -45,7 +45,7 @@ const UserForm = ({ userData }: { userData: UserType | null }) => {
         navigate('/customer');
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     } finally {
       setLoading(false);
     }

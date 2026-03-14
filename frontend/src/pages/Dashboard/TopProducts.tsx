@@ -1,11 +1,11 @@
-import { AxiosError } from 'axios';
 import { Download, Loader } from 'lucide-react';
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 
 import { useFetch } from '../../hooks';
 import { Loading, Counter } from '../../components/ui';
-import { axiosInstance, errorHandler, downloadProductsAsCSV } from '../../utils';
+import { downloadProductsAsCSV } from '../../utils';
+import { axiosInstance, errorHandler } from '../../services';
 
 interface TopProductsProp {
   thumbnail: string;
@@ -31,7 +31,7 @@ function TopProducts() {
         downloadProductsAsCSV(res.data.data);
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     } finally {
       setIsLoading(false);
     }

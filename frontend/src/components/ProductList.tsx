@@ -1,9 +1,9 @@
-import { AxiosError } from 'axios';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SquarePen, Trash2 } from 'lucide-react';
-import { axiosInstance, brands, categories, errorHandler } from '../utils';
+import { brands, categories } from '../utils';
 import { DeleteModal } from './ui';
+import { axiosInstance, errorHandler } from '../services';
 
 export default function ProductCard({ items }: { items: ProductType[] }) {
   const [products, setProducts] = useState<ProductType[]>(() => items || []);
@@ -17,7 +17,7 @@ export default function ProductCard({ items }: { items: ProductType[] }) {
         setProducts((prev) => prev.filter((p) => p._id !== id));
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 
@@ -28,7 +28,7 @@ export default function ProductCard({ items }: { items: ProductType[] }) {
         setProducts((prev) => prev.map((p) => (p._id === id ? { ...p, status } : p)));
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 
@@ -39,7 +39,7 @@ export default function ProductCard({ items }: { items: ProductType[] }) {
         setProducts((prev) => prev.map((p) => (p._id === id ? { ...p, category } : p)));
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 
@@ -50,7 +50,7 @@ export default function ProductCard({ items }: { items: ProductType[] }) {
         setProducts((prev) => prev.map((p) => (p._id === id ? { ...p, brand } : p)));
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 

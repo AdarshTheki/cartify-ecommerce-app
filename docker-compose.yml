@@ -1,40 +1,35 @@
-version: '3.8'
-
 services:
-  server:
-    build: ./server
+  mongo:
+    image: mongo:7
+    container_name: mongodb
+    restart: always
+    ports:
+      - '27018:27017'
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: server
+      MONGO_INITDB_ROOT_PASSWORD: Pass%40123
+      MONGO_INITDB_DATABASE: cartify
+    volumes:
+      - mongo_data:/data/db
+
+  backend:
+    build: ./backend
+    container_name: backend
     ports:
       - '8000:8000'
     env_file:
-      - ./server/.env
+      - ./backend/.env
     depends_on:
       - mongo
 
-  client:
-    build: ./client
+  frontend:
+    build: ./frontend
     ports:
-      - '3000:80'
+      - '5173:5173'
     env_file:
-      - ./client/.env
+      - ./frontend/.env
     depends_on:
-      - server
-
-  admin:
-    build: ./admin
-    ports:
-      - '5173:80'
-    env_file:
-      - ./admin/.env
-    depends_on:
-      - server
-
-  mongo:
-    image: mongo
-    restart: always
-    ports:
-      - '27017:27017'
-    volumes:
-      - mongo-data:/data/db
+      - backend
 
 volumes:
-  mongo-data:
+  mongo_data:

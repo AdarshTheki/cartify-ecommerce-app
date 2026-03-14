@@ -12,11 +12,7 @@ const CategoryUpdate = () => {
 
   if (error) return <NotFound title={JSON.stringify(error)} />;
 
-  return (
-    <div>
-      <CategoryForm item={data ?? undefined} />
-    </div>
-  );
+  return <CategoryForm item={data} />;
 };
 
 export default CategoryUpdate;

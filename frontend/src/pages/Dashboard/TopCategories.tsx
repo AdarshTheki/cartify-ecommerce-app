@@ -1,7 +1,7 @@
 import { Counter, Loading } from '../../components/ui';
 import { useFetch } from '../../hooks';
-import { axiosInstance, errorHandler, downloadCategoriesAsCSV } from '../../utils';
-import { AxiosError } from 'axios';
+import { axiosInstance, errorHandler } from '../../services';
+import { downloadCategoriesAsCSV } from '../../utils';
 import { Download, Loader } from 'lucide-react';
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
@@ -29,13 +29,13 @@ const TopCategories = () => {
         downloadCategoriesAsCSV(res.data.data, name);
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     } finally {
       setCategoryLoading(false);
     }
   };
 
-  if (loading) return <Loading className='!h-[10vh]' />;
+  if (loading) return <Loading />;
 
   return (
     <div className='grid gap-5'>

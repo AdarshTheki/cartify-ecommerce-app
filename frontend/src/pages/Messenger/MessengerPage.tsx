@@ -1,13 +1,14 @@
 import { useCallback, useMemo, useState, type ChangeEvent, type FormEvent } from 'react';
 import { useAppSelector } from '../../redux/store';
 import { useMessenger } from '../../hooks';
-import { cn, getChatObjectMetadata, socket } from '../../utils';
+import { cn, getChatObjectMetadata } from '../../utils';
 import { ArrowLeft, ImageUp, Plus, Search, Send, Trash2Icon, X } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/Avatar';
 import ChatCard from './ChatCard';
 import ConnectUser from './ConnectUser';
 import MessageCard from './MessageCard';
 import { DataState } from '../../components';
+import { socketInstance } from '../../services';
 
 // Main Chat Application Component
 const CustomerChatPage = () => {
@@ -75,7 +76,7 @@ const CustomerChatPage = () => {
   const handleChatClick = useCallback(
     (chatItem: ChatType) => {
       setMobileChatOpen(true);
-      socket.emit('joinChat', chatItem._id);
+      socketInstance.emit('joinChat', chatItem._id);
       setChat({ ...chatItem });
       onFetchMessages(chatItem._id);
       setUnReadMessages((prev) => (prev ? prev.filter((n) => n.chat._id !== chatItem._id) : []));

@@ -1,7 +1,7 @@
 import { useEffect, useState, type ChangeEvent } from 'react';
 import { useAppSelector } from '../redux/store';
 import { useDebounce } from '../hooks';
-import { axiosInstance } from '../utils';
+import { axiosInstance } from '../services';
 
 type S3FilesProps = {
   [key: string]: string;

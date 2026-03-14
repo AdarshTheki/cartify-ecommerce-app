@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { useAppSelector } from '../redux/store';
-import { axiosInstance } from '../utils';
+import { axiosInstance } from '../services';
 import { Input } from './ui';
 
 const ResendVerifyEmail = () => {

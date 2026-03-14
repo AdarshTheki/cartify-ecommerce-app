@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { axiosInstance } from '../utils';
+import { axiosInstance } from '../services';
 
 export default function ResetPassword() {
   const navigate = useNavigate();

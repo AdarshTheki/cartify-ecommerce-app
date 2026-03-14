@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../redux/store';
-import { axiosInstance } from '../utils';
+import { axiosInstance } from '../services';
 import { login } from '../redux/authSlice';
 
 const EmailVerify = () => {

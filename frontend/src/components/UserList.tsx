@@ -1,9 +1,8 @@
-import { AxiosError } from 'axios';
 import { format } from 'date-fns';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SquarePen, Trash2 } from 'lucide-react';
-import { axiosInstance, errorHandler } from '../utils';
+import { axiosInstance, errorHandler } from '../services';
 import { DeleteModal } from './ui';
 
 export default function UserCard({ items }: { items: UserType[] }) {
@@ -19,7 +18,7 @@ export default function UserCard({ items }: { items: UserType[] }) {
         setUsers((prev) => prev.filter((p) => p._id !== id));
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 
@@ -30,7 +29,7 @@ export default function UserCard({ items }: { items: UserType[] }) {
         setUsers((prev) => prev.map((p) => (p._id === id ? { ...p, status } : p)));
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 
@@ -41,7 +40,7 @@ export default function UserCard({ items }: { items: UserType[] }) {
         setUsers((prev) => prev.map((p) => (p._id === id ? { ...p, role } : p)));
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 

@@ -14,11 +14,7 @@ const CustomerUpdate = () => {
 
   if (error) return <NotFound title={error} />;
 
-  return (
-    <div>
-      <UserForm userData={data ?? undefined} />
-    </div>
-  );
+  return <UserForm userData={data} />;
 };
 
 export default CustomerUpdate;

@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { ChevronDown, ChevronUp, Heart, Sparkles, Trash2Icon } from 'lucide-react';
-import type { AxiosError } from 'axios';
 import Markdown from 'react-markdown';
 import { useApi } from '../../hooks';
-import { axiosInstance, errorHandler, formateTime } from '../../utils';
+import { formateTime } from '../../utils';
 import { Loading } from '../../components/ui';
 import { useAppSelector } from '../../redux/store';
+import { axiosInstance, errorHandler } from '../../services';
 
 const AIDashboard = () => {
   const [selectedArticle, setSelectedArticle] = useState('');
@@ -23,7 +23,7 @@ const AIDashboard = () => {
         setData((prev) => (prev ? prev.filter((i) => i._id !== id) : []));
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 
@@ -83,7 +83,7 @@ const DashboardCard = ({ isActive, onActive, item, onDelete }: DashboardCardProp
         setLikes(res.data?.data?.totalLikes);
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 

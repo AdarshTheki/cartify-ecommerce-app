@@ -1,9 +1,9 @@
-import { AxiosError } from 'axios';
 import { Download, Loader } from 'lucide-react';
 import { useState } from 'react';
-import { downloadOrdersAsCSV, axiosInstance, cn, errorHandler, formateTime } from '../../utils';
+import { downloadOrdersAsCSV, cn, formateTime } from '../../utils';
 import { Skeleton } from '../../components/ui';
 import { useFetch } from '../../hooks';
+import { axiosInstance, errorHandler } from '../../services';
 
 export default function RecentOrders() {
   const { data, loading } = useFetch<OrderType[]>('/order?page=1&limit=10');
@@ -17,7 +17,7 @@ export default function RecentOrders() {
         downloadOrdersAsCSV(res.data.data);
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     } finally {
       setIsLoading(false);
     }
@@ -65,7 +65,7 @@ export default function RecentOrders() {
             <tbody>
               {data
                 ? data?.map((order) => {
-                    const name = order.shipping_address.name.toLowerCase();
+                    const name = order.shipping_address.name?.toLowerCase();
                     return (
                       <tr key={order._id} className='hover:bg-gray-100'>
                         <td className='py-3 pr-2 capitalize text-nowrap'>{name}</td>
@@ -84,7 +84,7 @@ export default function RecentOrders() {
                         <td className='py-3 px-2'>
                           $
                           {[...order.items].reduce(
-                            (p, i) => Number(i.quantity) * Number(i.product?.price) + p,
+                            (p, i) => Number(i.quantity) * Number(i.productId?.price) + p,
                             0,
                           )}
                         </td>

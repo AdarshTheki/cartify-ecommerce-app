@@ -1,10 +1,10 @@
 import { useState, type FormEvent } from 'react';
 import { Edit2, Trash2Icon } from 'lucide-react';
 import { useAppDispatch, useAppSelector } from '../redux/store';
-import { axiosInstance, countries, errorHandler } from '../utils';
+import { axiosInstance, errorHandler } from '../services';
 import { addAddress, removeAddress, updateAddress } from '../redux/addressSlice';
-import type { AxiosError } from 'axios';
 import { Input } from '../components/ui';
+import { countries } from '../utils';
 
 const defaultValue = {
   _id: '',
@@ -49,7 +49,7 @@ const ShippingAddress = () => {
         setFormData(defaultValue);
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     } finally {
       setLoading(false);
     }
@@ -60,7 +60,7 @@ const ShippingAddress = () => {
       await axiosInstance.delete(`/address/${id}`);
       dispatch(removeAddress(id));
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 

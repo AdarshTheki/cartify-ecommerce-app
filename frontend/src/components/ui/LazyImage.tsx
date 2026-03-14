@@ -1,16 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 
 interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
-  src: string;
-  alt: string;
   placeholder?: string;
   className?: string;
 }
 
 const LazyImage: React.FC<LazyImageProps> = ({
-  src,
-  alt,
-  placeholder = '', // optional low-res or blank placeholder
+  src = 'https://placehold.co/120x120',
+  alt = 'image',
+  placeholder = 'https://placehold.co/120x120', // optional low-res or blank placeholder
   className = '',
   ...rest
 }) => {
@@ -29,7 +27,7 @@ const LazyImage: React.FC<LazyImageProps> = ({
       },
       {
         rootMargin: '100px', // preload before appearing
-      }
+      },
     );
 
     if (imgRef.current) {
@@ -44,7 +42,7 @@ const LazyImage: React.FC<LazyImageProps> = ({
   return (
     <img
       ref={imgRef}
-      src={isVisible && src ? src : placeholder}
+      src={isVisible && src.trim() ? src : placeholder}
       alt={alt}
       className={className}
       {...rest}

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { ThumbsUp } from 'lucide-react';
-import type { AxiosError } from 'axios';
 import { useAppSelector } from '../../redux/store';
-import { axiosInstance, cn, errorHandler } from '../../utils';
+import { cn } from '../../utils';
+import { axiosInstance, errorHandler } from '../../services';
 
 const CommentLiked = ({ reviewId, likes }: { reviewId: string; likes: string[] }) => {
   const userId = useAppSelector((state) => state.auth.user?._id);
@@ -15,7 +15,7 @@ const CommentLiked = ({ reviewId, likes }: { reviewId: string; likes: string[] }
       setTotalLike(res.data.data.likes);
       setLike(!like);
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 

@@ -1,45 +1,10 @@
-import type { AxiosInstance, AxiosError } from 'axios';
-import axios from 'axios';
-import { toast } from 'react-toastify';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { differenceInDays, format, isToday, isYesterday } from 'date-fns';
-import { io } from 'socket.io-client';
-
-export const socket = io(import.meta.env.VITE_API_BASE_URL, {
-  timeout: 10000,
-  auth: { token: localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken') },
-});
-
-export function errorHandler(error: AxiosError) {
-  if (error && typeof error === 'object' && 'isAxiosError' in error) {
-    const axiosError = error as AxiosError<{ message: string }>;
-    if (axiosError.response) {
-      toast.error(
-        cn(
-          axiosError.response.data.message || axiosError.response.statusText,
-          axiosError.response.status,
-        ),
-      );
-    } else if (axiosError.request) {
-      toast.error('Error: No response received from server!');
-    } else {
-      toast.error(cn('Error:', axiosError.message));
-    }
-  } else {
-    toast.error('Error: An unexpected error occurred!');
-  }
-}
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
-
-export const axiosInstance: AxiosInstance = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL}`,
-  timeout: 50000,
-  withCredentials: true,
-});
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export type SalesChartProp = {

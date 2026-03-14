@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { axiosInstance } from '../utils';
+import { axiosInstance } from '../services';
 
 type ItemsListProp = {
   _id: string;

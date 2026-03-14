@@ -1,13 +1,12 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Loader, Sparkles, Trash2 } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 import { Input, Textarea, Select } from './ui';
-
-import { toast } from 'react-toastify';
 import useTitle from '../hooks/useTitle';
-import { AxiosError } from 'axios';
-import { errorHandler, axiosInstance, categories, brands, productStatus } from '../utils';
+import { categories, brands, productStatus } from '../utils';
+import { axiosInstance, errorHandler } from '../services';
 
 const ProductForm = ({ data }: { data: ProductType | null }) => {
   const navigate = useNavigate();
@@ -117,7 +116,7 @@ const ProductForm = ({ data }: { data: ProductType | null }) => {
         navigate('/product');
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     } finally {
       setLoading(false);
     }
@@ -136,7 +135,7 @@ const ProductForm = ({ data }: { data: ProductType | null }) => {
         setFormData({ ...formData, description: res.data.data.response });
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     } finally {
       setAILoading(false);
     }

@@ -1,10 +1,9 @@
-import { axiosInstance, errorHandler } from '../utils';
-import { AxiosError } from 'axios';
 import { format } from 'date-fns';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { DeleteModal } from './ui';
 import { SquarePen, Trash2 } from 'lucide-react';
+import { DeleteModal } from './ui';
+import { axiosInstance, errorHandler } from '../services';
 
 export default function CategoryList({ items }: { items: CategoryType[] }) {
   const [categories, setCategories] = useState<CategoryType[]>(() => items || []);
@@ -20,7 +19,7 @@ export default function CategoryList({ items }: { items: CategoryType[] }) {
         setCategories((prev) => prev.filter((p) => p._id !== id));
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 
@@ -31,7 +30,7 @@ export default function CategoryList({ items }: { items: CategoryType[] }) {
         setCategories((prev) => prev.map((p) => (p._id === id ? { ...p, status } : p)));
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 

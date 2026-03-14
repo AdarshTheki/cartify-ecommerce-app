@@ -13,8 +13,8 @@ const ProductUpdate = () => {
   }, [id]);
 
   return (
-    <DataState data={data} error={error} loading={loading}>
-      <ProductForm data={data} />
+    <DataState data={[data]} error={error} loading={loading}>
+      {(productData) => <ProductForm data={[...productData][0]} />}
     </DataState>
   );
 };

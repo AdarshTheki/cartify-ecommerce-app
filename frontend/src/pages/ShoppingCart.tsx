@@ -11,8 +11,7 @@ import { fetchCarts, removeItem, updateItemQuantity } from '../redux/cartSlice';
 import Trending from './Home/Trending';
 import Certificate from './Home/Certificate';
 import { useAppDispatch, useAppSelector } from '../redux/store';
-import { axiosInstance, errorHandler } from '../utils';
-import { AxiosError } from 'axios';
+import { axiosInstance, errorHandler } from '../services';
 import { Button, Loading, NotFound } from '../components/ui';
 
 const ShoppingCartPage = () => {
@@ -34,7 +33,7 @@ const ShoppingCartPage = () => {
         setIsLoading(false);
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 
@@ -45,7 +44,7 @@ const ShoppingCartPage = () => {
         dispatch(updateItemQuantity({ _id: id, quantity }));
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 
@@ -56,7 +55,7 @@ const ShoppingCartPage = () => {
         dispatch(removeItem(id));
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 

@@ -1,4 +1,4 @@
-import { axiosInstance } from '../utils';
+import { axiosInstance } from '../services';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 // Define the type for the state

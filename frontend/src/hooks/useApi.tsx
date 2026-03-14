@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { AxiosError, type AxiosRequestConfig, type Method } from 'axios';
-import { axiosInstance } from '../utils';
+import { axiosInstance } from '../services';
 
 function useApi<T>() {
   const [loading, setLoading] = useState<boolean>(false);

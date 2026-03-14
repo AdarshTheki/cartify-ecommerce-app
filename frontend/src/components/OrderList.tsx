@@ -1,21 +1,21 @@
-import { axiosInstance, errorHandler, formateTime } from '../utils';
-import { AxiosError } from 'axios';
+import { axiosInstance, errorHandler } from '../services';
 import { PackageSearch } from 'lucide-react';
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import { Select } from './ui';
+import { formateTime } from '../utils';
 
 export default function OrderCard({ items }: { items: OrderType[] }) {
-  const [users, setUsers] = useState<OrderType[]>(() => items || []);
+  const [users, setUsers] = useState<OrderType[]>((items?.length > 0 && items) || []);
 
-  const handleStatusChange = async (id: string, status: StatusEnum) => {
+  const handleStatusChange = async (orderId: string, status: StatusEnum) => {
     try {
-      const res = await axiosInstance.patch(`/order/${id}/status`, { status });
+      const res = await axiosInstance.patch(`/order/${orderId}/status`, { status });
       if (res.data) {
-        setUsers((prev) => prev.map((p) => (p._id === id ? { ...p, status } : p)));
+        setUsers((prev) => prev.map((p) => (p._id === orderId ? { ...p, status } : p)));
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 
@@ -71,14 +71,14 @@ export default function OrderCard({ items }: { items: OrderType[] }) {
                   {category.items.map((item, index) => (
                     <li key={index} className='flex gap-2 items-center text-sm'>
                       <img
-                        src={item.product?.thumbnail}
-                        alt={item.product?.title}
+                        src={item.productId?.thumbnail}
+                        alt={item.productId?.title}
                         className='w-12 h-12 object-cover border border-gray-200 rounded-lg'
                       />
                       <div>
-                        <p className='line-clamp-1'>{item.product?.title}</p>
+                        <p className='line-clamp-1'>{item.productId?.title}</p>
                         <p>
-                          {item.quantity} x {item.product?.price?.toFixed(2)}
+                          {item.quantity} x {item.productId?.price?.toFixed(2)}
                         </p>
                       </div>
                     </li>

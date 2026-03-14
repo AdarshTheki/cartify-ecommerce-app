@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { axiosInstance } from '../utils';
+import { axiosInstance } from '../services';
 import { Input } from '../components/ui';
 import { useAppSelector } from '../redux/store';
 

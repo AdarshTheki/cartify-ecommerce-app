@@ -8,8 +8,7 @@ import { Trash2Icon } from 'lucide-react';
 import CommentReply from './CommentReply';
 import { useAppSelector } from '../../redux/store';
 import { useApi } from '../../hooks';
-import { axiosInstance, errorHandler } from '../../utils';
-import type { AxiosError } from 'axios';
+import { axiosInstance, errorHandler } from '../../services';
 import { Loading } from '../../components/ui';
 
 const COmmentListing = () => {
@@ -37,7 +36,7 @@ const COmmentListing = () => {
         setCreateText('');
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
   /*
@@ -62,7 +61,7 @@ const COmmentListing = () => {
         setData((prev) => (prev ? prev.filter((i) => i._id !== commentId) : []));
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 
@@ -80,7 +79,7 @@ const COmmentListing = () => {
         setData((prev) => (prev ? prev.map((c) => (c._id === commentId ? res.data.data : c)) : []));
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 

@@ -5,10 +5,7 @@ import {
   downloadOrdersAsCSV,
   downloadProductsAsCSV,
   getSalesPerMonth,
-  axiosInstance,
-  errorHandler,
   formateTime,
-  socket,
   getChatObjectMetadata,
 } from './actions';
 
@@ -35,11 +32,8 @@ export {
   downloadOrdersAsCSV,
   downloadProductsAsCSV,
   getSalesPerMonth,
-  errorHandler,
   formateTime,
   getChatObjectMetadata,
-  socket,
-  axiosInstance,
   brands,
   categories,
   countries,

@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
-import type { AxiosError } from 'axios';
-import { axiosInstance, errorHandler, socket } from '../utils';
+import { axiosInstance, errorHandler, socketInstance } from '../services';
 import { useAppSelector } from '../redux/store';
 import useApi from './useApi';
 
@@ -100,7 +99,7 @@ const useChat = () => {
         setChat(res.data.chat);
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 
@@ -113,7 +112,7 @@ const useChat = () => {
         participants,
       });
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 
@@ -138,7 +137,7 @@ const useChat = () => {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     } finally {
       setSendMessageLoading(false);
     }
@@ -148,7 +147,7 @@ const useChat = () => {
     try {
       await axiosInstance.delete(`/messages/${messageId}`);
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 
@@ -156,30 +155,30 @@ const useChat = () => {
     try {
       await axiosInstance.delete(`/chats/chat/${chatId}`);
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 
   useEffect(() => {
-    if (!socket) return;
+    if (!socketInstance) return;
 
-    socket.on(NEW_CHAT_EVENT, onNewChat);
-    socket.on(LEAVE_CHAT_EVENT, onChatLeave);
-    socket.on(UPDATE_GROUP_NAME_EVENT, onGroupUpdate);
-    socket.on(MESSAGE_RECEIVED_EVENT, onMessageRetrieved);
-    socket.on(MESSAGE_DELETE_EVENT, onMessageDelete);
-    socket.on(SOCKET_ERROR_EVENT, onSocketError);
+    socketInstance.on(NEW_CHAT_EVENT, onNewChat);
+    socketInstance.on(LEAVE_CHAT_EVENT, onChatLeave);
+    socketInstance.on(UPDATE_GROUP_NAME_EVENT, onGroupUpdate);
+    socketInstance.on(MESSAGE_RECEIVED_EVENT, onMessageRetrieved);
+    socketInstance.on(MESSAGE_DELETE_EVENT, onMessageDelete);
+    socketInstance.on(SOCKET_ERROR_EVENT, onSocketError);
 
     return () => {
-      socket.off(NEW_CHAT_EVENT, onNewChat);
-      socket.off(LEAVE_CHAT_EVENT, onChatLeave);
-      socket.off(UPDATE_GROUP_NAME_EVENT, onGroupUpdate);
-      socket.off(MESSAGE_RECEIVED_EVENT, onMessageRetrieved);
-      socket.off(MESSAGE_DELETE_EVENT, onMessageDelete);
-      socket.off(SOCKET_ERROR_EVENT, onSocketError);
+      socketInstance.off(NEW_CHAT_EVENT, onNewChat);
+      socketInstance.off(LEAVE_CHAT_EVENT, onChatLeave);
+      socketInstance.off(UPDATE_GROUP_NAME_EVENT, onGroupUpdate);
+      socketInstance.off(MESSAGE_RECEIVED_EVENT, onMessageRetrieved);
+      socketInstance.off(MESSAGE_DELETE_EVENT, onMessageDelete);
+      socketInstance.off(SOCKET_ERROR_EVENT, onSocketError);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [socket]);
+  }, [socketInstance]);
 
   return {
     onCreateGroupChat,

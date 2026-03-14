@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { AxiosError } from 'axios';
-import { axiosInstance, errorHandler } from '../utils';
+import { axiosInstance, errorHandler } from '../services';
 import { login } from '../redux/authSlice';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 
@@ -38,7 +37,7 @@ const useAuth = () => {
         window.location.href = '/';
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     } finally {
       setLoginLoading(false);
     }
@@ -73,7 +72,7 @@ const useAuth = () => {
         await handleLogin(email, password, false);
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     } finally {
       setRegisterLoading(false);
     }
@@ -91,7 +90,7 @@ const useAuth = () => {
         dispatch(login({ ...user, email, fullName } as UserType));
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     } finally {
       setFullNameAndEmailLoading(false);
     }
@@ -105,7 +104,7 @@ const useAuth = () => {
         newPassword,
       });
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     } finally {
       setPasswordLoading(false);
     }
@@ -122,7 +121,7 @@ const useAuth = () => {
         dispatch(login({ ...user, avatar: data.avatar } as UserType));
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     } finally {
       setAvatarLoading(false);
     }
@@ -135,7 +134,7 @@ const useAuth = () => {
       sessionStorage.removeItem('accessToken');
       window.location.href = '/';
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 

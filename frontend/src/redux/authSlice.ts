@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { axiosInstance } from '../utils';
+import { axiosInstance } from '../services';
 
 type AuthStateProp = {
   loading: boolean;

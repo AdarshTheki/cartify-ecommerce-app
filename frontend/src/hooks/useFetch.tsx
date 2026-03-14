@@ -1,5 +1,5 @@
-import { axiosInstance } from '../utils/actions';
 import { useState, useEffect, useCallback } from 'react';
+import { axiosInstance } from '../services';
 
 interface UseFetchProps<T> {
   data: T | null;

@@ -6,9 +6,8 @@ import Trending from '../Home/Trending';
 import CommentListing from './CommentListing';
 import { useDispatch } from 'react-redux';
 import { useFetch } from '../../hooks';
-import { axiosInstance, errorHandler } from '../../utils';
+import { axiosInstance, errorHandler } from '../../services';
 import { addItem } from '../../redux/cartSlice';
-import type { AxiosError } from 'axios';
 import { Button, Loading, NotFound } from '../../components/ui';
 import HeartFavorite from '../../components/ProductFavorite';
 
@@ -26,7 +25,7 @@ const SingleProductPage = () => {
         dispatch(addItem(res.data.data.items));
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 

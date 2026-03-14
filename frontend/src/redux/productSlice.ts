@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { axiosInstance } from '../utils';
+import { axiosInstance } from '../services';
 
 // Async thunk with typed response
 export const fetchProducts = createAsyncThunk<

@@ -1,9 +1,8 @@
 import { Download, Folder, Globe2Icon, Image, Loader, Trash2Icon } from 'lucide-react';
 import { useApi } from '../../hooks';
-import { errorHandler } from '../../utils';
+import { errorHandler } from '../../services';
 import { Button } from '../../components/ui';
 import { useAppSelector } from '../../redux/store';
-import type { AxiosError } from 'axios';
 
 const GalleryCard = ({
   secure_url,
@@ -43,7 +42,7 @@ const GalleryCard = ({
         onDelete();
       }
     } catch (error) {
-      errorHandler(error as AxiosError);
+      errorHandler(error);
     }
   };
 
