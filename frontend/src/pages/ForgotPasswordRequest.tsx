@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { axiosInstance } from '../utils';
-import { Input } from '../ui';
+import { Input } from '../components/ui';
 import { useAppSelector } from '../redux/store';
 
 const ForgotPasswordRequest = () => {

@@ -1,17 +1,17 @@
 import AIDashboard from './AIDashboard';
-import AILayout from './AILayout';
-import GenerateImages from './GenerateImages';
+import AIRootLayout from './AIRootLayout';
 import BlogTitles from './BlogTitles';
+import ImageGenerator from './ImageGenerator';
+import ImageTransform from './ImageTransform';
 import ReviewResume from './ReviewResume';
 import WriteArticles from './WriteArticles';
-import ImageTransformations from './ImageTransformations';
 
 export {
   AIDashboard,
-  AILayout,
-  GenerateImages,
+  AIRootLayout,
   BlogTitles,
+  ImageGenerator,
+  ImageTransform,
   ReviewResume,
   WriteArticles,
-  ImageTransformations,
 };

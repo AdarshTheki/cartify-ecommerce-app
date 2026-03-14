@@ -1,32 +1,62 @@
+import { useState } from 'react';
 import { Sparkles } from 'lucide-react';
-import Markdown from 'react-markdown';
-import useTypewriter from '../../../../client/src/hooks/useTypewriter';
+import { useApi } from '../../hooks';
+import { aiToolsMenu } from '../../utils';
 
-const AIToolLayout = ({
-  aiTool,
-  styleData,
-  handleSubmit,
-  input,
-  setInput,
-  selected,
-  setSelected,
-  loading,
-  data,
-}) => {
-  const { displayText } = useTypewriter({
-    text: data?.response || '',
-    speed: 10,
-  });
+const GenerateImage = () => {
+  const styleData = [
+    'Realistic',
+    'Ghibli style',
+    'Anime style',
+    'Cartoon style',
+    'Fantasy style',
+    '3D style',
+    'Portrait style',
+  ];
+  const [selectedStyle, setSelectedStyle] = useState('Realistic');
+  const [prompt, setPrompt] = useState('');
+  const { data, loading, setData, callApi } = useApi<{ response?: string }>();
+
+  // checkbox = Make this image public
+  const aiTool = {
+    ...aiToolsMenu[2],
+    inputLabel: 'Describe Your Image',
+    placeholder: 'eg., a cute cate playing with a boll of yarn',
+    styleLabel: 'Style',
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    const payload = `
+      You are an expert AI image generator. 
+      Create a detailed and visually appealing image based on the following inputs:
+      Inputs: 
+      - Describe Your Image: ${prompt}  
+      - Style: ${selectedStyle}  
+      Rules:
+      1. Always match the requested style. Options: Realistic, Ghibli style, Anime style, Cartoon style, Fantasy style, 3D style, Portrait style.  
+      2. Add creative details to make the image vivid and unique while staying true to the description.  
+      3. Focus on clarity, composition, and aesthetics.  
+      4. Do not add text or watermarks in the image.  
+      5. Generate the image in high quality.
+    `;
+
+    const result = await callApi('/openai/generate-image', 'POST', {
+      prompt: payload,
+      userText: prompt,
+    });
+    if (result) {
+      setData(result);
+      setPrompt('');
+      setSelectedStyle(styleData[0]);
+    }
+  };
 
   return (
     <div className='gap-4 p-4 grid sm:grid-cols-2'>
       {/* Left Create Form */}
-      <form
-        className='card !px-5 flex-1 space-y-5'
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleSubmit();
-        }}>
+      <form className='card !px-5 flex-1 space-y-5' onSubmit={handleSubmit}>
         <div className='flex gap-2 items-center'>
           <Sparkles className={`w-6 h-6`} style={{ color: aiTool.bg.from }} />
           <p className='font-medium'>{aiTool.title}</p>
@@ -34,15 +64,15 @@ const AIToolLayout = ({
         <label htmlFor='ai-input' className='font-medium text-sm'>
           {aiTool.inputLabel}
         </label>
-        <input
+        <textarea
+          rows={4}
           name='ai-input'
           id='ai-input'
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
           placeholder={aiTool.placeholder}
           className='w-full text-sm p-2 px-5 rounded-lg border outline-none'
-          style={{ borderColor: aiTool.bg.from }}
-        />
+          style={{ borderColor: aiTool.bg.from }}></textarea>
 
         <div>
           <p className='text-sm font-medium'>{aiTool.styleLabel}</p>
@@ -51,9 +81,9 @@ const AIToolLayout = ({
               <button
                 type='button'
                 key={i}
-                onClick={() => setSelected(style)}
+                onClick={() => setSelectedStyle(style)}
                 style={
-                  selected === style
+                  selectedStyle === style
                     ? {
                         border: `1px solid ${aiTool.bg.from}`,
                         color: aiTool.bg.from,
@@ -104,9 +134,7 @@ const AIToolLayout = ({
           </div>
         ) : (
           <div className='mt-3 overflow-y-auto text-sm text-slate-600'>
-            <div className='reset-tw'>
-              <Markdown>{displayText}</Markdown>
-            </div>
+            <img src={data?.response} alt='preview_url' className='w-full overflow-hidden' />
           </div>
         )}
       </div>
@@ -114,4 +142,4 @@ const AIToolLayout = ({
   );
 };
 
-export default AIToolLayout;
+export default GenerateImage;

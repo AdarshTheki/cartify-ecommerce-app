@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useEffect } from 'react';
 import { ArrowDownAZ, ArrowUpZA } from 'lucide-react';
 import { useApi } from '../../hooks';
-import { Loading, Select } from '../../ui';
+import { Loading, Select } from '../../components/ui';
 import GalleryCard from './GalleryCard';
 import { socialFormats } from '../../utils';
 

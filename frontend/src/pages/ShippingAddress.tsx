@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from '../redux/store';
 import { axiosInstance, countries, errorHandler } from '../utils';
 import { addAddress, removeAddress, updateAddress } from '../redux/addressSlice';
 import type { AxiosError } from 'axios';
-import { Input } from '../ui';
+import { Input } from '../components/ui';
 
 const defaultValue = {
   _id: '',

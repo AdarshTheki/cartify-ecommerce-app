@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 import { format } from 'date-fns';
 import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { DeleteModal } from '../ui';
+import { DeleteModal } from './ui';
 import { SquarePen, Trash2 } from 'lucide-react';
 
 export default function CategoryList({ items }: { items: CategoryType[] }) {

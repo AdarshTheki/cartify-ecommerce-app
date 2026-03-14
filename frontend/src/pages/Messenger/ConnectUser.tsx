@@ -1,14 +1,27 @@
-const ConnectUser = React.memo(
-  ({ isOpen, onClose, chat, users, onCreateGroupChat, onCreateOrGetChat }) => {
+import { MessageCircle, Users, X } from 'lucide-react';
+import { memo, useCallback, useState, type ChangeEvent } from 'react';
+import { toast } from 'react-toastify';
+
+type ConnectUserProp = {
+  isOpen: boolean;
+  onClose: () => void;
+  users: UserType[];
+  onCreateGroupChat: (name: string, selects: string[], id: string) => void;
+  onCreateOrGetChat: (select: string) => void;
+  chat: ChatType | null;
+};
+
+const ConnectUser = memo(
+  ({ isOpen, onClose, chat, users, onCreateGroupChat, onCreateOrGetChat }: ConnectUserProp) => {
     const [groupName, setGroupName] = useState(chat?.name || '');
     const [isGroupChat, setIsGroupChat] = useState(!!chat?.isGroupChat);
     const [selectUserId, setSelectUserId] = useState('');
-    const [selectedValues, setSelectedValues] = useState(
+    const [selectedValues, setSelectedValues] = useState<string[]>(
       chat?.participants?.map((i) => i?._id) || [],
     );
 
     const handleCheckboxChange = useCallback(
-      (event) => {
+      (event: ChangeEvent<HTMLInputElement>) => {
         const { value, checked } = event.target;
         if (isGroupChat) {
           setSelectedValues((prev) =>
@@ -29,7 +42,7 @@ const ConnectUser = React.memo(
           toast.error('Please provide a Group Name and add Participants');
           return;
         }
-        onCreateGroupChat(groupName, selectedValues, chat?._id);
+        onCreateGroupChat(groupName, selectedValues, chat?._id || '');
       } else {
         if (!selectUserId) {
           toast.error('Please select a user');

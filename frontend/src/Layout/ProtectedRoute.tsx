@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useAppSelector } from './redux/store';
-import { Loading } from './ui';
+import { Loading } from '../components/ui';
 
-const ProtectedRoute = ({ role }: { role: string }) => {
+const ProtectedRoute = ({ isAuth, role }: { isAuth: boolean; role?: string }) => {
   const [loading, setLoading] = useState(true);
-  const { isAuthenticated } = useAppSelector((s) => s.auth);
   const location = useLocation();
 
   useEffect(() => {
@@ -22,10 +20,8 @@ const ProtectedRoute = ({ role }: { role: string }) => {
 
   if (loading) return <Loading />;
 
-  if (!role || !isAuthenticated) {
+  if (!role || !isAuth) {
     return <Navigate to='/login' state={{ from: location }} replace />;
-  } else if (role === 'admin' && isAuthenticated) {
-    <Navigate to='/admin' state={{ from: location }} replace />;
   }
 
   return <Outlet />;

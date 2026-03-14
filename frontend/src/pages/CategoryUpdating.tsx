@@ -1,7 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import { CategoryForm } from '../components';
 import useFetch from '../hooks/useFetch';
-import { Loading, NotFound } from '../ui';
+import { Loading, NotFound } from '../components/ui';
 
 const CategoryUpdate = () => {
   const path = useLocation().pathname.split('/');

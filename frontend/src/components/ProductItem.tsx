@@ -1,10 +1,9 @@
-import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { ShoppingBag, Star } from 'lucide-react';
 import { addItem } from '../redux/cartSlice';
 import ProductFavorite from './ProductFavorite';
 import { useApi } from '../hooks';
-import { LazyImage } from '../ui';
+import { LazyImage } from './ui';
 
 type ProductItemProp = {
   delay?: string;
@@ -13,20 +12,9 @@ type ProductItemProp = {
 const ProductItem = ({ delay = '100ms', ...item }: ProductItemProp) => {
   const { callApi, data } = useApi();
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const types = [
-    { name: 'bestseller', bg: 'bg-green-100', text: 'text-green-800' },
-    { name: 'new', bg: 'bg-pink-100', text: 'text-pink-800' },
-    { name: 'popular', bg: 'bg-blue-100', text: 'text-blue-800' },
-    { name: 'limited', bg: 'bg-indigo-100', text: 'text-indigo-800' },
-    { name: 'sale', bg: 'bg-red-100', text: 'text-red-800' },
-  ];
-
-  const randomType = React.useMemo(() => types[Math.floor(Math.random() * types.length)], [types]);
-
   return (
     <div
-      className='w-full rounded-xl my-2 bg-white/40 shadow-sm hover:-translate-y-1 transition duration-300 group animate-fadeIn'
+      className='w-full rounded-xl my-2 bg-white/40 shadow-md group animate-fadeIn'
       style={{ animationDelay: delay }}>
       <div className='relative overflow-hidden rounded-t-lg'>
         <NavLink to={`/products/${item._id}`}>
@@ -47,39 +35,28 @@ const ProductItem = ({ delay = '100ms', ...item }: ProductItemProp) => {
             callApi('/cart', 'POST', { productId: item._id, quantity: 1 });
             addItem(data);
           }}
-          className='text-indigo-600 absolute top-12 right-2 sm:hidden p-1.5 bg-transparent'>
+          className='text-indigo-600 absolute top-12 right-2 p-1.5 bg-transparent'>
           <ShoppingBag className='w-5 h-5' />
         </button>
       </div>
       <div className='p-4'>
         <div className='mb-2 flex items-center'>
           <span
-            className={`px-2 py-1 text-xs font-medium rounded ${randomType.bg} ${randomType.text} capitalize`}>
-            {randomType.name}
+            className={`px-2 py-1 text-xs font-medium rounded bg-indigo-100 text-indigo-600 capitalize`}>
+            {item.brand}
           </span>
-          <div className='ml-auto flex items-center text-amber-400'>
+          <div className='ml-auto flex items-center text-amber-600'>
             <Star className='w-4' />
-            <span className='ml-1 text-sm text-gray-600'>{item?.rating}</span>
+            <span className='ml-1 text-sm font-semibold'>{item?.rating.toFixed(1)}</span>
           </div>
         </div>
-        <p className='sm:text-lg text-base text-gray-600 leading-[1.4] font-medium sm:line-clamp-1 max-sm:min-h-[50px] line-clamp-2'>
+        <p className='sm:text-lg text-base text-gray-700 leading-[1.4] font-medium sm:line-clamp-1 max-sm:min-h-[50px] line-clamp-2'>
           {item.title}
         </p>
-        <p className='text-gray-600 text-sm mb-3 max-sm:hidden flex gap-2 justify-between capitalize'>
-          <span>{item.category && '#' + item.category}</span>
-          <span>{item.brand && '#' + item.brand}</span>
-        </p>
+
         <div className='flex items-center mt-2 justify-between'>
           <span className='text-lg font-bold'>${item.price}</span>
-          <button
-            onClick={() => {
-              callApi('/cart', 'POST', { productId: item._id, quantity: 1 });
-              addItem(data);
-            }}
-            className='py-2 px-3 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition duration-300 sm:flex hidden items-center gap-2'>
-            <ShoppingBag className='w-4 h-4' />
-            Add
-          </button>
+          <span className='uppercase text-xs'>{item.category.split('-').join(' ')}</span>
         </div>
       </div>
     </div>

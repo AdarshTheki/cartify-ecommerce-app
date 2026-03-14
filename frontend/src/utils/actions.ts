@@ -4,6 +4,12 @@ import { toast } from 'react-toastify';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { differenceInDays, format, isToday, isYesterday } from 'date-fns';
+import { io } from 'socket.io-client';
+
+export const socket = io(import.meta.env.VITE_API_BASE_URL, {
+  timeout: 10000,
+  auth: { token: localStorage.getItem('accessToken') || sessionStorage.getItem('accessToken') },
+});
 
 export function errorHandler(error: AxiosError) {
   if (error && typeof error === 'object' && 'isAxiosError' in error) {
@@ -196,7 +202,7 @@ export const downloadCategoriesAsCSV = (categories: CategoryType[], filename = '
   blobDownload(csv, filename);
 };
 
-export const formateTime = (date: string): string => {
+export const formateTime = (date: Date | string): string => {
   const messageDate = new Date(date);
   const now = new Date();
   if (isToday(messageDate)) {
@@ -212,4 +218,42 @@ export const formateTime = (date: string): string => {
   }
   // Returns "15/09/2024"
   return format(messageDate, 'dd/MM/yyyy');
+};
+
+export const getChatObjectMetadata = (
+  chat: ChatType, // The chat item for which metadata is being generated.
+  loggedInUser: UserType, // The currently logged-in user details.
+) => {
+  const lastMessage = chat?.lastMessage?.content
+    ? chat?.lastMessage?.content
+    : chat?.lastMessage
+      ? `${chat?.lastMessage?.attachments?.length} attachment${
+          chat?.lastMessage.attachments.length > 1 ? 's' : ''
+        }`
+      : 'No messages yet'; // Placeholder text if there are no messages.
+
+  if (chat?.isGroupChat) {
+    // Case: Group chat
+    // Return metadata specific to group chats.
+    return {
+      // Default avatar for group chats.
+      avatar: '',
+      title: chat.name, // Group name serves as the title.
+      description: `${chat?.participants.length} members in the chat`, // Description indicates the number of members.
+      lastMessage: chat?.lastMessage
+        ? chat?.lastMessage?.sender?.fullName + ': ' + lastMessage
+        : lastMessage,
+    };
+  } else {
+    // Case: Individual chat
+    // Identify the participant other than the logged-in user.
+    const participant = chat?.participants.find((p) => p._id !== loggedInUser?._id);
+    // Return metadata specific to individual chats.
+    return {
+      avatar: participant?.avatar, // Participant's avatar URL.
+      title: participant?.fullName, // Participant's username serves as the title.
+      description: participant?.email, // Email address of the participant.
+      lastMessage,
+    };
+  }
 };

@@ -1,4 +1,4 @@
-import { Counter, Loading } from '../../ui';
+import { Counter, Loading } from '../../components/ui';
 import { useFetch } from '../../hooks';
 import { axiosInstance, errorHandler, downloadCategoriesAsCSV } from '../../utils';
 import { AxiosError } from 'axios';

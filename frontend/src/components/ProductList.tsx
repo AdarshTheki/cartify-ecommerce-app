@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SquarePen, Trash2 } from 'lucide-react';
 import { axiosInstance, brands, categories, errorHandler } from '../utils';
-import { DeleteModal } from '../ui';
+import { DeleteModal } from './ui';
 
 export default function ProductCard({ items }: { items: ProductType[] }) {
   const [products, setProducts] = useState<ProductType[]>(() => items || []);

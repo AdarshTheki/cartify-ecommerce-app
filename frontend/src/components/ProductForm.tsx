@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Loader, Sparkles, Trash2 } from 'lucide-react';
 
-import { Input, Textarea, Select } from '../ui';
+import { Input, Textarea, Select } from './ui';
 
 import { toast } from 'react-toastify';
 import useTitle from '../hooks/useTitle';
 import { AxiosError } from 'axios';
 import { errorHandler, axiosInstance, categories, brands, productStatus } from '../utils';
 
-const ProductForm = ({ data }: { data?: ProductType }) => {
+const ProductForm = ({ data }: { data: ProductType | null }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
   const [AILoading, setAILoading] = useState<boolean>(false);

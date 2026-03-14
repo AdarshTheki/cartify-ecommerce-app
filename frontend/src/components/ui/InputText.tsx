@@ -1,6 +1,6 @@
 import { forwardRef, useId, type InputHTMLAttributes } from 'react';
 import { type LucideIcon } from 'lucide-react';
-import { cn } from '../utils';
+import { cn } from '../../utils';
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;

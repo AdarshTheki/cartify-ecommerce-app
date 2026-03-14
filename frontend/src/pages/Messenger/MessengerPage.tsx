@@ -1,14 +1,22 @@
 import { useCallback, useMemo, useState, type ChangeEvent, type FormEvent } from 'react';
 import { useAppSelector } from '../../redux/store';
+import { useMessenger } from '../../hooks';
+import { cn, getChatObjectMetadata, socket } from '../../utils';
+import { ArrowLeft, ImageUp, Plus, Search, Send, Trash2Icon, X } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/Avatar';
+import ChatCard from './ChatCard';
+import ConnectUser from './ConnectUser';
+import MessageCard from './MessageCard';
+import { DataState } from '../../components';
 
 // Main Chat Application Component
 const CustomerChatPage = () => {
   const [message, setMessage] = useState('');
-  const [updateChat, setUpdateChat] = useState(null);
+  const [updateChat, setUpdateChat] = useState<ChatType | null>(null);
   const [openAddChat, setOpenAddChat] = useState(false);
   const [searchUserChat, setSearchUserChat] = useState('');
-  const [previews, setPreviews] = useState([]);
-  const [attachments, setAttachments] = useState([]);
+  const [previews, setPreviews] = useState<string[]>([]);
+  const [attachments, setAttachments] = useState<File[]>([]);
   const [mobileChatOpen, setMobileChatOpen] = useState(true);
 
   const {
@@ -29,22 +37,21 @@ const CustomerChatPage = () => {
     messages,
     chat,
     setChat,
-  } = useChat();
+  } = useMessenger();
 
   const { user } = useAppSelector((state) => state.auth);
 
   // Memoized filtered users for search
   const filteredUsers = useMemo(() => {
     if (!searchUserChat) return [];
-    return users.filter((i) => i?.fullName?.toLowerCase().includes(searchUserChat.toLowerCase()));
+    return users?.filter((i) => i?.fullName?.toLowerCase().includes(searchUserChat.toLowerCase()));
   }, [users, searchUserChat]);
 
   // Memoized handlers
   const handlePreviewAttachments = useCallback(({ target }: ChangeEvent<HTMLInputElement>) => {
     const files = target && (target.files as FileList);
-    const fileArray = Array.from(files).slice(0, 5);
-    setPreviews(fileArray.map((file) => URL.createObjectURL(file)));
-    setAttachments(fileArray);
+    setPreviews(files && Array.from(files).map((file) => URL.createObjectURL(file)));
+    setAttachments(files ? Array.from(files) : []);
   }, []);
 
   const handleRemoveAttachment = useCallback((index: number) => {
@@ -57,7 +64,7 @@ const CustomerChatPage = () => {
       e.preventDefault();
       if (!message.trim()) return;
 
-      await onSendMessage(message, attachments, chat?._id);
+      await onSendMessage(message, attachments, chat?._id || '');
       setMessage('');
       setAttachments([]);
       setPreviews([]);
@@ -66,19 +73,19 @@ const CustomerChatPage = () => {
   );
 
   const handleChatClick = useCallback(
-    (chatItem) => {
+    (chatItem: ChatType) => {
       setMobileChatOpen(true);
       socket.emit('joinChat', chatItem._id);
       setChat({ ...chatItem });
       onFetchMessages(chatItem._id);
-      setUnReadMessages((prev) => prev.filter((n) => n.chat !== chatItem._id));
+      setUnReadMessages((prev) => (prev ? prev.filter((n) => n.chat._id !== chatItem._id) : []));
     },
     [setMobileChatOpen, setChat, onFetchMessages, setUnReadMessages],
   );
 
   const handleLeaveChat = useCallback(
-    (chatId) => {
-      setChats((prev) => prev.filter((c) => c._id !== chatId));
+    (chatId: string) => {
+      setChats((prev) => (prev ? prev.filter((c) => c._id !== chatId) : []));
       if (chat?._id === chatId) {
         setChat(null);
       }
@@ -91,12 +98,12 @@ const CustomerChatPage = () => {
       <div className='flex max-sm:flex-col h-full'>
         {/* Chat Sidebar */}
         <div
-          className={classNames(
+          className={cn(
             'max-sm:w-full sm:w-1/3 min-w-[300px] h-full overflow-y-scroll',
             mobileChatOpen && chat?._id && 'max-sm:hidden',
           )}>
           {/* Chat Modal */}
-          <ChatModal
+          <ConnectUser
             isOpen={openAddChat}
             onClose={() => {
               setOpenAddChat(false);
@@ -140,35 +147,37 @@ const CustomerChatPage = () => {
                     }}
                     className='text-left w-full flex gap-2 items-center hover:bg-gray-100 py-1 pl-5'
                     key={item?._id}>
-                    <div className='scale-75'>
-                      <Avatar name={item?.fullName} avatarUrl={item?.avatar} />
-                    </div>
+                    <Avatar>
+                      <AvatarImage src={item.avatar} alt='avatar' className='h-8' />
+                      <AvatarFallback>{item.fullName.substring(0, 1)}</AvatarFallback>
+                    </Avatar>
                     <span>{item?.fullName}</span>
                   </button>
                 ))}
               </div>
             )}
 
-            {chatsLoading && <Loading />}
-
-            {/* Chat List */}
-            {Array.isArray(chats) &&
-              chats.map((item) => (
-                <ChatItem
-                  key={item?._id}
-                  item={item}
-                  user={user}
-                  unreadCount={unReadMessages.filter((n) => n.chat === item._id).length}
-                  isActive={chat?._id === item?._id}
-                  onUpdate={() => {
-                    setUpdateChat(item);
-                    setOpenAddChat(true);
-                  }}
-                  onDelete={() => handleChatDeleted(item._id)}
-                  onLeave={handleLeaveChat}
-                  onClick={() => handleChatClick(item)}
-                />
-              ))}
+            {/* Chat Listing */}
+            <DataState data={chats} loading={chatsLoading} error={''}>
+              {(data) =>
+                data.map((item) => (
+                  <ChatCard
+                    key={item?._id}
+                    item={item}
+                    user={user!}
+                    unreadCount={unReadMessages.filter((n) => n.chat._id === item._id).length}
+                    isActive={chat?._id === item?._id}
+                    onUpdate={() => {
+                      setUpdateChat(item);
+                      setOpenAddChat(true);
+                    }}
+                    onDelete={() => handleChatDeleted(item._id)}
+                    onLeave={handleLeaveChat}
+                    onClick={() => handleChatClick(item)}
+                  />
+                ))
+              }
+            </DataState>
           </div>
         </div>
 
@@ -184,7 +193,7 @@ const CustomerChatPage = () => {
         {/* Messages Area */}
         {chat?._id && (
           <div
-            className={classNames(
+            className={cn(
               'w-full max-sm:hidden overflow-y-auto flex flex-col',
               mobileChatOpen && '!flex',
             )}>
@@ -193,12 +202,18 @@ const CustomerChatPage = () => {
               <button className='svg-btn !p-2' onClick={() => setMobileChatOpen(false)}>
                 <ArrowLeft />
               </button>
-              <Avatar
-                name={getChatObjectMetadata(chat, user).title}
-                avatarUrl={getChatObjectMetadata(chat, user).avatar}
-              />
+              <Avatar>
+                <AvatarImage
+                  className='h-8'
+                  src={getChatObjectMetadata(chat, user!).avatar}
+                  alt='avatar'
+                />
+                <AvatarFallback className='bg-indigo-600 text-white uppercase font-bold'>
+                  {getChatObjectMetadata(chat, user!).title?.substring(0, 1)}
+                </AvatarFallback>
+              </Avatar>
               <div>
-                <p className='font-medium'>{getChatObjectMetadata(chat, user).title}</p>
+                <p className='font-medium'>{getChatObjectMetadata(chat, user!).title}</p>
                 {chat.isGroupChat ? (
                   <p className='text-xs font-light text-gray-500'>
                     Group {chat.participants?.length} members
@@ -211,20 +226,20 @@ const CustomerChatPage = () => {
 
             {/* Messages */}
             <div className='flex-1 p-4 overflow-y-auto'>
-              {messagesLoading && <Loading />}
-              <div className='min-h-[60dvh]'>
-                {messages.map((item) => (
-                  <Message
-                    key={item?._id}
-                    item={item}
-                    onDelete={() => handleMessageDelete(item?._id)}
-                    sender={item?.sender?._id === user?._id}
-                  />
-                ))}
-                {!messages?.length && !messagesLoading && (
-                  <p className='text-center text-gray-500 mt-10'>No messages yet</p>
+              <DataState data={messages} loading={messagesLoading} error={''}>
+                {(messaging) => (
+                  <div className='min-h-[60dvh]'>
+                    {messaging.map((item) => (
+                      <MessageCard
+                        key={item?._id}
+                        item={item}
+                        onDelete={() => handleMessageDelete(item?._id)}
+                        sender={item?.sender?._id === user?._id}
+                      />
+                    ))}
+                  </div>
                 )}
-              </div>
+              </DataState>
             </div>
 
             {/* Attachment Previews */}

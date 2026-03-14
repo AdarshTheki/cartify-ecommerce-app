@@ -8,7 +8,7 @@ export const fetchProducts = createAsyncThunk<
   { rejectValue: string }
 >('products/fetchProducts', async (_, { rejectWithValue }) => {
   try {
-    const response = await axiosInstance.get(`/product?limit=50`);
+    const response = await axiosInstance.get(`/product`);
     if (response.data.docs.length === 0) return [];
     return response.data.docs;
   } catch {

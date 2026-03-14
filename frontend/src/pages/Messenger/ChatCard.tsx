@@ -1,15 +1,17 @@
 import { memo, useCallback, useMemo } from 'react';
-import { cn, formateTime } from '../../utils';
+import { cn, formateTime, getChatObjectMetadata } from '../../utils';
 import { EllipsisVertical } from 'lucide-react';
+import { useDropdown } from '../../hooks';
+import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/Avatar';
 
 type ChatCardProp = {
-  item: any;
+  item: ChatType;
   isActive: boolean;
   onDelete: () => Promise<void>;
   onClick: () => void;
   unreadCount: number;
-  onLeave: (val: string) => Promise<void>;
-  onUpdate: () => Promise<void>;
+  onLeave: (val: string) => void;
+  onUpdate: () => void;
   user: UserType;
 };
 
@@ -28,32 +30,35 @@ const ChatCard = memo(
         <div ref={dropdownRef} className='flex gap-2 items-center justify-between'>
           {/* Avatar Section */}
           {item.isGroupChat ? (
-            <div className='w-10 relative h-10 flex-shrink-0 flex justify-start items-center flex-nowrap'>
+            <div className='relative flex-shrink-0 flex justify-start items-center flex-nowrap w-10'>
               {item.participants.slice(0, 3).map((participant, i) => (
                 <Avatar
-                  key={participant._id}
-                  name={participant.fullName.substring(0, 2)}
-                  avatarUrl={participant?.avatar}
                   className={cn(
-                    'w-8 h-8 border-[1px] border-white rounded-full object-cover absolute outline outline-dark group-hover:outline-secondary',
+                    'w-8 h-8 absolute',
                     i === 0 ? 'left-0 z-[3]' : i === 1 ? 'left-1.5 z-[2]' : 'left-3 z-[1]',
                   )}
-                />
+                  key={participant._id}>
+                  <AvatarImage src={participant.avatar} alt='avatar' />
+                  <AvatarFallback className='bg-gray-300 text-gray-800 uppercase font-semibold'>
+                    {participant?.fullName.substring(0, 1)}
+                  </AvatarFallback>
+                </Avatar>
               ))}
             </div>
           ) : (
-            <Avatar
-              avatarUrl={chatMetadata.avatar}
-              name={chatMetadata.title}
-              className='w-10 h-10 rounded-full object-cover'
-            />
+            <Avatar className='h-10 w-10'>
+              <AvatarImage src={chatMetadata.avatar} alt='avatar' />
+              <AvatarFallback className='bg-gray-300 text-gray-800 uppercase font-semibold'>
+                {chatMetadata.title?.substring(0, 1)}
+              </AvatarFallback>
+            </Avatar>
           )}
 
           {/* Chat Info */}
           <button className='flex-1 text-left ml-2 relative cursor-pointer' onClick={onClick}>
             <div className='flex items-center justify-between'>
               <p className='line-clamp-1'>{chatMetadata.title}</p>
-              <small className='line-clamp-1 text-gray-500'>{formateTime(item?.updatedAt)}</small>
+              <small className='line-clamp-1 text-gray-500'>{formateTime(item.updatedAt)}</small>
               {unreadCount > 0 && (
                 <span className='bg-green-600 h-2 w-2 aspect-square flex-shrink-0 p-2 text-white text-xs rounded-full inline-flex justify-center items-center'>
                   {unreadCount > 9 ? '9+' : unreadCount}
@@ -76,7 +81,7 @@ const ChatCard = memo(
               <button onClick={() => onLeave(item._id)} className='btn hover:bg-slate-100'>
                 Close {item?.isGroupChat ? 'Group' : 'Chat'}
               </button>
-              {item?.isGroupChat && item?.admin === user?._id && (
+              {item?.isGroupChat && item.admin._id === user._id && (
                 <>
                   <button className='btn hover:bg-slate-100' onClick={onUpdate}>
                     Edit Group
@@ -86,7 +91,7 @@ const ChatCard = memo(
                   </button>
                 </>
               )}
-              {!item?.isGroupChat && item?.admin === user?._id && (
+              {!item?.isGroupChat && item?.admin._id === user?._id && (
                 <button onClick={onDelete} className='btn text-rose-600 hover:bg-slate-100'>
                   Delete Chat
                 </button>

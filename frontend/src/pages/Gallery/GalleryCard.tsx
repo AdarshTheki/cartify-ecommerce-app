@@ -1,7 +1,7 @@
 import { Download, Folder, Globe2Icon, Image, Loader, Trash2Icon } from 'lucide-react';
 import { useApi } from '../../hooks';
 import { errorHandler } from '../../utils';
-import { Button } from '../../ui';
+import { Button } from '../../components/ui';
 import { useAppSelector } from '../../redux/store';
 import type { AxiosError } from 'axios';
 

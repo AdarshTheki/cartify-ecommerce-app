@@ -1,5 +1,5 @@
 import { useFetch, useTitle } from '../hooks';
-import { Loading, Select } from '../ui';
+import { Loading, Select } from '../components/ui';
 import { OrderList } from '../components';
 import { useState } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from 'lucide-react';

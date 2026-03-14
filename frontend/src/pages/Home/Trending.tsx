@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/purity */
 import React from 'react';
 import { ProductItem } from '../../components';
-import { Skeleton } from '../../ui';
+import { Skeleton } from '../../components/ui';
 import { useAppSelector } from '../../redux/store';
 
 const Trending = ({

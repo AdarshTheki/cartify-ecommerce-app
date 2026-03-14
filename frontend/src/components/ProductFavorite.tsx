@@ -24,7 +24,7 @@ const HeartFavorite = ({ id, className, name }: HeartFavoriteProp) => {
         </div>
       ) : (
         <Heart
-          fill={`${!!user?.favorite.includes(id) || data?.includes(id) ? 'red' : '#ff01'}`}
+          fill={`${!!user?.favorite?.includes(id) || data?.includes(id) ? 'red' : '#ff01'}`}
           stroke='red'
           className='h-5 w-5'
         />

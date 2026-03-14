@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { ShoppingCart } from 'lucide-react';
 import { ProductItem } from '../components';
-import { Loading, NotFound } from '../ui';
+import { Loading, NotFound } from '../components/ui';
 import Certificate from './Home/Certificate';
 import Trending from './Home/Trending';
 import { useApi } from '../hooks';

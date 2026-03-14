@@ -9,7 +9,7 @@ import { useFetch } from '../../hooks';
 import { axiosInstance, errorHandler } from '../../utils';
 import { addItem } from '../../redux/cartSlice';
 import type { AxiosError } from 'axios';
-import { Button, Loading, NotFound } from '../../ui';
+import { Button, Loading, NotFound } from '../../components/ui';
 import HeartFavorite from '../../components/ProductFavorite';
 
 const SingleProductPage = () => {

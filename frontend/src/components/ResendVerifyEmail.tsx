@@ -1,7 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { useAppSelector } from '../redux/store';
 import { axiosInstance } from '../utils';
-import { Input } from '../ui';
+import { Input } from './ui';
 
 const ResendVerifyEmail = () => {
   const { user } = useAppSelector((s) => s.auth);

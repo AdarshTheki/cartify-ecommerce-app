@@ -14,7 +14,7 @@ import {
 } from 'lucide-react';
 import { useAppSelector } from '../redux/store';
 import { useApi, useDebounce } from '../hooks';
-import { Skeleton } from '../ui';
+import { Loading } from '../components/ui';
 import { cn } from '../utils';
 
 const sortByOptions = [
@@ -43,10 +43,8 @@ const ProductListing = () => {
 
   const { data, loading, callApi } = useApi<PaginationType<ProductType>>();
 
-  // const { data } = useFetch(`/product?${queryParams}`);
-
   useEffect(() => {
-    callApi(`/product`, 'GET', {
+    callApi(`/product`, 'get', {
       ...(category && { category }),
       ...(brand && { brand }),
       minPrice: minPrice.toString(),
@@ -87,16 +85,8 @@ const ProductListing = () => {
             {/* Display filters */}
             {!![category, brand, rating].filter((i) => i?.toString()?.trim())[0] && (
               <div className='inline-flex gap-1 flex-wrap'>
-                {!!category && (
-                  <span onClick={() => setCategory('')} className='status-inactive cursor-pointer'>
-                    {category} x
-                  </span>
-                )}
-                {!!brand && (
-                  <span onClick={() => setBrand('')} className='status-inactive cursor-pointer'>
-                    {brand} x
-                  </span>
-                )}
+                <CloseButton isVal={category} setVal={() => setCategory('')} />
+                <CloseButton isVal={brand} setVal={() => setBrand('')} />
                 {!!rating && (
                   <span className='status-inactive cursor-pointer' onClick={() => setRating(0)}>
                     star {rating} x
@@ -328,7 +318,7 @@ const ProductListing = () => {
           {/* Pagination */}
           <div className='flex gap-4 justify-between items-center card !px-2'>
             <p className='text-sm pl-2'>
-              <span className='max-sm:hidden'>Showing</span>
+              <span className='max-sm:hidden'>Showing </span>
               {cn(
                 (page - 1) * limit + 1,
                 'to',
@@ -358,22 +348,16 @@ const ProductListing = () => {
             </button>
           </div>
 
-          {(loading || !data?.totalDocs) && (
-            <div className={`grid md:grid-cols-3 grid-cols-2 gap-2 px-2`}>
-              {Array.from({ length: 10 }, (v, i) => (
-                <Skeleton key={i} className='h-[210px]' />
+          {/* <!-- Products Grid --> */}
+          {loading || !data?.totalDocs ? (
+            <Loading />
+          ) : (
+            <div className={`grid md:grid-cols-3 grid-cols-2 gap-2 sm:gap-4`}>
+              {data?.docs?.map((item, index) => (
+                <ProductItem key={item?._id} {...item} delay={index + 1 + '00ms'} />
               ))}
             </div>
           )}
-
-          {/* <!-- Products Grid --> */}
-          <div className={`grid md:grid-cols-3 grid-cols-2 gap-2 sm:gap-4`}>
-            {/* <!-- Product Card --> */}
-            {data?.docs?.length &&
-              data?.docs?.map((item, index) => (
-                <ProductItem key={item?._id} {...item} delay={index + 1 + '00ms'} />
-              ))}
-          </div>
         </div>
       </div>
     </section>
@@ -381,3 +365,12 @@ const ProductListing = () => {
 };
 
 export default ProductListing;
+
+const CloseButton = ({ isVal, setVal }: { isVal: string; setVal: () => void }) => {
+  if (!isVal) return null;
+  return (
+    <span onClick={() => setVal()} className='status-inactive cursor-pointer'>
+      {isVal} x
+    </span>
+  );
+};

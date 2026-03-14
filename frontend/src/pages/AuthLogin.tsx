@@ -18,9 +18,7 @@ const Login = () => {
   return (
     <section className='flex items-center justify-center p-4 min-h-[80dvh]'>
       <div className='max-w-md w-full bg-white/70 backdrop-blur-xl rounded-3xl border border-white/20 shadow-2xl p-8'>
-        <h1 className='text-3xl text-center pb-5 font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-purple-800 bg-clip-text text-transparent mb-2'>
-          Sign In
-        </h1>
+        <h1 className='text-3xl text-center pb-5 font-bold text-indigo-600 mb-2'>Sign In</h1>
 
         <form id='loginForm' className='space-y-6' onSubmit={handleSubmit}>
           <div>
@@ -86,7 +84,7 @@ const Login = () => {
           <button
             disabled={loginLoading}
             type='submit'
-            className='w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-semibold rounded-xl hover:from-blue-700 hover:to-purple-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed'>
+            className='w-full px-6 py-3 bg-indigo-600 text-white hover:bg-indigo-700 font-semibold rounded-2xl'>
             {loginLoading ? 'Signing In...' : 'Sign In'}
           </button>
         </form>

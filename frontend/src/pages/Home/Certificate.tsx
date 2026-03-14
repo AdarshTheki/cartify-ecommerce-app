@@ -1,4 +1,4 @@
-import { LazyImage } from '../../ui';
+import { LazyImage } from '../../components/ui';
 
 const Certificate = () => {
   const items = [

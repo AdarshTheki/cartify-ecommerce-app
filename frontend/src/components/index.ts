@@ -10,9 +10,11 @@ import ProductItem from './ProductItem';
 import ProductFavorite from './ProductFavorite';
 import ImagePreview from './ImagePreview';
 import ResendVerifyEmail from './ResendVerifyEmail';
+import DataState from './DataState';
 
 export {
   ImagePreview,
+  DataState,
   ResendVerifyEmail,
   ProductForm,
   ProductFavorite,

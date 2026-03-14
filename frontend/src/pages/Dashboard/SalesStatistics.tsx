@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Counter, Select, Skeleton } from '../../ui';
+import { Counter, Select, Skeleton } from '../../components/ui';
 import { useFetch } from '../../hooks';
 import { cn } from '../../utils';
 import { Box, CircleDollarSign, ShoppingBag, Users } from 'lucide-react';

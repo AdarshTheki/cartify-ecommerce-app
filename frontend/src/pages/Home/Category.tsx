@@ -1,6 +1,6 @@
 import { ArrowRightIcon } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
-import { Skeleton } from '../../ui';
+import { Skeleton } from '../../components/ui';
 import { useAppSelector } from '../../redux/store';
 
 const Category = ({ size = 8 }: { size?: number }) => {

@@ -3,7 +3,7 @@ import { AxiosError } from 'axios';
 import { PackageSearch } from 'lucide-react';
 import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Select } from '../ui';
+import { Select } from './ui';
 
 export default function OrderCard({ items }: { items: OrderType[] }) {
   const [users, setUsers] = useState<OrderType[]>(() => items || []);

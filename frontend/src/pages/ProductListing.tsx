@@ -3,7 +3,7 @@ import { ChevronLeftIcon, ChevronRightIcon, Plus } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 import { ProductList } from '../components';
-import { Input, NotFound, Select } from '../ui';
+import { Input, NotFound, Select } from '../components/ui';
 import { useFetch, useDebounce, useTitle } from '../hooks';
 
 const productOptions = [

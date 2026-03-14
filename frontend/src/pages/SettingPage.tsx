@@ -4,7 +4,7 @@ import { User, Lock, ListOrdered, PackageSearch } from 'lucide-react';
 import { ResendVerifyEmail } from '../components';
 import { formateTime } from '../utils';
 import { useApi, useAuth } from '../hooks';
-import { Input, Loading } from '../ui';
+import { Input, Loading } from '../components/ui';
 import ForgotPasswordRequest from './ForgotPasswordRequest';
 
 const defaultMessage = {

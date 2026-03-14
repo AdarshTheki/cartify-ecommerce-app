@@ -1,49 +1,55 @@
-import CategoryListing from './CategoryListing';
-import CategoryUpdating from './CategoryUpdating';
-import CustomerListing from './CustomerListing';
-import CustomerUpdating from './CustomerUpdating';
-import OrderListing from './OrderListing';
-import ProductListing from './ProductListing';
-import ProductUpdating from './ProductUpdating';
-import ProfileSetting from './ProfileSetting';
-import AdminDashboard from './Dashboard/AdminDashboard';
-import AuthLogin from './AuthLogin';
-import AuthRegister from './AuthRegister';
-import Home from './Home/HomePage';
-import EmailVerifyPage from './EmailVerifyPage';
-import S3FileManager from './S3FileManager';
 import ForgotPasswordRequest from './ForgotPasswordRequest';
-import OrderFailed from './OrderFailed';
+import OrderListing from './OrderListing';
+import ProfileSetting from './ProfileSetting';
+import ShoppingCart from './ShoppingCart';
+import AuthLogin from './AuthLogin';
 import OrderSuccess from './OrderSuccess';
+import ResetPasswordPage from './ResetPasswordPage';
+import AuthRegister from './AuthRegister';
+import ProductListing from './ProductListing';
+import S3FileManager from './S3FileManager';
+import UserFavoritePage from './UserFavoritePage';
+import CategoryListing from './CategoryListing';
 import ProductsPage from './ProductsPage';
 import SettingPage from './SettingPage';
-import ResetPasswordPage from './ResetPasswordPage';
+import CategoryUpdating from './CategoryUpdating';
+import OrderFailed from './OrderFailed';
+import ProductUpdating from './ProductUpdating';
 import ShippingAddress from './ShippingAddress';
-import ShoppingCart from './ShoppingCart';
-import UserFavoritePage from './UserFavoritePage';
+import CustomerListing from './CustomerListing';
+import CustomerUpdating from './CustomerUpdating';
+import EmailVerifyPage from './EmailVerifyPage';
+import MessengerPage from './Messenger/MessengerPage';
+import AdminPanel from './Dashboard/AdminDashboard';
+import GalleryPage from './Gallery/GalleryPage';
+import HomePage from './Home/HomePage';
+import SingleProductPage from './SingleProduct/SingleProductPage';
 
 export {
-  CategoryListing,
-  CategoryUpdating,
-  CustomerListing,
-  CustomerUpdating,
-  OrderListing,
-  ProductListing,
-  ProductUpdating,
-  ProfileSetting,
-  AdminDashboard,
-  AuthLogin,
-  AuthRegister,
-  Home,
-  EmailVerifyPage,
-  S3FileManager,
+  SingleProductPage,
+  MessengerPage,
+  AdminPanel,
+  GalleryPage,
+  HomePage,
   ForgotPasswordRequest,
-  OrderFailed,
+  OrderListing,
+  ProfileSetting,
+  ShoppingCart,
+  AuthLogin,
   OrderSuccess,
+  ResetPasswordPage,
+  AuthRegister,
+  ProductListing,
+  S3FileManager,
+  UserFavoritePage,
+  CategoryListing,
   ProductsPage,
   SettingPage,
-  ResetPasswordPage,
+  CategoryUpdating,
+  OrderFailed,
+  ProductUpdating,
   ShippingAddress,
-  ShoppingCart,
-  UserFavoritePage,
+  CustomerListing,
+  CustomerUpdating,
+  EmailVerifyPage,
 };

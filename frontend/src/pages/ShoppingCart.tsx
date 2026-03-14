@@ -13,7 +13,7 @@ import Certificate from './Home/Certificate';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 import { axiosInstance, errorHandler } from '../utils';
 import { AxiosError } from 'axios';
-import { Button, Loading, NotFound } from '../ui';
+import { Button, Loading, NotFound } from '../components/ui';
 
 const ShoppingCartPage = () => {
   const dispatch = useAppDispatch();

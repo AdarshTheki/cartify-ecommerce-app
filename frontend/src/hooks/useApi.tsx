@@ -2,15 +2,6 @@ import { useState } from 'react';
 import { AxiosError, type AxiosRequestConfig, type Method } from 'axios';
 import { axiosInstance } from '../utils';
 
-// type ApiResponse<T> = {
-//   data?: T;
-//   message?: string;
-// };
-
-type ApiError = {
-  message?: string;
-};
-
 function useApi<T>() {
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<T | null>(null);
@@ -39,7 +30,7 @@ function useApi<T>() {
 
       return result;
     } catch (err) {
-      const error = err as AxiosError<ApiError>;
+      const error = err as AxiosError<{ message: string }>;
 
       const message = error.response?.data?.message || error.message || 'Something went wrong';
 

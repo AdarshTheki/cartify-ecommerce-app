@@ -5,8 +5,7 @@ import { Trash2Icon } from 'lucide-react';
 
 type MessageCardProp = {
   sender: boolean;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  item: any;
+  item: MessageType;
   onDelete: () => void;
 };
 

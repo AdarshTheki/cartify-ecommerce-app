@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom';
 import React, { useState } from 'react';
 
 import { useFetch, useTitle } from '../hooks';
-import { Input, Loading, NotFound, Select } from '../ui';
+import { Input, Loading, NotFound, Select } from '../components/ui';
 import { UserList } from '../components';
 
 const customerOptions = [

@@ -10,7 +10,7 @@ import { useAppSelector } from '../../redux/store';
 import { useApi } from '../../hooks';
 import { axiosInstance, errorHandler } from '../../utils';
 import type { AxiosError } from 'axios';
-import { Loading } from '../../ui';
+import { Loading } from '../../components/ui';
 
 const COmmentListing = () => {
   const { id } = useParams();

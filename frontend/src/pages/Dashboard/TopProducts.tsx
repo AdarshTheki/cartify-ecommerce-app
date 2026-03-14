@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 
 import { useFetch } from '../../hooks';
-import { Loading, Counter } from '../../ui';
+import { Loading, Counter } from '../../components/ui';
 import { axiosInstance, errorHandler, downloadProductsAsCSV } from '../../utils';
 
 interface TopProductsProp {

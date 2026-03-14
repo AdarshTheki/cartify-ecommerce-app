@@ -1,17 +1,22 @@
-import { ProductForm } from '../components';
-import useFetch from '../hooks/useFetch';
+import { DataState, ProductForm } from '../components';
 import { useParams } from 'react-router-dom';
-import { Loading, NotFound } from '../ui';
+import { useApi } from '../hooks';
+import { useEffect } from 'react';
 
 const ProductUpdate = () => {
   const { id } = useParams();
-  const { data, loading, error } = useFetch<ProductType>(`/product/${id}`);
+  const { callApi, data, loading, error } = useApi<ProductType>();
 
-  if (loading) return <Loading />;
+  useEffect(() => {
+    callApi(`/product/${id}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id]);
 
-  if (error) return <NotFound title={JSON.stringify(error)} />;
-
-  return <ProductForm data={data ?? undefined} />;
+  return (
+    <DataState data={data} error={error} loading={loading}>
+      <ProductForm data={data} />
+    </DataState>
+  );
 };
 
 export default ProductUpdate;

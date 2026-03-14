@@ -4,9 +4,9 @@ import { AxiosError } from 'axios';
 
 import { useTitle } from '../hooks';
 import { axiosInstance, countries, errorHandler } from '../utils';
-import { Select, Input } from '../ui';
+import { Select, Input } from './ui';
 
-const UserForm = ({ userData }: { userData?: UserType }) => {
+const UserForm = ({ userData }: { userData: UserType | null }) => {
   const [user, setUser] = React.useState({
     email: userData?.email || '',
     password: userData?.password || '',

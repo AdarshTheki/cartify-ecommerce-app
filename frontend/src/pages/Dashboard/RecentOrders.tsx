@@ -2,7 +2,7 @@ import { AxiosError } from 'axios';
 import { Download, Loader } from 'lucide-react';
 import { useState } from 'react';
 import { downloadOrdersAsCSV, axiosInstance, cn, errorHandler, formateTime } from '../../utils';
-import { Skeleton } from '../../ui';
+import { Skeleton } from '../../components/ui';
 import { useFetch } from '../../hooks';
 
 export default function RecentOrders() {

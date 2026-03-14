@@ -171,7 +171,7 @@ export const ecommerceMenu = [
   {
     id: 4,
     name: 'Messenger',
-    path: '/chat-messenger',
+    path: '/messenger',
     Icon: MessagesSquare,
   },
   {
@@ -188,8 +188,8 @@ export const ecommerceMenu = [
   },
   {
     id: 7,
-    name: 'AI Generator',
-    path: '/ai-generator',
+    name: 'AI Tools',
+    path: '/ai',
     Icon: Bot,
   },
   {
@@ -210,43 +210,43 @@ export const images = {
 
 export const aiToolsMenu = [
   {
-    title: 'AI Article Writer',
+    title: 'Article Writer',
     description:
       'Generate high-quality, engaging articles on any topic with our AI writing technology.',
     Icon: SquarePen,
     bg: { from: '#3588F2', to: '#0BB0D7' },
-    path: '/ai/write-articles',
+    path: '/ai/article-writer',
   },
   {
-    title: 'Blog Title Generator',
+    title: 'Title Generator',
     description:
       'Find the perfect, catchy title for your blog posts with our AI-powered generator.',
     Icon: Hash,
     bg: { from: '#B153EA', to: '#E549A3' },
-    path: '/ai/blog-titles',
+    path: '/ai/title-generator',
   },
   {
-    title: 'AI Image Generation',
+    title: 'Image Generator',
     description:
       'Create stunning visuals with our AI image generation tool, Experience the power of AI ',
     Icon: Image,
     bg: { from: '#20C363', to: '#11B97E' },
-    path: '/ai/generate-images',
+    path: '/ai/image-generator',
   },
   {
-    title: 'AI Image Transformations',
+    title: 'Image Editor',
     description: 'Effortlessly remove backgrounds from your images with our AI-driven tool.',
     Icon: Eraser,
     bg: { from: '#f76c1c', to: '#ed4961' },
-    path: '/ai/image-transformation',
+    path: '/ai/image-editor',
   },
   {
-    title: 'AI Resume Reviewer',
+    title: 'Resume Reviewer',
     description:
       'Get your resume reviewed by AI to improve your chances of landing your dream job.',
     Icon: FileText,
     bg: { from: '#12B7AC', to: '#08B6CE' },
-    path: '/ai/review-resume',
+    path: '/ai/resume-reviewer',
   },
 ];
 

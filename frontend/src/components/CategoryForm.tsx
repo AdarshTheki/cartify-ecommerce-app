@@ -5,10 +5,10 @@ import { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 
 import { errorHandler, axiosInstance } from '../utils';
-import { Input, Textarea, Select } from '../ui';
+import { Input, Textarea, Select } from './ui';
 import useTitle from '../hooks/useTitle';
 
-const CategoryForm = ({ item }: { item?: CategoryType }) => {
+const CategoryForm = ({ item }: { item: CategoryType | null }) => {
   const { pathname } = useLocation();
   const path = pathname.split('/')[1];
   const navigate = useNavigate();

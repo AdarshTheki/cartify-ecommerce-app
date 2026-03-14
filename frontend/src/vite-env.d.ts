@@ -23,6 +23,12 @@ enum ProductStatusEnum {
   pending = 'pending',
 }
 
+interface DateType {
+  _id: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 interface UserActivityType {
   userId: string;
   productId: string;
@@ -151,16 +157,13 @@ type ReportType = {
   _id?: string;
 };
 
-interface CommentItemType {
+interface CommentItemType extends DateType {
   productId: string;
   createdBy: UserType;
   text: string;
   likes: string[];
   replies: ReplyType[];
   reports: ReportType[];
-  createdAt: Date;
-  updatedAt: Date;
-  _id?: string;
 }
 
 interface CloudinaryFileType {
@@ -179,4 +182,28 @@ interface CloudinaryFileType {
   access_mode: string;
   secure_url: string;
   folder: string;
+}
+
+interface MessageType extends DateType {
+  sender: UserType;
+  chat: ChatType;
+  content: string;
+  attachments: [string];
+}
+
+interface ChatType extends DateType {
+  name: string;
+  isGroupChat: boolean;
+  lastMessage: MessageType;
+  participants: UserType[];
+  admin: UserType;
+}
+
+interface AIResponseType extends DateType {
+  createdBy: UserType;
+  prompt: string;
+  response: string;
+  publish: boolean;
+  model: string;
+  likes: [string];
 }

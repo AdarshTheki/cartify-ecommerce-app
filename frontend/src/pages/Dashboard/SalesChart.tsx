@@ -1,7 +1,7 @@
 import { Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { getSalesPerMonth } from '../../utils';
 import { useFetch } from '../../hooks';
-import { Loading } from '../../ui';
+import { Loading } from '../../components/ui';
 
 type SalesChartProp = {
   createdAt: Date;

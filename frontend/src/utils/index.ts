@@ -8,6 +8,8 @@ import {
   axiosInstance,
   errorHandler,
   formateTime,
+  socket,
+  getChatObjectMetadata,
 } from './actions';
 
 import {
@@ -35,6 +37,8 @@ export {
   getSalesPerMonth,
   errorHandler,
   formateTime,
+  getChatObjectMetadata,
+  socket,
   axiosInstance,
   brands,
   categories,

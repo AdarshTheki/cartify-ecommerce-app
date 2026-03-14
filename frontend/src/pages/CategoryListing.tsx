@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon, Plus } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 
-import { Input, Loading, NotFound, Select } from '../ui';
+import { Input, Loading, NotFound, Select } from '../components/ui';
 import { useFetch, useDebounce, useTitle } from '../hooks';
 import { CategoryList } from '../components';
 

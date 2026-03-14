@@ -1,6 +1,6 @@
 import { Star } from 'lucide-react';
 import { lovedByCreators } from '../../utils';
-import { Avatar, AvatarFallback } from '../../ui/Avatar';
+import { Avatar, AvatarFallback } from '../../components/ui/Avatar';
 
 const Testimonial = () => {
   return (
@@ -31,7 +31,7 @@ const Testimonial = () => {
             <hr className='mb-5 border-gray-300' />
             <div className='flex items-center gap-4'>
               <Avatar>
-                <AvatarFallback>{testimonial.name.substring(0, 2)}</AvatarFallback>
+                <AvatarFallback>{testimonial.name.substring(0, 1)}</AvatarFallback>
               </Avatar>
               <div className='text-sm text-gray-600'>
                 <h3 className='font-medium'>{testimonial.name}</h3>

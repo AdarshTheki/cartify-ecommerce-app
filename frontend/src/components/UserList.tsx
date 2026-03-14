@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SquarePen, Trash2 } from 'lucide-react';
 import { axiosInstance, errorHandler } from '../utils';
-import { DeleteModal } from '../ui';
+import { DeleteModal } from './ui';
 
 export default function UserCard({ items }: { items: UserType[] }) {
   const [users, setUsers] = useState<UserType[]>(() => items || []);
