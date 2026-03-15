@@ -5,7 +5,7 @@ import { fetchBrands } from './redux/brandSlice';
 import { fetchCategories } from './redux/categorySlice';
 import { fetchProducts } from './redux/productSlice';
 import { useAppDispatch } from './redux/store';
-import router from './Layout/Root';
+import router from './layouts/RootLayout';
 
 const App = () => {
   const dispatch = useAppDispatch();

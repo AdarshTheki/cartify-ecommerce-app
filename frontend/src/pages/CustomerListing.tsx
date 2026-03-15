@@ -1,6 +1,6 @@
 import { ChevronLeftIcon, ChevronRightIcon, Plus } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
-import React, { useState } from 'react';
+import { useState } from 'react';
 
 import { useFetch, useTitle } from '../hooks';
 import { Input, Loading, NotFound, Select } from '../components/ui';

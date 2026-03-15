@@ -1,10 +1,4 @@
-import {
-  ArrowLeft,
-  Loader,
-  ShoppingBag,
-  ShoppingCart as ShoppingCartIcon,
-  Trash2Icon,
-} from 'lucide-react';
+import { ArrowLeft, Loader, ShoppingBag, Trash2Icon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import { fetchCarts, removeItem, updateItemQuantity } from '../redux/cartSlice';
@@ -12,13 +6,14 @@ import Trending from './Home/Trending';
 import Certificate from './Home/Certificate';
 import { useAppDispatch, useAppSelector } from '../redux/store';
 import { axiosInstance, errorHandler } from '../services';
-import { Button, Loading, NotFound } from '../components/ui';
+import { Button } from '../components/ui';
+import { DataState } from '../components';
 
 const ShoppingCartPage = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const { items, loading, totalAmount, totalQuantity } = useAppSelector((state) => state.cart);
+  const { items, loading } = useAppSelector((state) => state.cart);
 
   useEffect(() => {
     dispatch(fetchCarts());
@@ -59,80 +54,74 @@ const ShoppingCartPage = () => {
     }
   };
 
-  if (loading) return <Loading />;
+  const totalAmount = items.reduce((p, c) => c.productId.price * c.quantity + p, 0);
+  const totalQuantity = items.reduce((p, c) => c.quantity + p, 0);
 
   return (
-    <section className='min-h-screen mx-auto container px-2'>
-      {!items.length && (
-        <NotFound
-          canvas={<ShoppingCartIcon className='w-20 h-20 text-gray-400 mb-4 mx-auto' />}
-          title='Your cart is empty'
-          description='Looks like you haven’t added anything to your cart yet.'
-          linkName='Start Shopping'
-          linkClass='bg-indigo-600'
-          linkTo='/products'
-          mainClass='min-h-[100px]'
-        />
-      )}
-      <div className='flex max-sm:flex-col gap-5'>
-        <div className='md:flex-1 w-full'>
-          {items.map((item) => {
-            if (!item?.productId) return null;
-            return (
-              <ShoppingCart
-                key={item._id}
-                {...item}
-                onQtyChange={(qty) => handleUpdateQty(item._id, item.productId._id, qty)}
-                onRemove={() => handleRemoveItem(item._id)}
-              />
-            );
-          })}
+    <DataState data={items} loading={loading} error={''}>
+      {(carts) => (
+        <section className='min-h-screen mx-auto container px-2'>
+          <div className='flex max-sm:flex-col gap-5'>
+            <div className='md:flex-1 w-full'>
+              {carts.map((item) => {
+                if (!item?.productId) return null;
+                return (
+                  <ShoppingCart
+                    key={item._id}
+                    {...item}
+                    onQtyChange={(qty) => handleUpdateQty(item._id, item.productId._id, qty)}
+                    onRemove={() => handleRemoveItem(item._id)}
+                  />
+                );
+              })}
 
-          {!!items.length && (
-            <div className='flex gap-6 font-semibold mt-10 '>
-              <Button
-                icon={<ArrowLeft size={16} />}
-                onClick={() => navigate('/products')}
-                name='Go to products'
-              />
-              <Button
-                disabled={isLoading}
-                icon={isLoading ? <Loader size={16} /> : <ShoppingBag size={16} />}
-                name='Checkout payment'
-                onClick={handleCheckout}
-                className='bg-indigo-600 text-white hover:opacity-90'
-              />
+              {!!carts.length && (
+                <div className='flex gap-6 font-semibold mt-10 '>
+                  <Button
+                    icon={<ArrowLeft size={16} />}
+                    onClick={() => navigate('/products')}
+                    name='Go to products'
+                  />
+                  <Button
+                    disabled={isLoading}
+                    icon={isLoading ? <Loader size={16} /> : <ShoppingBag size={16} />}
+                    name='Checkout payment'
+                    onClick={handleCheckout}
+                    className='bg-indigo-600 text-white hover:opacity-90'
+                  />
+                </div>
+              )}
             </div>
-          )}
-        </div>
 
-        {!!items.length && (
-          <div className='p-4 md:w-1/3 space-y-3 w-full sticky top-20 h-fit'>
-            <h3>This Order shipping Fee!</h3>
-            <div className='flex justify-between font-semibold text-xl'>
-              <span>{totalQuantity} Item</span>
-              <span>${totalAmount}</span>
-            </div>
-            <div className='flex justify-between'>
-              <span>Shipping:</span>
-              <span>FREE</span>
-            </div>
-            <div className='flex justify-between'>
-              <span>Estimate Tax:</span>
-              <span className='text-red-600'>$5</span>
-            </div>
-            <div className='flex justify-between font-semibold text-3xl'>
-              <span>Total:</span>
-              <span>${totalQuantity + 5}</span>
-            </div>
+            {!!carts.length && (
+              <div className='p-4 md:w-1/3 space-y-3 w-full sticky top-20 h-fit'>
+                <h3>This Order shipping Fee!</h3>
+                <div className='flex justify-between font-semibold text-xl'>
+                  <span>{totalQuantity} Item</span>
+                  <span>${totalAmount}</span>
+                </div>
+                <div className='flex justify-between'>
+                  <span>Shipping:</span>
+                  <span>FREE</span>
+                </div>
+                <div className='flex justify-between'>
+                  <span>Estimate Tax:</span>
+                  <span className='text-red-600'>$5</span>
+                </div>
+                <div className='flex justify-between font-semibold text-3xl'>
+                  <span>Total:</span>
+                  <span>${totalQuantity * totalAmount + 5}</span>
+                </div>
+              </div>
+            )}
           </div>
-        )}
-      </div>
 
-      <Certificate />
+          <Certificate />
 
-      <Trending heading='Suggest you Wishlist' size={4} />
-    </section>
+          <Trending heading='Suggest you Wishlist' size={4} />
+        </section>
+      )}
+    </DataState>
   );
 };
 

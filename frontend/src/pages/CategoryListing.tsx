@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon, Plus } from 'lucide-react';
 import { NavLink, useLocation } from 'react-router-dom';
 

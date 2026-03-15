@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Counter, Select, Skeleton } from '../../components/ui';
 import { useFetch } from '../../hooks';
 import { cn } from '../../utils';

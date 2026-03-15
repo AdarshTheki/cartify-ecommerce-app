@@ -40,7 +40,7 @@ const Trending = ({
                 <ProductItem {...item} delay={i + 1 + '00ms'} />
               </div>
             ))
-          : Array.from({ length: size }, (v, i) => (
+          : Array.from({ length: size }, (_, i) => (
               <Skeleton key={i} className={'max-sm:min-w-64 h-[210px]'} />
             ))}
       </div>

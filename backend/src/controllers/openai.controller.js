@@ -217,18 +217,20 @@ export const deletedOpenaiById = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, post, 'Deleted this post successfully'));
 });
 
-// @desc    Get user's generated AI posts
-// @route   GET /api/v1/openai/user-generations
+// @desc    Get all generated AI posts
+// @route   GET /api/v1/openai/all-generated
 // @access  Private
-export const getUserGenerate = asyncHandler(async (req, res) => {
-  const posts = await AIModel.find({ createdBy: req.user._id })
-    .populate('createdBy', 'email fullName')
-    .sort({
-      createdAt: -1,
-    });
+export const getAllGeneratedAIPosts = asyncHandler(async (req, res) => {
+  const { page = 1, limit = 20 } = req.query;
+
+  const posts = await AIModel.paginate(
+    {},
+    { page: Number(page), limit: Number(limit), sort: { createdAt: -1 } }
+  );
+
   return res
     .status(200)
     .json(
-      new ApiResponse(200, posts, 'User generated posts retrieved successfully')
+      new ApiResponse(200, posts.docs, 'Generated posts retrieved successfully')
     );
 });

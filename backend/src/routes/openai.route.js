@@ -4,7 +4,7 @@ import { upload } from '../middlewares/multer.middleware.js';
 import {
   generateText,
   generateTextToImage,
-  getUserGenerate,
+  getAllGeneratedAIPosts,
   toggleLikesCreation,
   resumeReviewer,
   deletedOpenaiById,
@@ -12,9 +12,11 @@ import {
 
 const router = express.Router();
 
+router.route('/posts').get(getAllGeneratedAIPosts);
+
 router.use(verifyJWT());
 
-router.route('/generate-text').get(getUserGenerate).post(generateText);
+router.route('/generate-text').post(generateText);
 router.post('/generate-image', generateTextToImage);
 router.post('/resume-reviewer', upload.single('pdfFile'), resumeReviewer);
 router.post('/like/:slug', toggleLikesCreation);

@@ -5,14 +5,14 @@ import { NavLink } from 'react-router-dom';
 import { Select } from './ui';
 import { formateTime } from '../utils';
 
-export default function OrderCard({ items }: { items: OrderType[] }) {
+export default function OrderList({ items }: { items: OrderType[] }) {
   const [users, setUsers] = useState<OrderType[]>((items?.length > 0 && items) || []);
 
-  const handleStatusChange = async (orderId: string, status: StatusEnum) => {
+  const handleStatusChange = async (orderId: string, status: OrderStatusEnum) => {
     try {
       const res = await axiosInstance.patch(`/order/${orderId}/status`, { status });
       if (res.data) {
-        setUsers((prev) => prev.map((p) => (p._id === orderId ? { ...p, status } : p)));
+        setUsers((prev) => prev.map((p) => (p._id == orderId ? { ...p, status } : p)));
       }
     } catch (error) {
       errorHandler(error);
@@ -92,7 +92,7 @@ export default function OrderCard({ items }: { items: OrderType[] }) {
                 <Select
                   selected={category.status}
                   list={['pending', 'shipped', 'delivered', 'cancelled']}
-                  onSelected={(e) => handleStatusChange(category._id, e as StatusEnum)}
+                  onSelected={(e) => handleStatusChange(category._id, e as OrderStatusEnum)}
                 />
               </td>
               <td className='px-4 py-3'>

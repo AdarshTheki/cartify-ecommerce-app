@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
-import { useAppSelector } from '../redux/store';
 import { adminMenu, images } from '../utils';
 import { Avatar, AvatarFallback, AvatarImage } from '../components/ui/Avatar';
 import { Footer } from '../components';
+import { useAppSelector } from '../redux/store';
 
-const AdminPanel = () => {
+const AdminPanelLayout = () => {
   const { user } = useAppSelector((s) => s.auth);
   const [open, setOpen] = useState(false);
 
@@ -107,4 +107,4 @@ const AdminPanel = () => {
   );
 };
 
-export default AdminPanel;
+export default AdminPanelLayout;

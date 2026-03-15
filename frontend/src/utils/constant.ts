@@ -17,6 +17,7 @@ import {
   Image,
   Eraser,
   FileText,
+  House,
 } from 'lucide-react';
 import banner from '../assets/banner.jpg';
 import placeholder from '../assets/placeholder.jpg';
@@ -209,6 +210,14 @@ export const images = {
 };
 
 export const aiToolsMenu = [
+  {
+    title: 'AI Tools',
+    description:
+      'Generate high-quality, engaging articles on any topic with our AI writing technology.',
+    Icon: House,
+    bg: { from: '#3588F2', to: '#0BB0D7' },
+    path: '/ai',
+  },
   {
     title: 'Article Writer',
     description:

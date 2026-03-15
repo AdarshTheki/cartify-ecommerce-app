@@ -3,16 +3,18 @@ import { ChevronDown, ChevronUp, Heart, Sparkles, Trash2Icon } from 'lucide-reac
 import Markdown from 'react-markdown';
 import { useApi } from '../../hooks';
 import { formateTime } from '../../utils';
-import { Loading } from '../../components/ui';
+import { Button } from '../../components/ui';
 import { useAppSelector } from '../../redux/store';
 import { axiosInstance, errorHandler } from '../../services';
+import { DataState } from '../../components';
 
 const AIDashboard = () => {
   const [selectedArticle, setSelectedArticle] = useState('');
   const { callApi, data, loading, setData } = useApi<AIResponseType[]>();
+  const { user } = useAppSelector((s) => s.auth);
 
   useEffect(() => {
-    callApi('/openai/generate-text');
+    callApi('/openai/posts');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -27,36 +29,58 @@ const AIDashboard = () => {
     }
   };
 
+  const totalLikes = data?.reduce(
+    (prev, curr) => (curr.likes.includes(user?._id || '') ? prev + 1 : prev),
+    0,
+  );
+
   return (
     <div className='mx-auto container p-4 space-y-5'>
-      <div className='card flex items-center sm:w-84 !px-6'>
-        <div className='text-lg font-medium space-y-2 w-full'>
-          <p className='text-xl font-medium'>Total Creations</p>
-          <p>{data?.length}</p>
+      <div className='flex flex-wrap gap-5'>
+        <div className='card flex items-center sm:w-84 !px-6'>
+          <div className='text-lg font-medium space-y-2 w-full'>
+            <p className='text-xl font-medium'>Total Creations</p>
+            <p>{data?.length}</p>
+          </div>
+          <div className='p-2 rounded-lg bg-gradient-to-br from-[#3588F2] to-[#0BB0D7] text-white flex justify-center items-center'>
+            <Sparkles className='w-6 h-6' />
+          </div>
         </div>
-        <div className='p-2 rounded-lg bg-gradient-to-br from-[#3588F2] to-[#0BB0D7] text-white flex justify-center items-center'>
-          <Sparkles className='w-6 h-6' />
+
+        <div className='card flex items-center sm:w-84 !px-6'>
+          <div className='text-lg font-medium space-y-2 w-full'>
+            <p className='text-xl font-medium'>Your Likes</p>
+            <p>{totalLikes}</p>
+          </div>
+          <div className='p-2 rounded-lg bg-gradient-to-br from-[#fa6bd6] to-[#d70b37] text-white flex justify-center items-center'>
+            <Heart className='w-6 h-6' />
+          </div>
         </div>
       </div>
 
       {/* Recent Creations */}
-      <p>Recent Creations</p>
-
-      <div className='flex flex-col gap-5'>
-        {!loading ? (
-          data?.map((item) => (
-            <DashboardCard
-              key={item._id}
-              isActive={item._id === selectedArticle}
-              onActive={() => setSelectedArticle((prev) => (prev === item._id ? '' : item._id))}
-              onDelete={() => handleDeletePost(item._id)}
-              item={item}
-            />
-          ))
-        ) : (
-          <Loading />
+      <h2 className='font-semibold text-xl'>Recent Creations</h2>
+      <DataState data={data} loading={loading} error={''}>
+        {(items) => (
+          <div className='flex flex-col gap-5'>
+            {items.map((item) => {
+              const isLiked = user?._id ? item.likes.includes(user._id) : false;
+              const isDeleteUser = user?._id ? item.createdBy._id === user._id : false;
+              return (
+                <DashboardCard
+                  key={item._id}
+                  isActive={item._id === selectedArticle}
+                  userLiked={isLiked}
+                  onActive={() => setSelectedArticle((prev) => (prev === item._id ? '' : item._id))}
+                  onDelete={() => handleDeletePost(item._id)}
+                  item={item}
+                  isDeleteUser={isDeleteUser}
+                />
+              );
+            })}
+          </div>
         )}
-      </div>
+      </DataState>
     </div>
   );
 };
@@ -65,14 +89,22 @@ export default AIDashboard;
 
 type DashboardCardProps = {
   isActive: boolean;
+  userLiked: boolean;
+  isDeleteUser: boolean;
   onActive: () => void;
   item: AIResponseType;
   onDelete: () => void;
 };
 
-const DashboardCard = ({ isActive, onActive, item, onDelete }: DashboardCardProps) => {
-  const { user } = useAppSelector((s) => s.auth);
-  const [isLiked, setIsLiked] = useState(user?._id ? item?.likes.includes(user._id) : false);
+const DashboardCard = ({
+  isActive,
+  onActive,
+  item,
+  onDelete,
+  userLiked,
+  isDeleteUser,
+}: DashboardCardProps) => {
+  const [isLiked, setIsLiked] = useState(userLiked);
   const [likes, setLikes] = useState(item?.likes?.length);
 
   const handleLikeToggle = async () => {
@@ -103,22 +135,25 @@ const DashboardCard = ({ isActive, onActive, item, onDelete }: DashboardCardProp
       </div>
 
       <div className='flex items-center py-2 gap-5'>
-        <button
+        <Button
+          icon={
+            <Heart
+              size={16}
+              className={`text-red-600`}
+              fill={isLiked ? 'oklch(57.7% 0.245 27.325)' : '#fff'}
+            />
+          }
+          text={likes.toString()}
           onClick={handleLikeToggle}
-          className='flex gap-2 items-center hover:bg-gray-200 cursor-pointer shadow border rounded-full py-2 px-4 border-gray-300 text-sm'>
-          <Heart
-            size={16}
-            className={`text-red-600`}
-            fill={isLiked ? 'oklch(57.7% 0.245 27.325)' : '#fff'}
+          className='!rounded-full'
+        />
+        {isDeleteUser && (
+          <Button
+            icon={<Trash2Icon size={16} className='text-gray-700' />}
+            onClick={onDelete}
+            className='!rounded-full'
           />
-          Likes {likes}
-        </button>
-        <button
-          className='flex gap-2 items-center hover:bg-gray-200 cursor-pointer shadow border rounded-full py-2 px-4 border-gray-300 text-sm'
-          onClick={onDelete}>
-          <Trash2Icon size={16} className='text-indigo-700' />
-          Delete
-        </button>
+        )}
       </div>
 
       {isActive && item?.model !== 'text-to-image' && (

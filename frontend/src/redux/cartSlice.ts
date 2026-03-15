@@ -30,8 +30,8 @@ export const fetchCarts = createAsyncThunk<
 >('carts/fetchCarts', async (_, { rejectWithValue }) => {
   try {
     const response = await axiosInstance.get(`/cart`);
-    if (response.data.docs === 0) return [];
-    return response.data.docs;
+    if (response.data.items === 0) return [];
+    return response.data.items;
   } catch {
     return rejectWithValue('Failed to fetch brand');
   }
@@ -59,25 +59,6 @@ const cartSlice = createSlice({
     },
     clearCart: (state) => {
       return { ...state, items: [] };
-    },
-    getCartTotal: (state) => {
-      // Use reduce to calculate both total price and total quantity
-      const { totalAmount, totalQuantity } = state.items.reduce(
-        (cartTotal, cartItem) => {
-          const { productId, quantity } = cartItem;
-          const itemTotal = productId.price * quantity;
-
-          cartTotal.totalAmount += itemTotal;
-          cartTotal.totalQuantity += quantity;
-
-          return cartTotal;
-        },
-        { totalAmount: 0, totalQuantity: 0 },
-      );
-
-      // Update state with formatted values
-      state.totalAmount = parseFloat(totalAmount.toFixed(2));
-      state.totalQuantity = totalQuantity;
     },
   },
   extraReducers: (builder) => {

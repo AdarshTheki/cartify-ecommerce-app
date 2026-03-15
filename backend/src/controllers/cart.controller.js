@@ -26,7 +26,7 @@ export const getCart = asyncHandler(async (req, res) => {
     select: Object.keys(selectedProduct).join(' '),
   });
 
-  return res.status(200).json(carts.items);
+  return res.status(200).json(carts);
 });
 
 // @desc    Add item to cart

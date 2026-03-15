@@ -1,7 +1,5 @@
 import { createBrowserRouter } from 'react-router-dom';
 import { useAppSelector } from '../redux/store';
-import Admin from './AdminPanel';
-import Ecommerce from './Ecommerce';
 import {
   MessengerPage,
   AdminPanel,
@@ -30,8 +28,12 @@ import {
   EmailVerifyPage,
   SingleProductPage,
 } from '../pages';
-import ProtectedRoute from './ProtectedRoute';
 import * as AI from '../pages/AITools';
+
+import AIToolsLayout from './AIToolsLayout';
+import AdminPanelLayout from './AdminPanelLayout';
+import EcommerceLayout from './EcommerceLayout';
+import ProtectedRoute from './ProtectedRoute';
 
 export default function RootLayout() {
   const { user, isAuthenticated } = useAppSelector((s) => s.auth);
@@ -39,7 +41,7 @@ export default function RootLayout() {
   return createBrowserRouter([
     {
       path: '/',
-      element: user?.role === 'admin' ? <Admin /> : <Ecommerce />,
+      element: user?.role === 'admin' ? <AdminPanelLayout /> : <EcommerceLayout />,
       children: [
         { index: true, element: <HomePage /> },
         { path: 'login', element: <AuthLogin /> },
@@ -68,7 +70,7 @@ export default function RootLayout() {
           element: <ProtectedRoute isAuth={isAuthenticated} role={user?.role} />,
           children: [
             {
-              element: <AI.AIRootLayout />,
+              element: <AIToolsLayout />,
               children: [
                 { index: true, element: <AI.AIDashboard /> },
                 { path: 'article-writer', element: <AI.WriteArticles /> },

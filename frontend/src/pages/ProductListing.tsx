@@ -1,6 +1,6 @@
 import { NavLink, useSearchParams } from 'react-router-dom';
 import { ChevronLeftIcon, ChevronRightIcon, Plus } from 'lucide-react';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { ProductList } from '../components';
 import { Input, NotFound, Select } from '../components/ui';

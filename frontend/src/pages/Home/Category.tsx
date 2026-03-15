@@ -50,7 +50,7 @@ const Category = ({ size = 8 }: { size?: number }) => {
 
       {!items?.length && (
         <div className='sm:grid flex md:grid-cols-4 sm:grid-cols-3 gap-5 grid-cols-2 overflow-x-auto scrollbar-hidden'>
-          {Array.from({ length: 8 }, (v, i) => (
+          {Array.from({ length: 8 }, (_, i) => (
             <Skeleton key={i} className='max-sm:min-w-64 h-[210px]' />
           ))}
         </div>

@@ -7,7 +7,7 @@ import { Avatar } from '@radix-ui/react-avatar';
 import { AvatarFallback, AvatarImage } from '../components/ui/Avatar';
 import { Footer } from '../components';
 
-export default function Ecommerce() {
+export default function EcommerceLayout() {
   const menuItems = ecommerceMenu.filter((i) => !['Favorite', 'Profile'].includes(i.name));
   const [mobileView, setMobileView] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);

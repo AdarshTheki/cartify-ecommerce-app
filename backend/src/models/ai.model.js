@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import mongoosePaginate from 'mongoose-paginate-v2';
 
 const aiSchema = new mongoose.Schema(
   {
@@ -22,5 +23,7 @@ const aiSchema = new mongoose.Schema(
     timestamps: true, // adds createdAt and updatedAt
   }
 );
+
+aiSchema.plugin(mongoosePaginate);
 
 export const AIModel = mongoose.model('AIModel', aiSchema);

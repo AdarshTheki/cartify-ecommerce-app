@@ -1,5 +1,5 @@
 import { User, Lock, LogOut } from 'lucide-react';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useAuth, useTitle } from '../hooks';
 
 export default function ProfileSettings() {
