@@ -46,7 +46,7 @@ const MessageCard = React.memo(({ item, onDelete, sender }: MessageCardProp) => 
             ))}
           </div>
         )}
-        <ImagePreview preview={imageOpen} closePreview={() => setImageOpen('')} />
+        <ImagePreview preview={imageOpen} onClose={() => setImageOpen('')} />
       </div>
     </div>
   );

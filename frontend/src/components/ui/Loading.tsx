@@ -4,7 +4,7 @@ import { cn } from '../../utils';
 
 const Loading: React.FC = () => {
   return (
-    <div className={`flex items-center justify-center min-h-screen`}>
+    <div className={`flex items-center justify-center min-h-[60vh]`}>
       <div className='flex space-x-2'>
         {Array.from({ length: 3 }, (_, k) => (
           <Skeleton

@@ -1,23 +1,23 @@
 import { ArrowLeft, Loader, ShoppingBag, Trash2Icon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
-import { fetchCarts, removeItem, updateItemQuantity } from '../redux/cartSlice';
-import Trending from './Home/Trending';
 import Certificate from './Home/Certificate';
-import { useAppDispatch, useAppSelector } from '../redux/store';
 import { axiosInstance, errorHandler } from '../services';
-import { Button } from '../components/ui';
+import { Button } from '../components';
 import { DataState } from '../components';
+import { useApi } from '../hooks';
+import { removeFromCart, updateCartQuantity } from '../services/cartService';
+import Trending from './Home/Trending';
 
 const ShoppingCartPage = () => {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const { items, loading } = useAppSelector((state) => state.cart);
+  const { callApi, data, setData, loading } = useApi<ItemsType[]>();
 
   useEffect(() => {
-    dispatch(fetchCarts());
-  }, [dispatch]);
+    callApi('/cart');
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleCheckout = async () => {
     try {
@@ -32,11 +32,14 @@ const ShoppingCartPage = () => {
     }
   };
 
-  const handleUpdateQty = async (id: string, productId: string, quantity: number) => {
+  const handleUpdateQty = async (productId: string, quantity: number) => {
     try {
-      const res = await axiosInstance.put('/cart', { productId, quantity });
-      if (res.data) {
-        dispatch(updateItemQuantity({ _id: id, quantity }));
+      const carts = await updateCartQuantity(productId, quantity);
+      if (carts) {
+        setData(
+          (prev) =>
+            prev && prev?.map((p) => (p.productId._id === productId ? { ...p, quantity } : p)),
+        );
       }
     } catch (error) {
       errorHandler(error);
@@ -45,82 +48,85 @@ const ShoppingCartPage = () => {
 
   const handleRemoveItem = async (id: string) => {
     try {
-      const res = await axiosInstance.delete(`/cart/${id}`);
-      if (res.data) {
-        dispatch(removeItem(id));
+      const cart = await removeFromCart(id);
+      if (cart) {
+        setData((prev) => prev && prev.filter((p) => p._id !== id));
       }
     } catch (error) {
       errorHandler(error);
     }
   };
 
-  const totalAmount = items.reduce((p, c) => c.productId.price * c.quantity + p, 0);
-  const totalQuantity = items.reduce((p, c) => c.quantity + p, 0);
-
   return (
-    <DataState data={items} loading={loading} error={''}>
-      {(carts) => (
-        <section className='min-h-screen mx-auto container px-2'>
-          <div className='flex max-sm:flex-col gap-5'>
-            <div className='md:flex-1 w-full'>
-              {carts.map((item) => {
-                if (!item?.productId) return null;
-                return (
-                  <ShoppingCart
-                    key={item._id}
-                    {...item}
-                    onQtyChange={(qty) => handleUpdateQty(item._id, item.productId._id, qty)}
-                    onRemove={() => handleRemoveItem(item._id)}
-                  />
-                );
-              })}
+    <DataState data={data} loading={loading || isLoading} error={''}>
+      {(carts) => {
+        const totalAmount = carts
+          .reduce((p, c) => c.productId.price * c.quantity + p, 0)
+          .toFixed(1);
+        const totalQuantity = carts.reduce((p, c) => c.quantity + p, 0).toFixed(0);
+        return (
+          <section className='min-h-screen mx-auto container px-2'>
+            <div className='flex max-sm:flex-col gap-5'>
+              <div className='md:flex-1 w-full'>
+                {carts.map((item) => {
+                  if (!item?.productId) return null;
+                  return (
+                    <ShoppingCart
+                      key={item._id}
+                      {...item}
+                      onQtyChange={(qty) => handleUpdateQty(item.productId._id, qty)}
+                      onRemove={() => handleRemoveItem(item._id)}
+                    />
+                  );
+                })}
+
+                {!!carts.length && (
+                  <div className='flex gap-6 font-semibold mt-10 '>
+                    <Button
+                      icon={<ArrowLeft size={16} />}
+                      onClick={() => navigate('/products')}
+                      name='Go to products'
+                    />
+                    <Button
+                      disabled={isLoading}
+                      icon={isLoading ? <Loader size={16} /> : <ShoppingBag size={16} />}
+                      name='Checkout payment'
+                      onClick={handleCheckout}
+                      className='bg-indigo-600 text-white hover:opacity-90'
+                    />
+                  </div>
+                )}
+              </div>
 
               {!!carts.length && (
-                <div className='flex gap-6 font-semibold mt-10 '>
-                  <Button
-                    icon={<ArrowLeft size={16} />}
-                    onClick={() => navigate('/products')}
-                    name='Go to products'
-                  />
-                  <Button
-                    disabled={isLoading}
-                    icon={isLoading ? <Loader size={16} /> : <ShoppingBag size={16} />}
-                    name='Checkout payment'
-                    onClick={handleCheckout}
-                    className='bg-indigo-600 text-white hover:opacity-90'
-                  />
+                <div className='p-4 md:w-1/3 space-y-3 w-full sticky top-20 h-fit'>
+                  <h3>This Order shipping Fee!</h3>
+                  <div className='flex justify-between font-semibold text-xl'>
+                    <span>{totalQuantity} Item</span>
+                    <span>$ {totalAmount}</span>
+                  </div>
+                  <div className='flex justify-between'>
+                    <span>Shipping:</span>
+                    <span>FREE</span>
+                  </div>
+                  <div className='flex justify-between'>
+                    <span>Estimate Tax:</span>
+                    <span className='text-red-600'>$5</span>
+                  </div>
+                  <div className='flex justify-between font-semibold text-3xl'>
+                    <span>Total:</span>
+                    <span>$ {totalAmount + 5}</span>
+                  </div>
                 </div>
               )}
             </div>
 
-            {!!carts.length && (
-              <div className='p-4 md:w-1/3 space-y-3 w-full sticky top-20 h-fit'>
-                <h3>This Order shipping Fee!</h3>
-                <div className='flex justify-between font-semibold text-xl'>
-                  <span>{totalQuantity} Item</span>
-                  <span>${totalAmount}</span>
-                </div>
-                <div className='flex justify-between'>
-                  <span>Shipping:</span>
-                  <span>FREE</span>
-                </div>
-                <div className='flex justify-between'>
-                  <span>Estimate Tax:</span>
-                  <span className='text-red-600'>$5</span>
-                </div>
-                <div className='flex justify-between font-semibold text-3xl'>
-                  <span>Total:</span>
-                  <span>${totalQuantity * totalAmount + 5}</span>
-                </div>
-              </div>
-            )}
-          </div>
+            <Certificate />
 
-          <Certificate />
-
-          <Trending heading='Suggest you Wishlist' size={4} />
-        </section>
-      )}
+            <Trending heading='Suggest you Wishlist' size={4} />
+          </section>
+        );
+      }}
     </DataState>
   );
 };

@@ -1,11 +1,11 @@
 import { RouterProvider } from 'react-router-dom';
 import { useEffect } from 'react';
-import { fetchCurrentUser } from './redux/authSlice';
-import { fetchBrands } from './redux/brandSlice';
-import { fetchCategories } from './redux/categorySlice';
-import { fetchProducts } from './redux/productSlice';
-import { useAppDispatch } from './redux/store';
-import router from './layouts/RootLayout';
+import { fetchCurrentUser } from './store/authSlice';
+import { fetchBrands } from './store/brandSlice';
+import { fetchCategories } from './store/categorySlice';
+import { fetchProducts } from './store/productSlice';
+import { useAppDispatch } from './store/store';
+import router from './routes/AppRoutes';
 
 const App = () => {
   const dispatch = useAppDispatch();

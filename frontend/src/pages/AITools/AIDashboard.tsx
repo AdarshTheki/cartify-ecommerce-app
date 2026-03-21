@@ -3,8 +3,8 @@ import { ChevronDown, ChevronUp, Heart, Sparkles, Trash2Icon } from 'lucide-reac
 import Markdown from 'react-markdown';
 import { useApi } from '../../hooks';
 import { formateTime } from '../../utils';
-import { Button } from '../../components/ui';
-import { useAppSelector } from '../../redux/store';
+import { Button } from '../../components';
+import { useAppSelector } from '../../store/store';
 import { axiosInstance, errorHandler } from '../../services';
 import { DataState } from '../../components';
 

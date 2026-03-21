@@ -65,6 +65,19 @@ interface UserType {
   isEmailVerified?: boolean;
 }
 
+interface AddressProp {
+  name: string;
+  addressLine1: string;
+  city: string;
+  state: string;
+  postalCode: string;
+  country: string;
+  phone: number;
+  isDefault: boolean;
+  addressLine2?: string;
+  _id?: string;
+}
+
 interface AddressType {
   phone: number;
   addressLine1: string;
@@ -121,6 +134,17 @@ interface CategoryType {
   createdBy: UserType | string;
 }
 
+interface BrandType {
+  _id: string;
+  status: StatusEnum;
+  title: string;
+  description: string;
+  thumbnail: string;
+  createdAt: string;
+  updatedAt: string;
+  createdBy: UserType | string;
+}
+
 interface ItemsType {
   _id: string;
   productId: ProductType;
@@ -143,19 +167,19 @@ interface OrderType {
   updatedAt: string;
 }
 
-type ReplyType = {
+interface ReplyType {
   createdBy: UserType;
   text: string;
   createdAt: Date;
   _id?: string;
-};
+}
 
-type ReportType = {
+interface ReportType {
   createdBy: UserType;
   reason: string;
   reportedAt: Date;
   _id?: string;
-};
+}
 
 interface CommentItemType extends DateType {
   productId: string;

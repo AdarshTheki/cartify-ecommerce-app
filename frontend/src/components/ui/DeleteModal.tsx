@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useEffect, useCallback } from 'react';
 
 interface DeleteModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: () => void;
+  onConfirm: () => Promise<void> | void;
   title?: string;
   message?: string;
+  confirmText?: string;
+  cancelText?: string;
 }
 
 const DeleteModal: React.FC<DeleteModalProps> = ({
@@ -14,36 +16,78 @@ const DeleteModal: React.FC<DeleteModalProps> = ({
   onConfirm,
   title = 'Delete Item',
   message = 'Are you sure you want to delete this item? This action cannot be undone.',
+  confirmText = 'Delete',
+  cancelText = 'Cancel',
 }) => {
-  const [Loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+
+  // Close on ESC
+  const handleEsc = useCallback(
+    (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && !loading) {
+        onClose();
+      }
+    },
+    [loading, onClose],
+  );
+
+  useEffect(() => {
+    if (isOpen) {
+      document.addEventListener('keydown', handleEsc);
+    }
+    return () => {
+      document.removeEventListener('keydown', handleEsc);
+    };
+  }, [isOpen, handleEsc]);
 
   const handleDelete = async () => {
-    setLoading(true);
+    if (loading) return; // prevent double click
+
     try {
-      onConfirm();
-    } finally {
+      setLoading(true);
+      await onConfirm(); // support async
       onClose();
+    } catch (error) {
+      console.error('Delete failed:', error);
+    } finally {
       setLoading(false);
     }
+  };
+
+  const handleBackdropClick = () => {
+    if (!loading) onClose();
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/10 z-30">
-      <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md">
-        <h2 className="text-lg font-semibold mb-4">{title}</h2>
-        <p className="mb-6">{message}</p>
-        <div className="flex justify-end gap-3">
+    <div
+      className='fixed inset-0 z-50 flex items-center justify-center bg-black/40'
+      onClick={handleBackdropClick}>
+      <div
+        className='bg-white rounded-xl shadow-lg p-6 w-full max-w-md animate-scaleIn'
+        onClick={(e) => e.stopPropagation()} // prevent closing on inner click
+      >
+        {/* Title */}
+        <h2 className='text-lg font-semibold mb-2'>{title}</h2>
+
+        {/* Message */}
+        <p className='text-gray-600 mb-6'>{message}</p>
+
+        {/* Actions */}
+        <div className='flex justify-end gap-3'>
           <button
+            disabled={loading}
             onClick={onClose}
-            className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400">
-            Cancel
+            className='px-4 py-2 rounded bg-gray-200 hover:bg-gray-300 disabled:opacity-50'>
+            {cancelText}
           </button>
+
           <button
+            disabled={loading}
             onClick={handleDelete}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">
-            {Loading ? 'Deleting...' : 'Delete'}
+            className='px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700 disabled:opacity-50'>
+            {loading ? 'Deleting...' : confirmText}
           </button>
         </div>
       </div>

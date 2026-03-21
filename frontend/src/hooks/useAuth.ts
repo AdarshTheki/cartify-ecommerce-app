@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import { axiosInstance, errorHandler } from '../services';
-import { login } from '../redux/authSlice';
-import { useAppDispatch, useAppSelector } from '../redux/store';
+import { login } from '../store/authSlice';
+import { useAppDispatch, useAppSelector } from '../store/store';
 
 const useAuth = () => {
   const dispatch = useAppDispatch();

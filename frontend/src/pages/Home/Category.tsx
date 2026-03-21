@@ -1,7 +1,7 @@
 import { ArrowRightIcon } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
-import { Skeleton } from '../../components/ui';
-import { useAppSelector } from '../../redux/store';
+import { Skeleton } from '../../components';
+import { useAppSelector } from '../../store/store';
 
 const Category = ({ size = 8 }: { size?: number }) => {
   const { items } = useAppSelector((state) => state.category);

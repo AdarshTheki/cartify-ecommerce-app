@@ -1,8 +1,8 @@
 import { Download, Folder, Globe2Icon, Image, Loader, Trash2Icon } from 'lucide-react';
 import { useApi } from '../../hooks';
 import { errorHandler } from '../../services';
-import { Button } from '../../components/ui';
-import { useAppSelector } from '../../redux/store';
+import { Button } from '../../components';
+import { useAppSelector } from '../../store/store';
 
 const GalleryCard = ({
   secure_url,

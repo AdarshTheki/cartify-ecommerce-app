@@ -2,7 +2,7 @@ import { useState, type ChangeEvent, type FormEvent } from 'react';
 import { Sheet, Trash2Icon } from 'lucide-react';
 import { toast } from 'react-toastify';
 import { useApi } from '../../hooks';
-import { Input, LazyImage } from '../../components/ui';
+import { Input, LazyImage } from '../../components';
 import { socialFormats } from '../../utils';
 import GalleryCard from './GalleryCard';
 

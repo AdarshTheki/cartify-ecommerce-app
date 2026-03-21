@@ -1,8 +1,8 @@
 /* eslint-disable react-hooks/purity */
 import React from 'react';
 import { ProductItem } from '../../components';
-import { Skeleton } from '../../components/ui';
-import { useAppSelector } from '../../redux/store';
+import { Skeleton } from '../../components';
+import { useAppSelector } from '../../store/store';
 
 const Trending = ({
   heading = 'Trending Products',
@@ -35,9 +35,9 @@ const Trending = ({
 
       <div className='sm:grid flex md:grid-cols-4 sm:grid-cols-3 gap-5 grid-cols-2 overflow-x-auto scrollbar-hidden mt-8'>
         {shuffledItems?.length
-          ? shuffledItems.map((item, i) => (
+          ? shuffledItems.map((item) => (
               <div className='max-sm:min-w-64 w-full' key={item._id}>
-                <ProductItem {...item} delay={i + 1 + '00ms'} />
+                <ProductItem {...item} />
               </div>
             ))
           : Array.from({ length: size }, (_, i) => (

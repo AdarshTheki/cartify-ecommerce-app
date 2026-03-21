@@ -12,10 +12,11 @@ import {
   Star,
   X,
 } from 'lucide-react';
-import { useAppSelector } from '../redux/store';
+import { useAppSelector } from '../store/store';
 import { useApi, useDebounce } from '../hooks';
-import { Loading } from '../components/ui';
+import { Loading } from '../components';
 import { cn } from '../utils';
+import type { Pagination, Product } from '../types';
 
 const sortByOptions = [
   { label: 'Title (A-Z)', value: 'title-asc' },
@@ -41,7 +42,7 @@ const ProductListing = () => {
   const [isOpenSort, setIsOpenSort] = React.useState<string>();
   const [mobileView, setMobileView] = React.useState<boolean>();
 
-  const { data, loading, callApi } = useApi<PaginationType<ProductType>>();
+  const { data, loading, callApi } = useApi<Pagination<Product>>();
 
   useEffect(() => {
     callApi(`/product`, 'get', {

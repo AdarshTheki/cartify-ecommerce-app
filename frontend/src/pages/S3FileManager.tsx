@@ -1,5 +1,5 @@
 import { useEffect, useState, type ChangeEvent } from 'react';
-import { useAppSelector } from '../redux/store';
+import { useAppSelector } from '../store/store';
 import { useDebounce } from '../hooks';
 import { axiosInstance } from '../services';
 

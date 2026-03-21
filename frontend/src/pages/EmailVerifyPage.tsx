@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useAppDispatch, useAppSelector } from '../redux/store';
+import { useAppDispatch, useAppSelector } from '../store/store';
 import { axiosInstance } from '../services';
-import { login } from '../redux/authSlice';
+import { login } from '../store/authSlice';
 
 const EmailVerify = () => {
   const { user } = useAppSelector((s) => s.auth);

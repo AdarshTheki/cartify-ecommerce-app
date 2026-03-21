@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 import { axiosInstance, errorHandler, socketInstance } from '../services';
-import { useAppSelector } from '../redux/store';
+import { useAppSelector } from '../store/store';
 import useApi from './useApi';
 
 const NEW_CHAT_EVENT = 'newChat';

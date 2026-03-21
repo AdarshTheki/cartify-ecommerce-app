@@ -10,15 +10,14 @@ export function errorHandler(error: unknown, showToast = true): string {
   let message = 'Something went wrong';
 
   if (axios.isAxiosError<ApiError>(error)) {
-    const axiosError = error as AxiosError<ApiError>;
+    const err = error as AxiosError<ApiError>;
 
-    if (axiosError.response) {
-      message =
-        axiosError.response.data?.message || axiosError.response.statusText || 'Server error';
-    } else if (axiosError.request) {
-      message = 'No response received from server';
+    if (err.response) {
+      message = err.response.data?.message || 'Server Error';
+    } else if (err.request) {
+      message = 'No response from server';
     } else {
-      message = axiosError.message;
+      message = 'Unexpected error';
     }
   } else if (error instanceof Error) {
     message = error.message;

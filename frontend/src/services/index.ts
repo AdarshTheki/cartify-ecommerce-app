@@ -1,6 +1,6 @@
-import * as api from './axiosApis';
+import { api } from './api';
 import { axiosInstance } from './axiosInstance';
 import { errorHandler } from './errorHandler';
 import { socketInstance } from './socketInstance';
 
-export { api, axiosInstance, errorHandler, socketInstance };
+export { axiosInstance, errorHandler, socketInstance, api };

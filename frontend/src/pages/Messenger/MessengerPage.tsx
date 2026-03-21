@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState, type ChangeEvent, type FormEvent } from 'react';
-import { useAppSelector } from '../../redux/store';
+import { useAppSelector } from '../../store/store';
 import { useMessenger } from '../../hooks';
 import { cn, getChatObjectMetadata } from '../../utils';
 import { ArrowLeft, ImageUp, Plus, Search, Send, Trash2Icon, X } from 'lucide-react';
