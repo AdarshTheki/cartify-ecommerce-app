@@ -47,13 +47,13 @@ const orderAggregation = [
       updatedAt: { $first: '$updatedAt' },
       items: {
         $push: {
-          productId: '$items.productId',
-          quantity: '$items.quantity',
-          product: {
+          productId: {
+            _id: '$items.product._id',
             title: '$items.product.title',
             price: '$items.product.price',
             thumbnail: '$items.product.thumbnail',
           },
+          quantity: '$items.quantity',
         },
       },
     },
@@ -64,26 +64,33 @@ const orderAggregation = [
 // @route   GET /api/v1/orders
 // @access  Admin
 export const getAllOrders = asyncHandler(async (req, res) => {
-  const page = +req.query?.page || 1;
-  const limit = +req.query?.limit || 10;
-  const sort = req.query?.sortBy || 'createdAt';
-  const order = req.query?.orderBy || 'desc';
+  const {
+    page = 1,
+    limit = 10,
+    sort = 'createdAt',
+    order = 'desc',
+    search = '',
+  } = req.query;
 
   const orders = await Order.aggregate([
-    { $match: { _id: { $ne: null } } },
+    { $match: { 'shipping_address.name': { $regex: search, $options: 'i' } } },
     ...orderAggregation,
-    { $skip: (page - 1) * limit },
-    { $limit: limit },
+    { $skip: (Number(page) - 1) * Number(limit) },
+    { $limit: Number(limit) },
     { $sort: { [sort]: order === 'asc' ? 1 : -1 } },
   ]);
 
-  if (!orders) {
-    throw new ApiError(404, 'Orders not found');
-  }
+  const totalDocs = await Order.countDocuments();
 
   return res
     .status(200)
-    .json(new ApiResponse(200, orders, 'User orders retrieved successfully'));
+    .json(
+      new ApiResponse(
+        200,
+        { docs: orders, totalDocs, page, limit },
+        'User orders retrieved successfully'
+      )
+    );
 });
 
 // @desc    Get user's orders

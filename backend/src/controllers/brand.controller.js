@@ -15,13 +15,16 @@ export const getAllBrands = asyncHandler(async (req, res) => {
     sort = 'title',
     order = 'asc',
     title = '',
+    select = '',
   } = req.query;
 
   const options = {
     page,
     limit,
     sort: { [sort]: order === 'asc' ? 1 : -1 },
-    select: 'title status thumbnail createdBy',
+    select: select
+      ? select.split(',').join(' ')
+      : 'title status thumbnail createdBy',
   };
 
   const query = title ? { title: { $regex: title, $options: 'i' } } : {};

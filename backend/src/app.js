@@ -10,8 +10,6 @@ import { Server } from 'socket.io';
 
 import { initializeSocketIO } from './config/socket.js';
 import { morganMiddleware } from './middlewares/logger.middleware.js';
-import { apiEndpointMiddleware } from './middlewares/apiEndpoint.middleware.js';
-import { errorMiddleware } from './middlewares/error.middleware.js';
 import './config/passport.js';
 
 // Import All Routing Files
@@ -30,6 +28,7 @@ import cloudinaryRoute from './routes/cloudinary.route.js';
 import reviewRoute from './routes/review.route.js';
 import orderRoute from './routes/order.route.js';
 import s3BucketRoute from './routes/s3Bucket.route.js';
+import healthRoute from './routes/health.route.js';
 import { stripeWebhook } from './controllers/order.controller.js';
 
 const app = express();
@@ -103,23 +102,6 @@ app.use('/api/v1/messages', messageRoute);
 app.use('/api/v1/cloudinary', cloudinaryRoute);
 app.use('/api/v1/review', reviewRoute);
 app.use('/api/v1/s3-bucket', s3BucketRoute);
-
-app.get('/api/v1/health', (req, res) => {
-  res.status(200).json({
-    status: 200,
-    success: true,
-    message: 'Server is running',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    memory: process.memoryUsage(),
-    version: '1.0.0',
-  });
-});
-
-// check API is valid endpoints
-app.use(apiEndpointMiddleware);
-
-// global error handler middleware
-app.use(errorMiddleware);
+app.use('/', healthRoute);
 
 export default server;

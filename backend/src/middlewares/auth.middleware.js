@@ -11,7 +11,9 @@ export const verifyJWT =
         req.headers.authorization?.replace('Bearer ', '');
 
       if (!token) {
-        throw new ApiError(401, 'No token access with cookies & Bearer');
+        throw new ApiError(401, 'Unauthorized user, Please login !', [
+          'No token access with cookies & Bearer',
+        ]);
       }
 
       const decodedToken = jwt.verify(token, process.env.SECRET_TOKEN);
@@ -21,11 +23,11 @@ export const verifyJWT =
       );
 
       if (!user) {
-        throw new ApiError(401, 'Invalid Access Token: User not found');
+        throw new ApiError(401, 'Invalid Access Token');
       }
 
       if (roles && roles.length && !roles.includes(user.role)) {
-        throw new ApiError(403, 'Permission not allowed to this Role');
+        throw new ApiError(403, 'Permission not allowed');
       }
 
       req.user = user;

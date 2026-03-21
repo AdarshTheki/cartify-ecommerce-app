@@ -3,7 +3,8 @@ import { verifyJWT } from '../middlewares/auth.middleware.js';
 import {
   createAddress,
   deleteAddress,
-  getAllAddresses,
+  getAddress,
+  getUserAddresses,
   updateAddress,
 } from '../controllers/address.controller.js';
 
@@ -11,7 +12,7 @@ const router = Router();
 
 router.use(verifyJWT());
 
-router.route('/').get(getAllAddresses).post(createAddress);
-router.route('/:id').patch(updateAddress).delete(deleteAddress);
+router.route('/').get(getUserAddresses).post(createAddress);
+router.route('/:id').get(getAddress).patch(updateAddress).delete(deleteAddress);
 
 export default router;

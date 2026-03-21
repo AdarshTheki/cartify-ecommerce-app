@@ -4,6 +4,14 @@ import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 
+/*
+Wishlist Functions
+  *  addToWishlist(userId, productId)
+  *  removeFromWishlist(userId, productId)
+  *  moveToCart(userId, productId)
+  *  getWishlist(userId)
+*/
+
 const selectedProduct = {
   _id: 1,
   title: 1,
@@ -26,7 +34,9 @@ export const getCart = asyncHandler(async (req, res) => {
     select: Object.keys(selectedProduct).join(' '),
   });
 
-  return res.status(200).json(carts);
+  return res
+    .status(200)
+    .json(new ApiResponse(200, carts.items, 'Get carts successfully'));
 });
 
 // @desc    Add item to cart
@@ -84,7 +94,9 @@ export const removeFromCart = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, cart, 'Item removed from cart successfully'));
+    .json(
+      new ApiResponse(200, cart.items, 'Item removed from cart successfully')
+    );
 });
 
 // @desc    Update item quantity in cart

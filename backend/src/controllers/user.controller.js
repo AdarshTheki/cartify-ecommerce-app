@@ -25,22 +25,29 @@ const selectedUser = {
   fullName: 1,
   avatar: 1,
   loginType: 1,
+  favorite: 1,
+  refreshToken: 1,
+  createdAt: 1,
+  updatedAt: 1,
 };
 
 // @desc    Get all users (admin only)
 // @route   GET /api/v1/users
 // @access  Admin
 export const getAllUserByAdmin = asyncHandler(async (req, res) => {
-  const page = +req.query?.page || 1;
-  const limit = +req.query?.limit || 10;
-  const q = req.query?.query || '';
-  const status = req.query?.status || '';
-  const sort = req.query?.sort || 'fullName';
-  const order = req.query?.order || 'asc';
+  const {
+    page = 1,
+    limit = 10,
+    search = '',
+    sort = 'updatedAt',
+    order = 'asc',
+    status = '',
+    select = '',
+  } = req.query;
 
   const query = {
     role: { $ne: 'admin' },
-    fullName: { $regex: q, $options: 'i' },
+    fullName: { $regex: search, $options: 'i' },
     status: { $in: status ? [status] : ['active', 'inactive'] },
   };
 
@@ -48,7 +55,9 @@ export const getAllUserByAdmin = asyncHandler(async (req, res) => {
     page: parseInt(page),
     limit: parseInt(limit),
     sort: { [sort]: order === 'asc' ? 1 : -1 },
-    select: Object.keys(selectedUser).join(' '),
+    select: select
+      ? select?.split(',').join(' ')
+      : Object.keys(selectedUser).join(' '),
   };
 
   const users = await User.paginate(query, options);

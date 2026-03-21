@@ -34,6 +34,7 @@ export const getAllProducts = asyncHandler(async (req, res) => {
     order = 'asc',
     page = 1,
     limit = 10,
+    select = '',
     category,
     brand,
   } = req.query;
@@ -64,7 +65,9 @@ export const getAllProducts = asyncHandler(async (req, res) => {
     page: parseInt(page),
     limit: parseInt(limit),
     sort: { [sortBy]: order === 'asc' ? 1 : -1 },
-    select: Object.keys(selectedProduct).join(' '),
+    select: select
+      ? select.split(',').join(' ')
+      : Object.keys(selectedProduct).join(' '),
   };
 
   const products = await Product.paginate(query, options);
