@@ -28,7 +28,7 @@ const HeartFavorite = ({ id, className = '', name }: HeartFavoriteProps) => {
     <button
       onClick={toggleFavorite}
       disabled={loading}
-      className={`flex items-center gap-1 bg-transparent ${className}`}
+      className={`flex items-center gap-1 !bg-transparent ${className}`}
       title='favorite'>
       {name && <span>{name}</span>}
 

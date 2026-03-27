@@ -5,23 +5,7 @@ import { useApi } from '../../hooks';
 import { Loading, Select } from '../../components';
 import GalleryCard from './GalleryCard';
 import { socialFormats } from '../../utils';
-
-const sorts = [
-  'created_at',
-  'public_id',
-  'updated_at',
-  'uploaded_at',
-  'bytes',
-  'width',
-  'height',
-  'format',
-  'resource_type',
-  'type',
-  'context',
-  'tags',
-  'filename',
-  'access_mode',
-];
+import type { Image, Pagination } from '../../types';
 
 const GalleryImage = () => {
   const [limit, setLimit] = useState(10);
@@ -29,12 +13,12 @@ const GalleryImage = () => {
   const [order, setOrder] = useState('desc');
   const [expression, setExpression] = useState('resource_type:image');
   const [selectedFormat, setSelectedFormat] = useState('Instagram Square (1:1)');
-  const { data, loading, callApi, setData } = useApi<CloudinaryFileType[]>();
+  const { data, loading, callApi } = useApi<Pagination<Image>>();
 
   useEffect(() => {
-    callApi(`/cloudinary?expression=${expression}&sort=${sort}&order=${order}&limit=${limit}`);
+    callApi(`/image`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [limit, sort, order, expression]);
+  }, []);
 
   return (
     <div>
@@ -52,7 +36,12 @@ const GalleryImage = () => {
           onSelected={setExpression}
           selected={expression}
         />
-        <Select label={'Advanced Sorts'} list={sorts} onSelected={setSort} selected={sort} />
+        <Select
+          label={'Advanced Sorts'}
+          list={['bytes', 'public_id']}
+          onSelected={setSort}
+          selected={sort}
+        />
         <Select
           label={'Social Formate Sizes'}
           list={Object.keys(socialFormats)}
@@ -79,31 +68,21 @@ const GalleryImage = () => {
       {!!loading && <Loading />}
 
       <div className='sm:gap-4 gap-2 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5'>
-        {data &&
-          data.length > 0 &&
-          data.map((img, index) => {
-            const format = socialFormats[selectedFormat as keyof typeof socialFormats];
-            const secureUrl = img?.secure_url || '';
-            const path = secureUrl?.split('/upload').length
-              ? secureUrl
-                  .split('/upload')
-                  .join(
-                    `/upload/w_${format.width},h_${format.height},ar_${format.aspectRatio},c_fill`,
-                  )
-              : secureUrl;
+        {data?.docs.map((img, index) => {
+          const format = socialFormats[selectedFormat as keyof typeof socialFormats];
+          const secureUrl = img?.url || '';
+          const path = secureUrl?.split('/upload').length
+            ? secureUrl
+                .split('/upload')
+                .join(
+                  `/upload/w_${format.width},h_${format.height},ar_${format.aspectRatio},c_fill`,
+                )
+            : secureUrl;
 
-            return (
-              <GalleryCard
-                key={index}
-                {...img}
-                secure_url={path}
-                folder={img.folder || ''}
-                onDelete={() =>
-                  setData((prev) => (prev ? prev.filter((i) => i.public_id !== img.public_id) : []))
-                }
-              />
-            );
-          })}
+          return (
+            <GalleryCard key={index} {...img} url={path} onDelete={() => console.log('selete')} />
+          );
+        })}
       </div>
     </div>
   );

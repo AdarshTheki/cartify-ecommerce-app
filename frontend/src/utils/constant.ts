@@ -216,7 +216,7 @@ export const aiToolsMenu = [
       'Generate high-quality, engaging articles on any topic with our AI writing technology.',
     Icon: House,
     bg: { from: '#3588F2', to: '#0BB0D7' },
-    path: '/ai',
+    path: '/tools',
   },
   {
     title: 'Article Writer',
@@ -224,7 +224,7 @@ export const aiToolsMenu = [
       'Generate high-quality, engaging articles on any topic with our AI writing technology.',
     Icon: SquarePen,
     bg: { from: '#3588F2', to: '#0BB0D7' },
-    path: '/ai/article-writer',
+    path: '/tools/article-writer',
   },
   {
     title: 'Title Generator',
@@ -232,7 +232,7 @@ export const aiToolsMenu = [
       'Find the perfect, catchy title for your blog posts with our AI-powered generator.',
     Icon: Hash,
     bg: { from: '#B153EA', to: '#E549A3' },
-    path: '/ai/title-generator',
+    path: '/tools/title-generator',
   },
   {
     title: 'Image Generator',
@@ -240,14 +240,14 @@ export const aiToolsMenu = [
       'Create stunning visuals with our AI image generation tool, Experience the power of AI ',
     Icon: Image,
     bg: { from: '#20C363', to: '#11B97E' },
-    path: '/ai/image-generator',
+    path: '/tools/image-generator',
   },
   {
     title: 'Image Editor',
     description: 'Effortlessly remove backgrounds from your images with our AI-driven tool.',
     Icon: Eraser,
     bg: { from: '#f76c1c', to: '#ed4961' },
-    path: '/ai/image-editor',
+    path: '/tools/image-editor',
   },
   {
     title: 'Resume Reviewer',
@@ -255,7 +255,7 @@ export const aiToolsMenu = [
       'Get your resume reviewed by AI to improve your chances of landing your dream job.',
     Icon: FileText,
     bg: { from: '#12B7AC', to: '#08B6CE' },
-    path: '/ai/resume-reviewer',
+    path: '/tools/resume-reviewer',
   },
 ];
 

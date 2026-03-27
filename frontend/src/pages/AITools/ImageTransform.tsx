@@ -20,7 +20,7 @@ const ImageTransformation = () => {
   const [endpoint, setEndpoint] = useState('/cloudinary/image-effect');
 
   const aiTool = {
-    ...aiToolsMenu[3],
+    ...aiToolsMenu[4],
   };
 
   const transformationOptions = [

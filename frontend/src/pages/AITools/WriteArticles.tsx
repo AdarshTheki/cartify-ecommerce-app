@@ -13,7 +13,7 @@ const WriteArticle = () => {
   const { displayText } = useTypewriter({ text: data?.response || '', speed: 5 });
 
   const aiTool = {
-    ...aiToolsMenu[0],
+    ...aiToolsMenu[1],
     inputLabel: 'Article Topic',
     placeholder: 'The future of artificial intelligence...',
     styleLabel: 'Article Length',

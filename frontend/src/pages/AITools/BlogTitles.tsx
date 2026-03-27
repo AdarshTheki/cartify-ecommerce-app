@@ -21,7 +21,7 @@ const BlogTitles = () => {
   const { displayText } = useTypewriter({ text: data?.response || '', speed: 5 });
 
   const aiTool = {
-    ...aiToolsMenu[1],
+    ...aiToolsMenu[2],
     inputLabel: 'Keyword',
     placeholder: 'The future of artificial intelligence...',
     styleLabel: 'Category',

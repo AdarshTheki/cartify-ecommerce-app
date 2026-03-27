@@ -1,8 +1,7 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Outlet } from 'react-router-dom';
 import { useAppSelector } from '../store/store';
 import {
   MessengerPage,
-  GalleryPage,
   HomePage,
   ForgotPasswordRequest,
   ShoppingCart,
@@ -19,16 +18,16 @@ import {
   AddressCreate,
   AddressUpdate,
   AddressListing,
+  ProfilePage,
 } from '../pages';
 
 import * as AI from '../pages/AITools';
 import * as Admin from '../pages/Admin';
-import AIToolsLayout from '../components/layout/AIToolsLayout';
-import AdminPanelLayout from '../components/layout/AdminPanelLayout';
-import EcommerceLayout from '../components/layout/EcommerceLayout';
-import PrivateRoute from './PrivateRoute';
 
-import SettingPage from '../pages/profile/SettingPage';
+import PrivateRoute from './PrivateRoute';
+import RootLayout from '../components/layout/RootLayout';
+import Cloudinary from '../pages/Cloudinary/GalleryPage';
+import GalleryPage from '../pages/Gallery/GalleryPage';
 
 export default function AppRoutes() {
   const { user, isAuthenticated } = useAppSelector((s) => s.auth);
@@ -36,7 +35,7 @@ export default function AppRoutes() {
   return createBrowserRouter([
     {
       path: '/',
-      element: user?.role === 'admin' ? <AdminPanelLayout /> : <EcommerceLayout />,
+      element: <RootLayout />,
       children: [
         { index: true, element: <HomePage /> },
         { path: 'login', element: <AuthLogin /> },
@@ -51,32 +50,30 @@ export default function AppRoutes() {
           element: <PrivateRoute isAuth={isAuthenticated} role={user?.role} />,
           children: [
             { path: 'products/:id', element: <SingleProductPage /> },
-            { path: 'cart', element: <ShoppingCart /> },
+            { path: 'carts', element: <ShoppingCart /> },
             { path: 'shipping-address', element: <AddressListing /> },
             { path: 'shipping-address/create', element: <AddressCreate /> },
             { path: 'shipping-address/:id', element: <AddressUpdate /> },
-            { path: 'favorite', element: <UserFavoritePage /> },
+            { path: 'favorites', element: <UserFavoritePage /> },
             { path: 'messenger', element: <MessengerPage /> },
-            { path: 'file-manager', element: <S3FileManager /> },
-            { path: 'gallery', element: <GalleryPage /> },
-            { path: 'setting', element: <SettingPage /> },
+            { path: 'profile', element: <ProfilePage /> },
           ],
         },
         {
-          path: 'ai',
+          path: 'tools',
           element: <PrivateRoute isAuth={isAuthenticated} role={user?.role} />,
           children: [
             {
-              element: <AIToolsLayout />,
+              element: <Outlet />,
               children: [
                 { index: true, element: <AI.AIDashboard /> },
+                { path: 'file-manager', element: <S3FileManager /> },
+                { path: 'cloudinary', element: <Cloudinary /> },
+                { path: 'gallery', element: <GalleryPage /> },
                 { path: 'article-writer', element: <AI.WriteArticles /> },
                 { path: 'title-generator', element: <AI.BlogTitles /> },
                 { path: 'image-generator', element: <AI.ImageGenerator /> },
-                {
-                  path: 'image-editor',
-                  element: <AI.ImageTransform />,
-                },
+                { path: 'image-editor', element: <AI.ImageTransform /> },
                 { path: 'resume-reviewer', element: <AI.ReviewResume /> },
               ],
             },

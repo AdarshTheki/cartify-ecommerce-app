@@ -9,13 +9,14 @@ import UserFavoritePage from './UserFavoritePage';
 import ProductsPage from './ProductsPage';
 import OrderFailed from './OrderFailed';
 import EmailVerifyPage from './EmailVerifyPage';
-import MessengerPage from './Messenger/MessengerPage';
-import GalleryPage from './Gallery/GalleryPage';
-import HomePage from './Home/HomePage';
-import SingleProductPage from './singleProduct/SingleProductPage';
 import AddressCreate from './AddressCreate';
 import AddressUpdate from './AddressUpdate';
 import AddressListing from './AddressListing';
+
+import MessengerPage from './Messenger/MessengerPage';
+import HomePage from './Home/HomePage';
+import SingleProductPage from './singleProduct/SingleProductPage';
+import ProfilePage from './profile/ProfilePage';
 
 export {
   AddressCreate,
@@ -23,7 +24,6 @@ export {
   AddressListing,
   SingleProductPage,
   MessengerPage,
-  GalleryPage,
   HomePage,
   ForgotPasswordRequest,
   ShoppingCart,
@@ -36,4 +36,5 @@ export {
   ProductsPage,
   OrderFailed,
   EmailVerifyPage,
+  ProfilePage,
 };

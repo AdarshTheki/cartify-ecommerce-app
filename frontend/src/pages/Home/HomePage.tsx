@@ -2,22 +2,23 @@ import HeroSection from './HeroSection';
 import Trending from './Trending';
 import Category from './Category';
 import Testimonial from './Testimonial';
-import AITools from './AITools';
+import ToolsSection from './ToolsSection';
+import Certificate from './Certificate';
 
 const HomePage = () => {
   return (
-    <main className='py-10 px-4 space-y-20'>
+    <main className='w-full space-y-20 '>
       <HeroSection />
-
-      <AITools />
-
-      <div id='featured'>
-        <Trending heading='New Arrivals' size={4} />
-      </div>
 
       <Category />
 
+      <ToolsSection />
+
+      <Trending heading='New Arrivals' size={4} />
+
       <Testimonial />
+
+      <Certificate />
     </main>
   );
 };

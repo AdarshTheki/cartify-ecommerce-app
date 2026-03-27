@@ -11,11 +11,6 @@ import ResendVerifyEmail from './shop/ResendVerifyEmail';
 import AddressForm from './shop/AddressForm';
 import AddressItem from './shop/AddressItem';
 
-// LAYOUT
-import AIToolsLayout from './layout/AIToolsLayout';
-import AdminPanelLayout from './layout/AdminPanelLayout';
-import EcommerceLayout from './layout/EcommerceLayout';
-
 // UI
 import DataState from './ui/DataState';
 import DataTable from './ui/DataTable';
@@ -41,9 +36,6 @@ export {
   ResendVerifyEmail,
   AddressForm,
   AddressItem,
-  AIToolsLayout,
-  AdminPanelLayout,
-  EcommerceLayout,
   DataState,
   DataTable,
   DeleteModal,

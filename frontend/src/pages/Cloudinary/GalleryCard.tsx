@@ -1,27 +1,27 @@
-import { Download, Folder, Globe2Icon, Image, Loader, Trash2Icon } from 'lucide-react';
+import { Download, Folder, Globe2Icon, Image as ImageIcon, Loader, Trash2Icon } from 'lucide-react';
 import { useApi } from '../../hooks';
 import { errorHandler } from '../../services';
 import { Button } from '../../components';
 import { useAppSelector } from '../../store/store';
+import type { Image } from '../../types';
 
 const GalleryCard = ({
-  secure_url,
-  public_id,
-  filename,
-  folder,
+  url,
+  publicId,
+  title,
   format,
-  bytes,
+  size,
   height,
   width,
   onDelete,
-}: CloudinaryFileType & { onDelete: () => void }) => {
+}: Image & { onDelete: () => void }) => {
   const { callApi, loading } = useApi();
   const { user } = useAppSelector((state) => state.auth);
 
   const handleDownload = () => {
-    if (!secure_url) return;
+    if (!url) return;
     // download image on current page
-    fetch(secure_url)
+    fetch(url)
       .then((response) => response.blob())
       .then((blob) => {
         const url = window.URL.createObjectURL(blob);
@@ -37,7 +37,7 @@ const GalleryCard = ({
 
   const handleDelete = async () => {
     try {
-      const result = await callApi('/cloudinary', 'DELETE', { imageUrl: secure_url });
+      const result = await callApi('/cloudinary', 'DELETE', { imageUrl: url });
       if (result) {
         onDelete();
       }
@@ -48,8 +48,8 @@ const GalleryCard = ({
 
   return (
     <div className='relative w-full rounded-xl overflow-hidden shadow-xl'>
-      <a href={secure_url} target='_blank'>
-        <img src={secure_url} alt={public_id} className='w-full' />
+      <a href={url} target='_blank'>
+        <img src={url} alt={publicId} className='w-full' />
       </a>
       <div className='flex items-center justify-between absolute top-2 px-2 w-full'>
         <Button
@@ -67,16 +67,16 @@ const GalleryCard = ({
         )}
       </div>
       <div className='py-2 px-4 space-y-2 bg-white'>
-        <p className='text-sm font-medium'>{filename}</p>
+        <p className='text-sm font-medium'>{title}</p>
         <div className='flex gap-2 text-xs items-center border-b border-gray-300'>
-          <Folder size={14} /> {folder || '/'}
+          <Folder size={14} /> Folder Name
         </div>
         <div className='flex flex-wrap gap-1 items-center justify-between text-xs'>
           <div className='flex gap-2 items-center'>
-            <Image size={14} />
+            <ImageIcon size={14} />
             {format}
           </div>
-          <span>{(bytes / 1024).toFixed(0)} kb</span>
+          <span>{(Number(size) / 1024).toFixed(0)} kb</span>
           <span>
             {width}x{height}
           </span>

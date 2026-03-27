@@ -3,3 +3,5 @@ node_modules
 tests
 docs
 *.log
+.env.sample
+.pretti*

@@ -28,6 +28,7 @@ import cloudinaryRoute from './routes/cloudinary.route.js';
 import reviewRoute from './routes/review.route.js';
 import orderRoute from './routes/order.route.js';
 import s3BucketRoute from './routes/s3Bucket.route.js';
+import imageRoute from './routes/image.route.js';
 import healthRoute from './routes/health.route.js';
 import { stripeWebhook } from './controllers/order.controller.js';
 
@@ -102,6 +103,7 @@ app.use('/api/v1/messages', messageRoute);
 app.use('/api/v1/cloudinary', cloudinaryRoute);
 app.use('/api/v1/review', reviewRoute);
 app.use('/api/v1/s3-bucket', s3BucketRoute);
+app.use('/api/v1/image', imageRoute);
 app.use('/', healthRoute);
 
 export default server;

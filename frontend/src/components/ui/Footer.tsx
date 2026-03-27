@@ -15,7 +15,7 @@ const Footer = ({ menus }: { menus: MenuProps[] }) => {
         {menus?.map((menu) => (
           <NavLink
             key={menu.path}
-            to={`${menu.id}`}
+            to={`${menu.path}`}
             className='font-medium text-gray-500 hover:text-black transition-all'>
             {menu.name}
           </NavLink>

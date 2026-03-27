@@ -19,7 +19,7 @@ const GenerateImage = () => {
 
   // checkbox = Make this image public
   const aiTool = {
-    ...aiToolsMenu[2],
+    ...aiToolsMenu[3],
     inputLabel: 'Describe Your Image',
     placeholder: 'eg., a cute cate playing with a boll of yarn',
     styleLabel: 'Style',

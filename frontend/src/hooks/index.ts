@@ -6,8 +6,10 @@ import useAuth from './useAuth';
 import useMessenger from './useMessenger';
 import useDropdown from './useDropdown';
 import useTypewriter from './useTypewriter';
+import useMediaQuery from './useMediaQuery';
 
 export {
+  useMediaQuery,
   useTypewriter,
   useDebounce,
   useFetch,

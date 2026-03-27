@@ -9,7 +9,7 @@ import { useTypewriter } from '../../hooks';
 const ReviewResume = () => {
   const [input, setInput] = useState<File | null>(null);
   const { loading, data, callApi, setData } = useApi<{ response: string }>();
-  const aiTool = aiToolsMenu[4];
+  const aiTool = aiToolsMenu[5];
   const { displayText } = useTypewriter({ text: data?.response || '', speed: 5 });
 
   const handleSubmitForm = async (e: React.FormEvent<HTMLFormElement>) => {

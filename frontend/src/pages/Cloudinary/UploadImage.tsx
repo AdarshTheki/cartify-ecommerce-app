@@ -4,7 +4,7 @@ import { toast } from 'react-toastify';
 import { useApi } from '../../hooks';
 import { Input, LazyImage } from '../../components';
 import { socialFormats } from '../../utils';
-import GalleryCard from './GalleryCard';
+// import GalleryCard from './GalleryCard';
 
 const ImageUpload = () => {
   const [image, setImage] = useState<File | null>(null);
@@ -100,9 +100,10 @@ const ImageUpload = () => {
           </label>
         )}
 
-        {!!data?.secure_url && (
+        {/* {!!data?.secure_url && (
           <GalleryCard
             {...data}
+            url=''
             secure_url={
               data?.secure_url?.split('/upload').length
                 ? data?.secure_url
@@ -116,7 +117,7 @@ const ImageUpload = () => {
               setData(null);
             }}
           />
-        )}
+        )} */}
       </div>
     </div>
   );
