@@ -7,7 +7,7 @@ import ImageModal from './ImageModal';
 import ImageCard from './ImageCard';
 
 // Usage Example inside Gallery
-export default function DemoWrapper() {
+export default function ImageGalleryPage() {
   const { callApi, data, loading } = useApi<Pagination<Image>>();
   const [selected, setSelected] = useState<Image | null>(null);
   const [search, setSearch] = useState('');

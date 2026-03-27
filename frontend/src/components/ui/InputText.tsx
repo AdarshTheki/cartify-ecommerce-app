@@ -27,7 +27,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             type={type}
             placeholder={props.placeholder || cn('Please enter', label || name)}
             className={cn(
-              'flex h-10 w-full rounded-md border border-gray-400 bg-white py-2 px-4 text-sm transition-colors focus:outline-none focus:ring focus:ring-gray-800 disabled:cursor-not-allowed disabled:opacity-50',
+              'flex h-10 w-full rounded-md border !border-gray-400 bg-white py-2 px-4 text-sm transition-colors focus:outline-none focus:ring focus:ring-gray-800 disabled:cursor-not-allowed disabled:opacity-50',
               Icon && 'pl-10', // Adjust padding if icon exists
               className,
             )}

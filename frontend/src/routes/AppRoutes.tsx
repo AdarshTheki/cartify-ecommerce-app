@@ -26,8 +26,7 @@ import * as Admin from '../pages/Admin';
 
 import PrivateRoute from './PrivateRoute';
 import RootLayout from '../components/layout/RootLayout';
-import Cloudinary from '../pages/Cloudinary/GalleryPage';
-import GalleryPage from '../pages/Gallery/GalleryPage';
+import ImageGalleryPage from '../pages/ImageGallery/ImageGalleryPage';
 
 export default function AppRoutes() {
   const { user, isAuthenticated } = useAppSelector((s) => s.auth);
@@ -68,8 +67,7 @@ export default function AppRoutes() {
               children: [
                 { index: true, element: <AI.AIDashboard /> },
                 { path: 'file-manager', element: <S3FileManager /> },
-                { path: 'cloudinary', element: <Cloudinary /> },
-                { path: 'gallery', element: <GalleryPage /> },
+                { path: 'image-gallery', element: <ImageGalleryPage /> },
                 { path: 'article-writer', element: <AI.WriteArticles /> },
                 { path: 'title-generator', element: <AI.BlogTitles /> },
                 { path: 'image-generator', element: <AI.ImageGenerator /> },
