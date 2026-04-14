@@ -21,6 +21,7 @@ import LazyImage from './ui/LazyImage';
 import Textarea from './ui/Textarea';
 import Counter from './ui/Counter';
 import Select from './ui/Select';
+import Selection from './ui/Selection';
 import Skeleton from './ui/Skeleton';
 import Button from './ui/Button';
 import Loading from './ui/Loading';
@@ -37,6 +38,7 @@ export {
   AddressForm,
   AddressItem,
   DataState,
+  Selection,
   DataTable,
   DeleteModal,
   Footer,

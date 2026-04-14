@@ -101,11 +101,11 @@ const deleteImage = asyncHandler(async (req, res) => {
 
 const bulkImageUpload = asyncHandler(async (req, res) => {
   const files = req.files;
-  if (!files || files.length === 0)
-    throw new ApiError(404, 'Not files uploaded');
+  if (!files || files.images.length === 0)
+    throw new ApiError(404, 'Not files uploaded images');
 
   const uploads = await Promise.all(
-    files.map((file) =>
+    files.images.map((file) =>
       cloudinary.uploader.upload(file.path, { folder: 'image' })
     )
   );
@@ -125,16 +125,9 @@ const bulkImageUpload = asyncHandler(async (req, res) => {
 
   const savedImages = await Image.insertMany(imagesData);
 
-  res.status(201).json(
-    new ApiResponse(
-      201,
-      {
-        count: savedImages.length,
-        data: savedImages,
-      },
-      'bulk upload success'
-    )
-  );
+  res
+    .status(201)
+    .json(new ApiResponse(201, savedImages, 'bulk upload success'));
 });
 
 const bulkImageDelete = asyncHandler(async (req, res) => {

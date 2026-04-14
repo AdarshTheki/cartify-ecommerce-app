@@ -6,7 +6,6 @@ import {
   Sparkles,
   LayoutDashboard,
   SquarePen,
-  Hash,
   Image,
   Eraser,
   FileText,
@@ -44,8 +43,6 @@ const menu = [
     icon: Sparkles,
     children: [
       { label: 'Dashboard', href: '/tools', icon: LayoutDashboard },
-      { label: 'Article Writer', href: '/tools/article-writer', icon: SquarePen },
-      { label: 'Title Generator', href: '/tools/title-generator', icon: Hash },
       { label: 'Text Generator', href: '/tools/text-generator', icon: SquarePen },
       { label: 'Image Generator', href: '/tools/image-generator', icon: Image },
       { label: 'Image Editor', href: '/tools/image-editor', icon: Eraser },

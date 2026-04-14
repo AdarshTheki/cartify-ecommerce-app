@@ -7,6 +7,9 @@ import passport from 'passport';
 import session from 'express-session';
 import rateLimit from 'express-rate-limit';
 import { Server } from 'socket.io';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import fs from 'fs';
 
 import { initializeSocketIO } from './config/socket.js';
 import { morganMiddleware } from './middlewares/logger.middleware.js';
@@ -33,6 +36,11 @@ import healthRoute from './routes/health.route.js';
 import { stripeWebhook } from './controllers/order.controller.js';
 
 const app = express();
+
+// ─── Ensure uploads/ directory exists ────────────────────────────────────────
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const uploadsDir = path.join(__dirname, '..', 'public/temp');
+if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 
 https.globalAgent = new https.Agent({ family: 4 });
 
@@ -87,7 +95,7 @@ app.set('io', io);
 
 initializeSocketIO(io);
 
-// Used All Route URLS
+// ─── Routes ───────────────────────────────────────────────────────────────────
 app.use('/api/v1/user', userRoute);
 app.use('/api/v1/product', productRoute);
 app.use('/api/v1/order', orderRoute);
@@ -104,6 +112,6 @@ app.use('/api/v1/cloudinary', cloudinaryRoute);
 app.use('/api/v1/review', reviewRoute);
 app.use('/api/v1/s3-bucket', s3BucketRoute);
 app.use('/api/v1/image', imageRoute);
-app.use('/', healthRoute);
+app.use('/', healthRoute); // Health Check Route should be at the end to avoid route conflicts
 
 export default server;

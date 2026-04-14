@@ -5,7 +5,7 @@ import { toast } from 'react-toastify';
 
 import { Input, Textarea, Select } from '../index';
 import useTitle from '../../hooks/useTitle';
-import { categories, brands, productStatus } from '../../utils';
+import { categories, brands } from '../../utils';
 import { axiosInstance, errorHandler } from '../../services';
 
 const ProductForm = ({ data }: { data: ProductType | null }) => {
@@ -177,7 +177,12 @@ const ProductForm = ({ data }: { data: ProductType | null }) => {
               <p className='capitalize text-sm font-medium text-gray-700'>status</p>
               <Select
                 onSelected={(e: string) => setFormData({ ...formData, status: e })}
-                list={productStatus}
+                list={[
+                  ProductStatusEnum.active,
+                  ProductStatusEnum.inactive,
+                  ProductStatusEnum.outOfStock,
+                  ProductStatusEnum.pending,
+                ]}
                 selected={formData.status || 'select status'}
               />
             </div>

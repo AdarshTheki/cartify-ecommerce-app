@@ -14,15 +14,17 @@ const userSchema = new Schema(
   {
     fullName: {
       type: String,
-      required: [true, 'FullName is required!'],
+      required: [true, 'FullName is required'],
       trim: true,
-      index: true,
+      maxlength: [50, 'FullName cannot exceed 50 characters'],
     },
     email: {
       type: String,
+      required: [true, 'Email is required'],
+      unique: true,
       lowercase: true,
-      required: [true, 'Email is unique & required!'],
       trim: true,
+      match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email'],
     },
     loginType: {
       type: String,
@@ -31,9 +33,9 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      minlength: 6,
-      trim: true,
-      required: [true, 'Password is required!'],
+      required: [true, 'Password is required'],
+      minlength: [6, 'Password must be at least 6 characters'],
+      select: false, // never returned in queries by default
     },
     role: {
       type: String,
@@ -83,14 +85,14 @@ userSchema.methods.isPasswordCorrect = async function (password) {
 // Method to generate an access token on short time for the user
 userSchema.methods.generateAccessToken = function () {
   return jwt.sign({ _id: this._id }, process.env.SECRET_TOKEN, {
-    expiresIn: '1d',
+    expiresIn: '7d',
   });
 };
 
 // Method to generate a refresh token on long time for the user
 userSchema.methods.generateRefreshToken = function () {
   return jwt.sign({ _id: this._id }, process.env.SECRET_TOKEN, {
-    expiresIn: '7d',
+    expiresIn: '30d',
   });
 };
 
@@ -104,7 +106,5 @@ userSchema.methods.generateTemporaryToken = () => {
   const tokenExpiry = Date.now() + 20 * 60 * 1000; // 20 minutes
   return { hashedToken, tokenExpiry, unHashedToken };
 };
-
-userSchema.index({ fullName: 'text' });
 
 export const User = mongoose.model('User', userSchema);

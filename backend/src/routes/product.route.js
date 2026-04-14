@@ -1,44 +1,40 @@
 import { Router } from 'express';
-import { upload } from '../middlewares/multer.middleware.js';
+import { uploadImage } from '../middlewares/multer.middleware.js';
 import { verifyJWT } from '../middlewares/auth.middleware.js';
 import {
   createProduct,
   deleteProduct,
   getAllProducts,
   getProductById,
-  getProductsByFilter,
   searchProducts,
   updateProduct,
+  adminGetAllProducts,
+  adminDeleteProduct,
 } from '../controllers/product.controller.js';
 
 const router = Router();
 
+const uploadFields = uploadImage.fields([
+  { name: 'thumbnail', maxCount: 1 },
+  { name: 'images', maxCount: 5 },
+]);
+
 router
   .route('/')
   .get(getAllProducts)
-  .post(
-    upload.fields([
-      { name: 'thumbnail', maxCount: 1 },
-      { name: 'images', maxCount: 5 },
-    ]),
-    verifyJWT(['admin', 'seller']),
-    createProduct
-  );
+  .post(uploadFields, verifyJWT(['admin', 'seller']), createProduct);
 
-router.route('/:query/:name').get(getProductsByFilter);
 router.route('/search').get(searchProducts);
 
 router
   .route('/:productId')
   .get(getProductById)
-  .patch(
-    upload.fields([
-      { name: 'thumbnail', maxCount: 1 },
-      { name: 'images', maxCount: 5 },
-    ]),
-    verifyJWT(['admin', 'seller']),
-    updateProduct
-  )
+  .patch(uploadFields, verifyJWT(['admin', 'seller']), updateProduct)
   .delete(verifyJWT(['admin', 'seller']), deleteProduct);
+
+router.route('/admin').get(verifyJWT(['admin']), adminGetAllProducts);
+router
+  .route('/admin/:productId')
+  .delete(verifyJWT(['admin']), adminDeleteProduct);
 
 export default router;

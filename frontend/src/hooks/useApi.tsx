@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { type AxiosRequestConfig, type Method } from 'axios';
-import { axiosInstance, errorHandler } from '../services';
+import { api, errorHandler } from '../services';
 
 function useApi<T>() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -10,7 +10,8 @@ function useApi<T>() {
   const callApi = async (
     url: string,
     method: Method = 'get',
-    payload?: Record<string, unknown>,
+    payload?: Record<string, unknown> | FormData,
+    isFormData: boolean = false,
   ): Promise<T | undefined> => {
     setLoading(true);
     setError(null);
@@ -19,10 +20,21 @@ function useApi<T>() {
       const config: AxiosRequestConfig = {
         url,
         method,
-        ...(method === 'get' ? { params: payload ?? {} } : { data: payload ?? {} }),
+        headers: {},
       };
 
-      const response = await axiosInstance(config);
+      if (method === 'get') {
+        config.params = payload ?? {};
+      } else {
+        config.data = payload ?? {};
+
+        // ✅ Handle multipart/form-data
+        if (isFormData) {
+          config.headers!['Content-Type'] = 'multipart/form-data';
+        }
+      }
+
+      const response = await api(config);
 
       const result: T = response.data?.data ?? response.data;
 

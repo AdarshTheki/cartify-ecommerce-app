@@ -22,7 +22,7 @@ router.route('/:id').get(getImage).patch(updateImage).delete(deleteImage);
 
 router
   .route('/bulk')
-  .post(upload.array('images', 10), bulkImageUpload)
+  .post(upload.fields([{ name: 'images', maxCount: 10 }]), bulkImageUpload)
   .delete(bulkImageDelete);
 
 export default router;

@@ -6,14 +6,17 @@ import { useApi } from '../../hooks';
 import type { Column, Order, Pagination, TableQuery } from '../../types';
 import { format } from 'date-fns';
 
+const defaultQuery: TableQuery = {
+  page: 1,
+  limit: 10,
+  search: '',
+  sortBy: 'updatedAt',
+  sortOrder: 'asc',
+  select: '',
+};
+
 export default function OrdersPage() {
-  const [query, setQuery] = useState<TableQuery>({
-    page: 1,
-    limit: 10,
-    search: '',
-    sortBy: 'updatedAt',
-    sortOrder: 'asc',
-  });
+  const [query, setQuery] = useState<TableQuery>(defaultQuery);
   const [search, setSearch] = useState('');
   const { callApi, data, error, loading } = useApi<Pagination<Order>>();
 

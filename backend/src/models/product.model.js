@@ -5,7 +5,7 @@ const productSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: true,
+      required: [true, 'Product title is required'],
       trim: true,
       minlength: 3,
       maxlength: 100,
@@ -13,7 +13,7 @@ const productSchema = new mongoose.Schema(
     },
     category: {
       type: String,
-      required: true,
+      required: [true, 'Product category is required'],
       trim: true,
     },
     status: {
@@ -23,17 +23,27 @@ const productSchema = new mongoose.Schema(
     },
     brand: {
       type: String,
-      required: true,
+      required: [true, 'Product brand is required'],
       trim: true,
     },
-    thumbnail: { type: String, required: true, trim: true },
-    images: [{ type: String, required: true, trim: true }],
+    thumbnail: {
+      type: String,
+      required: [true, 'Product thumbnail is required'],
+      trim: true,
+    },
+    images: [
+      {
+        type: String,
+        required: [true, 'Product image is required'],
+        trim: true,
+      },
+    ],
     description: {
       type: String,
       trim: true,
       minlength: 50,
       maxlength: 1000,
-      required: true,
+      required: [true, 'Product description is required'],
     },
     price: {
       type: Number,
@@ -57,6 +67,8 @@ const productSchema = new mongoose.Schema(
       min: 0,
       max: 100,
     },
+    slug: { type: String, unique: true, index: true },
+    isDeleted: { type: Boolean, default: false, select: false },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   },
   { timestamps: true }
@@ -69,5 +81,17 @@ productSchema.index({
 });
 
 productSchema.plugin(mongoosePaginate);
+
+productSchema.pre('save', function (next) {
+  if (this.isModified('name')) {
+    this.slug = this.title
+      .toLowerCase()
+      .trim()
+      .replace(/[^\w\s-]/g, '')
+      .replace(/[\s_-]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  }
+  next();
+});
 
 export const Product = mongoose.model('Product', productSchema);

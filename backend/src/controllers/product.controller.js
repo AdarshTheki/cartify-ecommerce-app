@@ -30,11 +30,10 @@ export const getAllProducts = asyncHandler(async (req, res) => {
     maxPrice,
     minRating,
     maxRating,
-    sortBy = 'title',
+    sortBy = 'createdAt',
     order = 'asc',
     page = 1,
     limit = 10,
-    select = '',
     category,
     brand,
   } = req.query;
@@ -65,14 +64,17 @@ export const getAllProducts = asyncHandler(async (req, res) => {
     page: parseInt(page),
     limit: parseInt(limit),
     sort: { [sortBy]: order === 'asc' ? 1 : -1 },
-    select: select
-      ? select.split(',').join(' ')
-      : Object.keys(selectedProduct).join(' '),
+    select: Object.keys(selectedProduct).join(' '),
   };
 
-  const products = await Product.paginate(query, options);
+  const products = await Product.paginate(
+    { ...query, isDeleted: false },
+    options
+  );
 
-  return res.status(200).json(products);
+  return res
+    .status(200)
+    .json(new ApiResponse(200, products, 'Products retrieved successfully'));
 });
 
 // @desc    Create a new product
@@ -195,16 +197,13 @@ export const deleteProduct = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Invalid product ID');
   }
 
-  const product = await Product.findByIdAndDelete(productId);
+  const product = await Product.findByIdAndUpdate(
+    productId,
+    { isDeleted: true },
+    { new: true }
+  );
   if (!product) {
     throw new ApiError(404, 'Product not found');
-  }
-
-  if (product.thumbnail) {
-    await removeSingleImg(product.thumbnail);
-  }
-  if (product.images.length > 0) {
-    await removeMultiImg(product.images);
   }
 
   return res
@@ -212,48 +211,15 @@ export const deleteProduct = asyncHandler(async (req, res) => {
     .json(new ApiResponse(200, product, 'Product deleted successfully'));
 });
 
-// @desc    Get products filtered by category or brand
-// @route   GET /api/v1/products/filter/:query/:name
-// @access  Public
-export const getProductsByFilter = asyncHandler(async (req, res) => {
-  const { name, query } = req.params;
-  if (!name || !query) {
-    throw new ApiError(400, 'Please provide name and query');
-  }
-
-  const regex = new RegExp(name, 'i');
-
-  let products;
-  if (query === 'category') {
-    products = await Product.find({ category: regex });
-  } else if (query === 'brand') {
-    products = await Product.find({ brand: regex });
-  } else {
-    throw new ApiError(
-      400,
-      "Invalid filter query. Must be 'category' or 'brand'"
-    );
-  }
-
-  return res
-    .status(200)
-    .json(new ApiResponse(200, products, 'Products filtered successfully'));
-});
-
 // @desc    Search products by title, category, or brand
 // @route   GET /api/v1/products/search
 // @access  Public
 export const searchProducts = asyncHandler(async (req, res) => {
   const { q } = req.query;
-  if (!q) {
-    return res
-      .status(200)
-      .json(new ApiResponse(200, [], 'Products searched successfully'));
-  }
 
   const regexQuery = {
     $or: [
-      { name: { $regex: q, $options: 'i' } },
+      { title: { $regex: q, $options: 'i' } },
       { brand: { $regex: q, $options: 'i' } },
       { category: { $regex: q, $options: 'i' } },
     ],
@@ -278,7 +244,11 @@ export const getProductById = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Invalid product ID');
   }
 
-  const product = await Product.findById(productId);
+  const product = await Product.findById(productId).populate(
+    'createdBy',
+    'fullName email avatar'
+  );
+
   if (!product) {
     throw new ApiError(404, 'Product not found');
   }
@@ -286,4 +256,79 @@ export const getProductById = asyncHandler(async (req, res) => {
   return res
     .status(200)
     .json(new ApiResponse(200, product, 'Product retrieved successfully'));
+});
+
+// @desc    Admin - Get all products with filters (including deleted)
+// @route   GET /api/v1/admin/products
+// @access  Admin
+export const adminGetAllProducts = asyncHandler(async (req, res) => {
+  const {
+    title = '',
+    minPrice,
+    maxPrice,
+    minRating,
+    maxRating,
+    sort = '-createdAt',
+    page = 1,
+    limit = 10,
+    category,
+    brand,
+  } = req.query;
+
+  const query = {};
+
+  if (title) query.title = { $regex: title, $options: 'i' };
+  if (category) query.category = category;
+  if (brand) query.brand = brand;
+  if (minPrice || maxPrice) {
+    query.price = {};
+    if (minPrice) query.price.$gte = Number(minPrice);
+    if (maxPrice) query.price.$lte = Number(maxPrice);
+  }
+  if (minRating || maxRating) {
+    query.rating = {};
+    if (minRating) query.rating.$gte = Number(minRating);
+    if (maxRating) query.rating.$lte = Number(maxRating);
+  }
+
+  const products = await Product.paginate(query, {
+    page: parseInt(page),
+    limit: parseInt(limit),
+    sort,
+    populate: { path: 'createdBy', select: 'fullName email avatar' },
+  });
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, products, 'Products retrieved successfully'));
+});
+
+// @desc    Admin - Hard delete a product with destroying images
+// @route   DELETE /api/v1/admin/products/:productId
+// @access  Admin
+export const adminDeleteProduct = asyncHandler(async (req, res) => {
+  const { productId } = req.params;
+  if (!isValidObjectId(productId)) {
+    throw new ApiError(400, 'Invalid product ID');
+  }
+
+  const product = await Product.findByIdAndDelete(productId, {
+    isDeleted: true,
+  });
+
+  if (!product) {
+    throw new ApiError(404, 'Product not found');
+  }
+
+  if (product.thumbnail) {
+    await removeSingleImg(product.thumbnail);
+  }
+
+  if (product.images.length > 0) {
+    await removeMultiImg(product.images);
+  }
+
+  return res
+    .status(200)
+    .json(new ApiResponse(200, {}, 'Product deleted successfully'));
 });

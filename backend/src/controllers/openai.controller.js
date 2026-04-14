@@ -4,6 +4,7 @@ import axios from 'axios';
 import FormData from 'form-data';
 import pdf from 'pdf-parse/lib/pdf-parse.js';
 import fs from 'fs';
+import { GoogleGenAI } from '@google/genai';
 
 import { AIModel } from '../models/ai.model.js';
 import { ApiError } from '../utils/ApiError.js';
@@ -22,9 +23,14 @@ import { cloudinary } from '../utils/cloudinary.js';
 
 // `Review the following resume and provide a constructive feedback on its strengths, weaknesses and areas for improvement. Resume content:\n\ ${pdfData.text}`;
 
+// create a instance of openai with the api key
 const openai = new OpenAI({
   apiKey: process.env.GEMINI_API_KEY,
   baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/',
+});
+
+const genAI = new GoogleGenAI({
+  apiKey: process.env.GEMINI_API_KEY,
 });
 
 // @desc    Generate text using OpenAI
@@ -37,16 +43,13 @@ export const generateText = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Prompt & User Text is required');
   }
 
-  const response = await openai.chat.completions.create({
-    model: 'gemini-2.0-flash',
-    messages: [{ role: 'user', content: prompt }],
-    temperature: 0.7,
+  const response = await genAI.models.generateContent({
+    model: 'gemini-2.5-flash',
+    contents: prompt,
   });
 
-  const aiResponse = response.choices[0].message.content;
-
   const newAIModel = await AIModel.create({
-    response: aiResponse,
+    response: response.text,
     createdBy: req.user._id,
     model: 'generate-text',
     publish: true,

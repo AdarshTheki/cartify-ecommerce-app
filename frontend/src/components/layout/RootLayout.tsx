@@ -2,11 +2,74 @@ import { useState } from 'react';
 import Sidebar from './Sidebar';
 import { Outlet, useNavigate } from 'react-router-dom';
 import Footer from '../ui/Footer';
-import { ecommerceMenu } from '../../utils';
-import { BellDot, User, Search, Menu } from 'lucide-react';
+import {
+  BellDot,
+  User,
+  Search,
+  Menu,
+  Home,
+  Package,
+  GalleryHorizontal,
+  MessagesSquare,
+  Heart,
+  FolderKanban,
+  Bot,
+  Settings,
+} from 'lucide-react';
 import { useAppSelector } from '../../store/store';
 import { Avatar, AvatarImage } from '../ui/Avatar';
 import { motion } from 'framer-motion';
+
+const ecommerceMenu = [
+  {
+    id: 1,
+    name: 'Home',
+    path: '/',
+    Icon: Home,
+  },
+  {
+    id: 2,
+    name: 'Products',
+    path: '/products',
+    Icon: Package,
+  },
+  {
+    id: 3,
+    name: 'Gallery',
+    path: '/gallery',
+    Icon: GalleryHorizontal,
+  },
+  {
+    id: 4,
+    name: 'Messenger',
+    path: '/messenger',
+    Icon: MessagesSquare,
+  },
+  {
+    id: 5,
+    name: 'Favorite',
+    path: '/favorite',
+    Icon: Heart,
+  },
+  {
+    id: 6,
+    name: 'File Manager',
+    path: '/file-manager',
+    Icon: FolderKanban,
+  },
+  {
+    id: 7,
+    name: 'AI Tools',
+    path: '/ai',
+    Icon: Bot,
+  },
+  {
+    id: 8,
+    name: 'Profile',
+    path: '/profile',
+    Icon: Settings,
+  },
+];
 
 export default function RootLayout() {
   const [open, setOpen] = useState(false);

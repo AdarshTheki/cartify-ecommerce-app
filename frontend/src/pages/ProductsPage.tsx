@@ -91,14 +91,16 @@ const ProductListing = () => {
       {/* Pagination */}
       <div className='flex items-center gap-2 h-10 rounded-full p-2 bg-white shadow w-fit mx-auto mt-8'>
         <button
+          disabled={data?.page === 1}
           onClick={() => handlePageChange(Number(data?.page) - 1 || 1)}
           className='p-2 hover:bg-gray-100 rounded-full'>
           <ArrowLeft className='w-4 h-4' />
         </button>
 
-        <span className='text-sm font-semibold'>Page {data?.page}</span>
+        <span className='text-sm font-semibold'>Page {data?.limit}</span>
 
         <button
+          disabled={(data && data.page === data.totalPages) || false}
           onClick={() => handlePageChange(Number(data?.page) + 1 || data?.totalPages || 1)}
           className='p-2 hover:bg-gray-100 rounded-full'>
           <ArrowRight className='w-4 h-4' />
@@ -131,6 +133,7 @@ const ProductFilterModal = ({ open, onClose, filters, setFilters }: ProductFilte
   const [search, setSearch] = useState('');
 
   useEffect(() => {
+    if (search.length < 2) return;
     const delay = setTimeout(() => {
       setFilters((prev: QueryProps) => ({
         ...prev,

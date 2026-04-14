@@ -4,26 +4,26 @@ import { upload } from '../middlewares/multer.middleware.js';
 import {
   getCurrentUser,
   getFavorites,
+  toggleFavorite,
   logout,
-  refreshToken,
-  removeAvatar,
   signIn,
   signUp,
-  toggleFavorite,
+  refreshToken,
+  removeAvatar,
   updateAvatar,
-  updateUserProfile,
   handleSocialLogin,
   changeCurrentPassword,
   resendVerificationEmail,
   verifyEmail,
   forgotPasswordRequest,
+  resetPassword,
+  updateUserProfile,
   assignRole,
   updateUserByAdmin,
   getUserIdByAdmin,
   deleteUserByAdmin,
   createUserByAdmin,
   getAllUserByAdmin,
-  resetPassword,
 } from '../controllers/user.controller.js';
 import passport from 'passport';
 
@@ -33,13 +33,13 @@ const router = Router();
 router.get(
   '/google',
   passport.authenticate('google', { scope: ['profile', 'email'] }),
-  (req, res) => res.send('redirecting to google...')
+  (_, res) => res.send('redirecting to google...')
 );
 
 router.get(
   '/github',
   passport.authenticate('github', { scope: ['profile', 'email'] }),
-  (req, res) => res.send('redirecting to github...')
+  (_, res) => res.send('redirecting to github...')
 );
 
 router

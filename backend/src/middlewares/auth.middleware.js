@@ -11,9 +11,7 @@ export const verifyJWT =
         req.headers.authorization?.replace('Bearer ', '');
 
       if (!token) {
-        throw new ApiError(401, 'Unauthorized user, Please login !', [
-          'No token access with cookies & Bearer',
-        ]);
+        throw new ApiError(401, 'Unauthorized user, Please login !');
       }
 
       const decodedToken = jwt.verify(token, process.env.SECRET_TOKEN);

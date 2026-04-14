@@ -15,7 +15,7 @@ export interface User {
   fullName: string;
   email: string;
   role: UserRole;
-  status: Status;
+  status: 'active' | 'inactive';
   avatar: string;
   phoneNumber: string;
   favorite: [string];
@@ -25,6 +25,16 @@ export interface User {
   createdAt: Date;
   updatedAt: Date;
   createdBy: string;
+}
+
+export type UserFormData = Omit<User, '_id' | 'createdAt' | 'updatedAt' | 'createdBy'>;
+
+export interface AuthState {
+  user: User | null;
+  token: string | null;
+  isAuthenticated: boolean;
+  loading: boolean;
+  error: string | null;
 }
 
 export interface Address {
@@ -40,6 +50,8 @@ export interface Address {
   addressLine2?: string;
 }
 
+export type AddressFormData = Omit<Address, '_id' | 'createdAt' | 'updatedAt'>;
+
 export interface Product {
   _id: string;
   status: ProductStatus;
@@ -53,32 +65,38 @@ export interface Product {
   stock: number;
   thumbnail: string;
   images: [string];
-  createdBy?: string | null;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdBy: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
+
+export type ProductFormData = Omit<Product, '_id' | 'createdAt' | 'updatedAt' | 'createdBy'>;
 
 export interface Brand {
   _id: string;
-  status: Status;
+  status: 'active' | 'inactive';
   title: string;
   description: string;
   thumbnail: string;
-  createdAt: string;
-  updatedAt: string;
-  createdBy: User | null;
+  createdAt: Date;
+  updatedAt: Date;
+  createdBy: string;
 }
+
+export type BrandFormData = Omit<Brand, '_id' | 'createdAt' | 'updatedAt' | 'createdBy'>;
 
 export interface Category {
   _id: string;
-  status: Status;
+  status: 'active' | 'inactive';
   title: string;
   description: string;
   thumbnail: string;
-  createdAt: string;
-  updatedAt: string;
-  createdBy: User | null;
+  createdAt: Date;
+  updatedAt: Date;
+  createdBy: string;
 }
+
+export type CategoryFormData = Omit<Category, '_id' | 'createdAt' | 'updatedAt' | 'createdBy'>;
 
 export interface CartItem {
   _id: string;
@@ -89,8 +107,7 @@ export interface CartItem {
 export interface CartState {
   _id: string;
   items: CartItem[];
-  wishlist: CartItem[];
-  createdBy: User | null;
+  createdBy: string;
 }
 
 export interface Order {
@@ -126,11 +143,11 @@ export interface Report {
 export interface Comment {
   _id: string;
   productId: string;
-  createdBy: User;
   text: string;
   likes: string[];
   replies: Reply[];
   reports: Report[];
+  createdBy: User;
 }
 
 export interface Cloudinary {
@@ -178,25 +195,16 @@ export interface ApiResponse<T> {
   message?: string;
 }
 
-export interface AIResponse {
+export interface AI {
   _id: string;
   createdAt: Date;
   updatedAt: Date;
   likes: [string];
-  createdBy: UserType;
+  createdBy: User;
   prompt: string;
   response: string;
   publish: boolean;
   model: string;
-}
-
-export interface TableQuery {
-  page: number;
-  limit: number;
-  search?: string;
-  sortBy?: string;
-  select?: string;
-  sortOrder?: 'asc' | 'desc';
 }
 
 export interface Pagination<T> {
@@ -205,10 +213,15 @@ export interface Pagination<T> {
   limit: number;
   page: number;
   totalPages: number;
-  hasNextPage: boolean;
-  hasPrevPage: boolean;
-  nextPage: number | null;
-  prevPage: number | null;
+}
+
+export interface TableQuery {
+  page: number;
+  limit: number;
+  search: string;
+  sortBy: string;
+  select: string;
+  sortOrder: 'asc' | 'desc';
 }
 
 export interface Column<T> {

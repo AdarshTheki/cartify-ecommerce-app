@@ -222,3 +222,31 @@ export const getChatObjectMetadata = (
     };
   }
 };
+
+/** Format a number as INR currency (Nagpur locale) */
+export const formatPrice = (amount: number): string =>
+  new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
+  }).format(amount);
+
+/** Truncate long strings for table cells / cards */
+export const truncate = (str: string, maxLen = 60): string =>
+  str.length > maxLen ? `${str.slice(0, maxLen)}…` : str;
+
+/** Capitalise the first letter */
+export const capitalize = (s: string): string => s.charAt(0).toUpperCase() + s.slice(1);
+
+/** Debounce — useful for search inputs */
+
+export function debounce<T extends (...args: any[]) => void>(
+  fn: T,
+  delay = 400,
+): (...args: Parameters<T>) => void {
+  let timer: ReturnType<typeof setTimeout>;
+  return (...args) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), delay);
+  };
+}

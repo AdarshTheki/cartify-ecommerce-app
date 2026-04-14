@@ -125,11 +125,11 @@ const BrandsPage = () => {
   return (
     <div className='space-y-4'>
       <div className='flex items-center justify-between'>
-        <h2 className='text-2xl font-semibold'>Category Listing</h2>
+        <h2 className='text-2xl font-semibold'>Brand Listing</h2>
         <NavLink
           to={`/admin/brands/create`}
           className='flex gap-2 items-center py-2 px-4 rounded-lg bg-gray-800 text-white hover:bg-gray-700'>
-          <Plus /> Add Category
+          <Plus /> Add Brand
         </NavLink>
       </div>
       <div className='flex gap-2 max-w-sm'>

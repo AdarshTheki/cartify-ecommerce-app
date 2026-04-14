@@ -15,7 +15,7 @@ const ImageCard = ({ image, onSelectedClick }: ImageCardProps) => {
       <img
         src={image.url}
         loading='lazy'
-        className='w-full h-full max-h-[190px] object-cover rounded-2xl transition duration-300 group-hover:scale-105'
+        className='w-full h-40 object-cover group-hover:scale-105 transition duration-300'
       />
 
       {/* Overlay */}
