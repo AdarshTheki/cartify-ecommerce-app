@@ -5,7 +5,11 @@ import { User } from '../models/user.model.js';
 import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
-import { removeSingleImg, uploadSingleImg } from '../utils/cloudinary.js';
+import {
+  uploadOnCloudinary,
+  deleteOnCloudinary,
+  extractPublicId,
+} from '../utils/cloudinary.js';
 import {
   emailVerificationMailgenContent,
   forgotPasswordMailgenContent,
@@ -585,21 +589,16 @@ export const updateAvatar = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'No avatar file provided');
   }
 
-  const avatar = await uploadSingleImg(filePath);
-  if (!avatar) {
-    throw new ApiError(500, 'Avatar upload failed');
+  const avatar = await uploadOnCloudinary(filePath);
+  if (avatar) {
+    await deleteOnCloudinary(extractPublicId(req?.user?.avatar));
   }
 
   const user = await User.findByIdAndUpdate(
     req.user._id,
     { $set: { avatar } },
     { new: true }
-  ).select('-password -refreshToken');
-
-  if (req?.user?.avatar) {
-    const publicId = req?.user?.avatar?.split('/')[7]?.split('.')[0];
-    await removeSingleImg(publicId);
-  }
+  ).select(Object.keys(selectedUser).join(' '));
 
   return res
     .status(200)
@@ -615,7 +614,9 @@ export const removeAvatar = asyncHandler(async (req, res) => {
     throw new ApiError(404, 'Avatar not found');
   }
 
-  const removeResult = await removeSingleImg(publicId);
+  const removeResult = await deleteOnCloudinary(
+    extractPublicId(req?.user?.avatar)
+  );
   if (!removeResult) {
     throw new ApiError(500, 'Failed to remove avatar from cloudinary');
   }

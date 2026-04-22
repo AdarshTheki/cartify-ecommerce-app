@@ -31,6 +31,6 @@ export const verifyJWT =
       req.user = user;
       next();
     } catch (error) {
-      throw new ApiError(401, error.message);
+      next(error);
     }
   };

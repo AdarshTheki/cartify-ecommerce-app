@@ -1,9 +1,10 @@
-import { axiosInstance } from '../services';
+import { api } from '../services';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import type { Category } from '../types';
 
 // Define the type for the state
 interface CategoryState {
-  items: CategoryType[];
+  items: Category[];
   loading: boolean;
   error: string | null;
 }
@@ -16,11 +17,11 @@ const initialState: CategoryState = {
 };
 
 // Async thunk with typed response
-export const fetchCategories = createAsyncThunk<CategoryType[], void, { rejectValue: string }>(
+export const fetchCategories = createAsyncThunk<Category[], void, { rejectValue: string }>(
   'categories/fetchCategories',
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`/category?limit=50`);
+      const response = await api.get(`/category?limit=50`);
       if (response.data.docs.length === 0) return [];
       return response.data.docs;
     } catch {

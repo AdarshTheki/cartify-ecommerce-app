@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 
 import { DeleteModal, Input, LazyImage, Select, DataTable } from '../../components';
 import { useApi } from '../../hooks';
-import type { Column, Pagination, Product, TableQuery } from '../../types';
+import type { TableColumn, Pagination, Product, TableQuery } from '../../types';
 import { useAppSelector } from '../../store/store';
 import { deleteProduct } from '../../services/productService';
 import { errorHandler } from '../../services';
@@ -62,7 +62,7 @@ export default function ProductsPage() {
     }));
   };
 
-  const columns: Column<Product>[] = [
+  const columns: TableColumn<Product>[] = [
     {
       header: '#',
       render: (_, index) => (query.page - 1) * query.limit + (index + 1),

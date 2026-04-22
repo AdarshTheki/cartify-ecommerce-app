@@ -65,7 +65,7 @@ const userSchema = new Schema(
   { timestamps: true }
 );
 
-userSchema.index({ fullName: 'text', email: 'text' });
+userSchema.index({ email: 'text', createdAt: -1 });
 
 userSchema.plugin(mongoosePaginate);
 

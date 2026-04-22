@@ -5,9 +5,10 @@ import { useEffect } from 'react';
 import { deleteAddress } from '../services/addressService';
 import { errorHandler } from '../services';
 import { AddressItem, DataState } from '../components';
+import type { Address } from '../types';
 
 const AddressListing = () => {
-  const { callApi, setData, data, loading, error } = useApi<AddressProp[]>();
+  const { callApi, setData, data, loading, error } = useApi<Address[]>();
 
   useEffect(() => {
     callApi('/address');

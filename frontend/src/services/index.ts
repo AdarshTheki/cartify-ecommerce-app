@@ -1,7 +1,6 @@
 import { api } from './api';
-import { axiosInstance } from './axiosInstance';
 import { errorHandler } from './errorHandler';
 import { fetchData } from './fetchData';
-import { socketInstance } from './socketInstance';
+import { socket } from './socket';
 
-export { axiosInstance, errorHandler, socketInstance, api, fetchData };
+export { errorHandler, socket, api, fetchData };

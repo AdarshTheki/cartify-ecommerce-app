@@ -1,15 +1,16 @@
+import type { CartItem } from '../types';
 import { api } from './api';
 
 export const getCarts = () => {
-  return api.get<ItemsType[]>('/cart');
+  return api.get<CartItem[]>('/cart');
 };
 
 export const addToCart = (productId: string, quantity: number) => {
-  return api.post<ItemsType>('/cart', { productId, quantity });
+  return api.post<CartItem>('/cart', { productId, quantity });
 };
 
 export const updateCartQuantity = (productId: string, quantity: number) => {
-  return api.put<ItemsType>('/cart', { productId, quantity });
+  return api.put<CartItem>('/cart', { productId, quantity });
 };
 
 export const removeFromCart = (id: string) => {

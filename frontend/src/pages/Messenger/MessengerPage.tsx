@@ -1,19 +1,20 @@
-import { useCallback, useMemo, useState, type ChangeEvent, type FormEvent } from 'react';
+import { useCallback, useState, type ChangeEvent, type FormEvent } from 'react';
 import { useAppSelector } from '../../store/store';
 import { useMessenger } from '../../hooks';
 import { cn, getChatObjectMetadata } from '../../utils';
-import { ArrowLeft, ImageUp, Plus, Search, Send, Trash2Icon, X } from 'lucide-react';
+import { ArrowLeft, ImageUp, Search, SendHorizonal, Trash2Icon } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '../../components/ui/Avatar';
 import ChatCard from './ChatCard';
 import ConnectUser from './ConnectUser';
 import MessageCard from './MessageCard';
 import { DataState } from '../../components';
-import { socketInstance } from '../../services';
+import { socket } from '../../services';
+import type { Chat } from '../../types';
 
 // Main Chat Application Component
 const CustomerChatPage = () => {
   const [message, setMessage] = useState('');
-  const [updateChat, setUpdateChat] = useState<ChatType | null>(null);
+  const [updateChat, setUpdateChat] = useState<Chat | null>(null);
   const [openAddChat, setOpenAddChat] = useState(false);
   const [searchUserChat, setSearchUserChat] = useState('');
   const [previews, setPreviews] = useState<string[]>([]);
@@ -42,12 +43,6 @@ const CustomerChatPage = () => {
 
   const { user } = useAppSelector((state) => state.auth);
 
-  // Memoized filtered users for search
-  const filteredUsers = useMemo(() => {
-    if (!searchUserChat) return [];
-    return users?.filter((i) => i?.fullName?.toLowerCase().includes(searchUserChat.toLowerCase()));
-  }, [users, searchUserChat]);
-
   // Memoized handlers
   const handlePreviewAttachments = useCallback(({ target }: ChangeEvent<HTMLInputElement>) => {
     const files = target && (target.files as FileList);
@@ -74,9 +69,9 @@ const CustomerChatPage = () => {
   );
 
   const handleChatClick = useCallback(
-    (chatItem: ChatType) => {
+    (chatItem: Chat) => {
       setMobileChatOpen(true);
-      socketInstance.emit('joinChat', chatItem._id);
+      socket.emit('joinChat', chatItem._id);
       setChat({ ...chatItem });
       onFetchMessages(chatItem._id);
       setUnReadMessages((prev) => (prev ? prev.filter((n) => n.chat._id !== chatItem._id) : []));
@@ -95,7 +90,7 @@ const CustomerChatPage = () => {
   );
 
   return (
-    <div className='h-[90vh] border-b border-gray-300'>
+    <div className='border-b border-gray-300 max-h-screen bg-white h-full'>
       <div className='flex max-sm:flex-col h-full'>
         {/* Chat Sidebar */}
         <div
@@ -118,8 +113,8 @@ const CustomerChatPage = () => {
 
           <div className='flex flex-col relative'>
             {/* Search Bar */}
-            <div className='flex items-center px-2 py-2 w-full shadow-sm'>
-              <Search className='min-w-6' />
+            <div className='flex justify-between gap-2 items-center h-10 pl-4 w-full border bg-gray-100 rounded-full mb-2'>
+              <Search className='w-6 h-6' />
               <input
                 name='search'
                 title='search chat user'
@@ -128,38 +123,20 @@ const CustomerChatPage = () => {
                 onChange={(e) => setSearchUserChat(e.target.value)}
                 value={searchUserChat}
               />
-              <button
-                title={searchUserChat ? 'Close search' : 'Add new chat'}
-                className='bg-indigo-600 hover:opacity-80 text-white min-w-[100px] py-2 gap-2 flex items-center justify-center rounded-2xl'
-                onClick={() => (searchUserChat ? setSearchUserChat('') : setOpenAddChat(true))}>
-                {searchUserChat ? <X size={18} /> : <Plus size={18} />}
-                <span>{searchUserChat ? 'Close' : 'Add'}</span>
-              </button>
+              <span
+                className='bg-indigo-600 cursor-pointer hover:opacity-80 px-6 h-full flex items-center rounded-full text-white text-sm font-semibold'
+                onClick={() => setOpenAddChat(true)}>
+                Add
+              </span>
             </div>
 
-            {/* Search Results */}
-            {searchUserChat && (
-              <div className='flex flex-col absolute top-14 shadow-md z-10 w-full min-h-[300px] bg-white'>
-                {filteredUsers.map((item) => (
-                  <button
-                    onClick={() => {
-                      onCreateOrGetChat(item._id);
-                      setSearchUserChat('');
-                    }}
-                    className='text-left w-full flex gap-2 items-center hover:bg-gray-100 py-1 pl-5'
-                    key={item?._id}>
-                    <Avatar>
-                      <AvatarImage src={item.avatar} alt='avatar' className='h-8' />
-                      <AvatarFallback>{item.fullName.substring(0, 1)}</AvatarFallback>
-                    </Avatar>
-                    <span>{item?.fullName}</span>
-                  </button>
-                ))}
-              </div>
-            )}
-
             {/* Chat Listing */}
-            <DataState data={chats} loading={chatsLoading} error={''}>
+            <DataState
+              data={chats.filter((i) =>
+                i.name.toLowerCase().includes(searchUserChat.toLowerCase()),
+              )}
+              loading={chatsLoading}
+              error={''}>
               {(data) =>
                 data.map((item) => (
                   <ChatCard
@@ -266,10 +243,10 @@ const CustomerChatPage = () => {
             {/* Message Input */}
             <form
               onSubmit={handleSendMessage}
-              className='w-full sticky sm:bottom-0 bottom-12 p-2 bg-white/40'>
-              <div className='h-[40px] w-full flex items-center gap-1'>
+              className='w-full sticky sm:bottom-0 bottom-12 p-2 bg-white/40 flex items-center gap-2'>
+              <div className='h-[40px] w-full flex items-center gap-1 bg-gray-100 rounded-full pl-4 border'>
                 <input
-                  className='p-2 w-full px-4 rounded-lg border border-gray-300 outline-indigo-300'
+                  className='border-none w-full px-2 outline-none'
                   name='message'
                   placeholder='Enter a message'
                   value={message}
@@ -278,9 +255,8 @@ const CustomerChatPage = () => {
                 <label
                   title='Attach files (max 5)'
                   htmlFor='attachments'
-                  className='bg-indigo-600 text-white flex gap-2 rounded-lg px-4 h-full items-center hover:opacity-80'>
+                  className='flex border !border-gray-300 gap-2 rounded-full px-4 h-full items-center hover:opacity-80'>
                   <ImageUp size={16} />
-                  <small className='max-sm:hidden font-medium'>Upload</small>
                   <input
                     type='file'
                     multiple
@@ -290,18 +266,17 @@ const CustomerChatPage = () => {
                     className='hidden'
                   />
                 </label>
-                <button
-                  disabled={sendMessageLoading}
-                  type='submit'
-                  className='bg-indigo-600 text-white flex gap-2 rounded-lg px-4 h-full items-center hover:opacity-80 disabled:opacity-50'>
-                  {sendMessageLoading ? (
-                    <div className='animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full' />
-                  ) : (
-                    <Send size={16} />
-                  )}
-                  <small className='max-sm:hidden font-medium'>Send</small>
-                </button>
               </div>
+              <button
+                disabled={sendMessageLoading}
+                type='submit'
+                className='bg-indigo-600 text-white flex gap-2 rounded-full px-4 h-full items-center hover:opacity-80 disabled:opacity-50'>
+                {sendMessageLoading ? (
+                  <div className='animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full' />
+                ) : (
+                  <SendHorizonal size={16} />
+                )}
+              </button>
             </form>
           </div>
         )}

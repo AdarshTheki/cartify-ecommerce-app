@@ -1,5 +1,5 @@
 import { ArrowLeftCircleIcon, ArrowRightCircleIcon } from 'lucide-react';
-import type { DataTableProps } from '../../types';
+import type { TableData } from '../../types';
 import type React from 'react';
 
 function Container({ children }: { children: React.ReactNode }) {
@@ -18,7 +18,7 @@ const DataTable = <T,>({
   onSort,
   loading,
   error,
-}: DataTableProps<T>) => {
+}: TableData<T>) => {
   const totalPages = Math.ceil(totalDocs / limit);
 
   if (loading)

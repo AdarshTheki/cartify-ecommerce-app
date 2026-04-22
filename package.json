@@ -1,0 +1,24 @@
+{
+  "name": "cartify-ecommerce-app",
+  "version": "1.0.0",
+  "description": "Welcome to **Cartify**, a modern E-commerce platform built using the **MERN stack (MongoDB, Express.js, React, Node.js)** and **AI-powered features** for smarter shopping and streamlined operations.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AdarshTheki/cartify-ecommerce-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/AdarshTheki/cartify-ecommerce-app/issues"
+  },
+  "homepage": "https://github.com/AdarshTheki/cartify-ecommerce-app#readme",
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}

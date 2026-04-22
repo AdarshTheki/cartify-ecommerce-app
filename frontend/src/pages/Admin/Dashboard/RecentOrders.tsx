@@ -2,8 +2,8 @@ import { Download, Loader } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { downloadOrdersAsCSV } from '../../../utils';
 import { useApi } from '../../../hooks';
-import { axiosInstance, errorHandler } from '../../../services';
-import type { Column, Order, Pagination } from '../../../types';
+import { api, errorHandler } from '../../../services';
+import type { TableColumn, Order, Pagination } from '../../../types';
 import { format } from 'date-fns';
 import { DataTable } from '../../../components';
 
@@ -19,7 +19,7 @@ export default function RecentOrders() {
   const handleDownloadCSV = async () => {
     try {
       setIsLoading(true);
-      const res = await axiosInstance.get('/dashboard/download/order');
+      const res = await api.get('/dashboard/download/order');
       if (res.data) {
         downloadOrdersAsCSV(res.data.data);
       }
@@ -30,14 +30,14 @@ export default function RecentOrders() {
     }
   };
 
-  const columns: Column<Order>[] = [
+  const columns: TableColumn<Order>[] = [
     {
       header: '#',
       render: (_, index) => index + 1,
     },
     {
       header: 'Customer',
-      render: ({ shipping_address }) => <span className='capitalize'>{shipping_address.name}</span>,
+      render: ({ addressId }) => <span className='capitalize'>{addressId.title}</span>,
     },
     {
       header: 'Totals $',
@@ -45,7 +45,7 @@ export default function RecentOrders() {
     },
     {
       header: 'Payment',
-      render: ({ payment }) => `${payment.method} - ${payment.status}`,
+      render: ({ paymentId }) => `${paymentId.method} - ${paymentId.status}`,
     },
     {
       header: 'Status',

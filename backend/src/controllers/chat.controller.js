@@ -4,7 +4,7 @@ import { User } from '../models/user.model.js';
 import { Message } from '../models/message.model.js';
 import { ApiError } from '../utils/ApiError.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
-import { removeSingleImg } from '../utils/cloudinary.js';
+import { deleteOnCloudinary, extractPublicId } from '../utils/cloudinary.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { ChatEvents, emitSocketEvent } from '../config/socket.js';
 
@@ -16,7 +16,9 @@ const deleteChatMessages = async (chatId) => {
     messages.map(async (message) => {
       // remove attachment files
       if (message.attachments?.length) {
-        message.attachments.forEach(async (url) => await removeSingleImg(url));
+        message.attachments.forEach(
+          async (url) => await deleteOnCloudinary(extractPublicId(url))
+        );
       }
     });
 

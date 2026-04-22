@@ -1,9 +1,10 @@
-import { axiosInstance } from '../services';
+import { api } from '../services';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import type { Brand } from '../types';
 
 // Define the type for the state
 interface BrandStateProps {
-  items: BrandType[];
+  items: Brand[];
   loading: boolean;
   error: string | null;
 }
@@ -17,12 +18,12 @@ const initialState: BrandStateProps = {
 
 // Async thunk with typed response
 export const fetchBrands = createAsyncThunk<
-  BrandType[], // return type
+  Brand[], // return type
   void, // argument type
   { rejectValue: string }
 >('brands/fetchBrands', async (_, { rejectWithValue }) => {
   try {
-    const response = await axiosInstance.get(`/brand?limit=50`);
+    const response = await api.get(`/brand?limit=50`);
     if (response.data.docs.length === 0) return [];
     return response.data.docs;
   } catch {

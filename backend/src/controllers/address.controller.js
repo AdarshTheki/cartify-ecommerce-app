@@ -31,18 +31,24 @@ export const createAddress = asyncHandler(async (req, res) => {
     isDefault,
     addressLine1,
     city,
-    state,
+    landmark,
     postalCode,
     country,
-    phone,
-    name,
+    phoneNumber,
+    title,
     addressLine2 = '',
   } = req.body;
 
   if (
-    [addressLine1, city, state, postalCode, country, phone, name].some(
-      (field) => !field
-    )
+    [
+      addressLine1,
+      city,
+      landmark,
+      postalCode,
+      country,
+      phoneNumber,
+      title,
+    ].some((field) => !field)
   ) {
     throw new ApiError(400, 'All fields are required');
   }
@@ -51,11 +57,11 @@ export const createAddress = asyncHandler(async (req, res) => {
     isDefault: isDefault || false,
     addressLine1,
     city,
-    state,
+    landmark,
     postalCode,
     country,
-    phone,
-    name,
+    phoneNumber,
+    title,
     addressLine2,
     userId: req.user._id,
   });
@@ -81,12 +87,12 @@ export const updateAddress = asyncHandler(async (req, res) => {
     isDefault,
     addressLine1,
     city,
-    state,
+    landmark,
     postalCode,
     country,
-    phone,
-    name,
-    addressLine2,
+    phoneNumber,
+    title,
+    addressLine2 = '',
   } = req.body;
 
   const address = await Address.findOne({
@@ -100,11 +106,11 @@ export const updateAddress = asyncHandler(async (req, res) => {
 
   address.addressLine1 = addressLine1 || address.addressLine1;
   address.city = city || address.city;
-  address.state = state || address.state;
+  address.landmark = landmark || address.landmark;
   address.postalCode = postalCode || address.postalCode;
   address.country = country || address.country;
-  address.phone = phone || address.phone;
-  address.name = name || address.name;
+  address.phoneNumber = phoneNumber || address.phoneNumber;
+  address.title = title || address.title;
   address.addressLine2 = addressLine2 || address.addressLine2;
 
   if (isDefault !== undefined) {

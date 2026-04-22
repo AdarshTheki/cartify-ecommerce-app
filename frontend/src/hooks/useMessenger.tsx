@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
-import { axiosInstance, errorHandler, socketInstance } from '../services';
+import { errorHandler, socket, api } from '../services';
 import { useAppSelector } from '../store/store';
 import useApi from './useApi';
+import type { Pagination, User, Chat, Message } from '../types';
 
 const NEW_CHAT_EVENT = 'newChat';
 const LEAVE_CHAT_EVENT = 'leaveChat';
@@ -13,24 +14,24 @@ const SOCKET_ERROR_EVENT = 'socketError';
 
 const useChat = () => {
   const { user } = useAppSelector((s) => s.auth);
-  const currentChat = useRef<ChatType | null>(null);
-  const [chat, setChat] = useState<ChatType | null>(null);
-  const [unReadMessages, setUnReadMessages] = useState<MessageType[]>([]);
+  const currentChat = useRef<Chat | null>(null);
+  const [chat, setChat] = useState<Chat | null>(null);
+  const [unReadMessages, setUnReadMessages] = useState<Message[]>([]);
   const [sendMessageLoading, setSendMessageLoading] = useState(false);
   const [mobileChatOpen, setMobileChatOpen] = useState(true);
-  const { data: users, callApi: callApiUsers } = useApi<PaginationType<UserType>>();
+  const { data: users, callApi: callApiUsers } = useApi<Pagination<User>>();
   const {
     data: chats,
     callApi: callApiChats,
     loading: chatsLoading,
     setData: setChats,
-  } = useApi<ChatType[]>();
+  } = useApi<Chat[]>();
   const {
     data: messages,
     callApi: callApiMessages,
     loading: messagesLoading,
     setData: setMessages,
-  } = useApi<MessageType[]>();
+  } = useApi<Message[]>();
 
   useEffect(() => {
     callApiUsers('/user/admin');
@@ -48,18 +49,18 @@ const useChat = () => {
     toast.error(`${JSON.stringify(message)}`);
   };
 
-  const onNewChat = (newChat: ChatType) => {
+  const onNewChat = (newChat: Chat) => {
     setChats((prev) => (prev ? [newChat, ...prev] : []));
   };
 
-  const onChatLeave = (leaveChat: ChatType) => {
+  const onChatLeave = (leaveChat: Chat) => {
     setChats((prev) => (prev ? prev.filter((c) => c._id !== leaveChat._id) : []));
     if (leaveChat._id === currentChat.current?._id) {
       setChat(null);
     }
   };
 
-  const onGroupUpdate = (groupChat: ChatType) => {
+  const onGroupUpdate = (groupChat: Chat) => {
     if (groupChat?._id === currentChat.current?._id) {
       // update chat details
     }
@@ -75,12 +76,14 @@ const useChat = () => {
     ]);
   };
 
-  const onMessageDelete = (message: MessageType) => {
+  const onMessageDelete = (message: Message) => {
+    console.log('message delete', message);
     setMessages((prev) => (prev ? prev.filter((msg) => msg._id !== message._id) : []));
     // update chat last message
   };
 
-  const onMessageRetrieved = (msg: MessageType) => {
+  const onMessageRetrieved = (msg: Message) => {
+    console.log('messages retrieved', msg);
     if (msg?.chat._id === currentChat.current?._id) {
       setMessages((prev) => (prev ? [...prev, msg] : []));
     } else {
@@ -94,7 +97,7 @@ const useChat = () => {
 
   const onCreateOrGetChat = async (userId: string) => {
     try {
-      const res = await axiosInstance.post(`/chats/chat/${userId}`);
+      const res = await api.post(`/chats/chat/${userId}`);
       if (res.data) {
         setChat(res.data.chat);
       }
@@ -107,7 +110,7 @@ const useChat = () => {
     try {
       const method = chatId ? 'patch' : 'post';
       const url = chatId ? `/chats/group/${chatId}` : '/chats/group';
-      await axiosInstance[method](url, {
+      await api[method](url, {
         name,
         participants,
       });
@@ -133,7 +136,7 @@ const useChat = () => {
           formData.append('attachments', attachments[i]);
         });
       }
-      await axiosInstance.post(`/messages/${chatId}`, formData, {
+      await api.post(`/messages/${chatId}`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
     } catch (error) {
@@ -145,7 +148,7 @@ const useChat = () => {
 
   const handleMessageDelete = async (messageId: string) => {
     try {
-      await axiosInstance.delete(`/messages/${messageId}`);
+      await api.delete(`/messages/${messageId}`);
     } catch (error) {
       errorHandler(error);
     }
@@ -153,32 +156,30 @@ const useChat = () => {
 
   const handleChatDeleted = async (chatId: string) => {
     try {
-      await axiosInstance.delete(`/chats/chat/${chatId}`);
+      await api.delete(`/chats/chat/${chatId}`);
     } catch (error) {
       errorHandler(error);
     }
   };
 
   useEffect(() => {
-    if (!socketInstance) return;
+    if (!socket) return;
 
-    socketInstance.on(NEW_CHAT_EVENT, onNewChat);
-    socketInstance.on(LEAVE_CHAT_EVENT, onChatLeave);
-    socketInstance.on(UPDATE_GROUP_NAME_EVENT, onGroupUpdate);
-    socketInstance.on(MESSAGE_RECEIVED_EVENT, onMessageRetrieved);
-    socketInstance.on(MESSAGE_DELETE_EVENT, onMessageDelete);
-    socketInstance.on(SOCKET_ERROR_EVENT, onSocketError);
+    socket.on('connect', () => {
+      console.log('Socket connected');
+    });
+    socket.on(NEW_CHAT_EVENT, onNewChat);
+    socket.on(LEAVE_CHAT_EVENT, onChatLeave);
+    socket.on(UPDATE_GROUP_NAME_EVENT, onGroupUpdate);
+    socket.on(MESSAGE_RECEIVED_EVENT, onMessageRetrieved);
+    socket.on(MESSAGE_DELETE_EVENT, onMessageDelete);
+    socket.on(SOCKET_ERROR_EVENT, onSocketError);
 
     return () => {
-      socketInstance.off(NEW_CHAT_EVENT, onNewChat);
-      socketInstance.off(LEAVE_CHAT_EVENT, onChatLeave);
-      socketInstance.off(UPDATE_GROUP_NAME_EVENT, onGroupUpdate);
-      socketInstance.off(MESSAGE_RECEIVED_EVENT, onMessageRetrieved);
-      socketInstance.off(MESSAGE_DELETE_EVENT, onMessageDelete);
-      socketInstance.off(SOCKET_ERROR_EVENT, onSocketError);
+      socket.disconnect();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [socketInstance]);
+  }, [socket]);
 
   return {
     onCreateGroupChat,

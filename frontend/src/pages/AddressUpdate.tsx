@@ -2,10 +2,11 @@ import { useEffect } from 'react';
 import { AddressForm, DataState } from '../components';
 import { useApi } from '../hooks';
 import { useParams } from 'react-router-dom';
+import type { Address } from '../types';
 
 const AddressUpdate = () => {
   const { id } = useParams();
-  const { callApi, data, loading, error } = useApi<AddressProp>();
+  const { callApi, data, loading, error } = useApi<Address>();
 
   useEffect(() => {
     callApi(`/address/${id}`);

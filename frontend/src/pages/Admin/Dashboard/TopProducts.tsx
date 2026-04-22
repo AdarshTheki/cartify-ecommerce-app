@@ -5,7 +5,7 @@ import { NavLink } from 'react-router-dom';
 import { useFetch } from '../../../hooks';
 import { Loading, Counter } from '../../../components';
 import { downloadProductsAsCSV } from '../../../utils';
-import { axiosInstance, errorHandler } from '../../../services';
+import { api, errorHandler } from '../../../services';
 
 interface TopProductsProp {
   thumbnail: string;
@@ -26,7 +26,7 @@ function TopProducts() {
   const handleDownloadCSV = async () => {
     try {
       setIsLoading(true);
-      const res = await axiosInstance.get('/dashboard/download/product');
+      const res = await api.get('/dashboard/download/product');
       if (res.data) {
         downloadProductsAsCSV(res.data.data);
       }

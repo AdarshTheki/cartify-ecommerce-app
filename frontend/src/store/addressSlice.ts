@@ -1,8 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { axiosInstance } from '../services';
+import { api } from '../services';
+import type { Address } from '../types';
 
 type InitialStateProp = {
-  items: AddressType[];
+  items: Address[];
   loading: boolean;
   error: string | null;
 };
@@ -14,7 +15,7 @@ const initialState: InitialStateProp = {
 };
 
 export const fetchAddresses = createAsyncThunk('addresses/fetchAddresses', async () => {
-  const response = await axiosInstance.get(`/address`);
+  const response = await api.get(`/address`);
   return response?.data?.data;
 });
 

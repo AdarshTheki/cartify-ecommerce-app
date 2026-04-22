@@ -8,15 +8,16 @@ import { Trash2Icon } from 'lucide-react';
 import CommentReply from './CommentReply';
 import { useAppSelector } from '../../store/store';
 import { useApi } from '../../hooks';
-import { axiosInstance, errorHandler } from '../../services';
+import { api, errorHandler } from '../../services';
 import { Loading } from '../../components';
+import type { Comment } from '../../types';
 
 const COmmentListing = () => {
   const { id } = useParams();
   const [createText, setCreateText] = useState('');
   const userId = useAppSelector((state) => state.auth.user?._id);
 
-  const { data, setData, loading, callApi } = useApi<CommentItemType[]>();
+  const { data, setData, loading, callApi } = useApi<Comment[]>();
 
   useEffect(() => {
     callApi(`/comment/${id}`);
@@ -27,7 +28,7 @@ const COmmentListing = () => {
     e.preventDefault();
     try {
       if (!createText.trim()) return toast.error('Please fill the text input');
-      const res = await axiosInstance.post(`/comment`, {
+      const res = await api.post(`/comment`, {
         productId: id,
         text: createText,
       });
@@ -56,7 +57,7 @@ const COmmentListing = () => {
 */
   const deleteComment = async (commentId: string) => {
     try {
-      const res = await axiosInstance.delete(`/comment/${commentId}`);
+      const res = await api.delete(`/comment/${commentId}`);
       if (res.data.data) {
         setData((prev) => (prev ? prev.filter((i) => i._id !== commentId) : []));
       }
@@ -69,9 +70,9 @@ const COmmentListing = () => {
     try {
       let res;
       if (type === 'replies') {
-        res = await axiosInstance.post(`/comment/${commentId}/reply`, { text });
+        res = await api.post(`/comment/${commentId}/reply`, { text });
       } else {
-        res = await axiosInstance.post(`/comment/${commentId}/report`, {
+        res = await api.post(`/comment/${commentId}/report`, {
           reason: text,
         });
       }

@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { axiosInstance } from '../services';
+import { api } from '../services';
 import { Input } from '../components';
 import { useAppSelector } from '../store/store';
 
@@ -15,7 +15,7 @@ const ForgotPasswordRequest = () => {
     setMessage('');
 
     try {
-      const res = await axiosInstance.post('/user/forgot-password', { email });
+      const res = await api.post('/user/forgot-password', { email });
       if (res.data) setMessage(res.data.message || 'Password reset link sent to your email.');
     } catch {
       setMessage('Something went wrong. Please try again.');

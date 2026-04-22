@@ -5,12 +5,13 @@ import { useApi } from '../../hooks';
 import { formateTime } from '../../utils';
 import { Button } from '../../components';
 import { useAppSelector } from '../../store/store';
-import { axiosInstance, errorHandler } from '../../services';
+import { api, errorHandler } from '../../services';
 import { DataState } from '../../components';
+import type { AI } from '../../types';
 
 const AIDashboard = () => {
   const [selectedArticle, setSelectedArticle] = useState('');
-  const { callApi, data, loading, setData } = useApi<AIResponseType[]>();
+  const { callApi, data, loading, setData } = useApi<AI[]>();
   const { user } = useAppSelector((s) => s.auth);
 
   useEffect(() => {
@@ -20,7 +21,7 @@ const AIDashboard = () => {
 
   const handleDeletePost = async (id: string) => {
     try {
-      const res = await axiosInstance.delete(`/openai/post/${id}`);
+      const res = await api.delete(`/openai/post/${id}`);
       if (res.data) {
         setData((prev) => (prev ? prev.filter((i) => i._id !== id) : []));
       }
@@ -92,7 +93,7 @@ type DashboardCardProps = {
   userLiked: boolean;
   isDeleteUser: boolean;
   onActive: () => void;
-  item: AIResponseType;
+  item: AI;
   onDelete: () => void;
 };
 
@@ -110,7 +111,7 @@ const DashboardCard = ({
   const handleLikeToggle = async () => {
     try {
       setIsLiked(!isLiked);
-      const res = await axiosInstance.post(`/openai/like/${item._id}`);
+      const res = await api.post(`/openai/like/${item._id}`);
       if (res.data?.data) {
         setLikes(res.data?.data?.totalLikes);
       }

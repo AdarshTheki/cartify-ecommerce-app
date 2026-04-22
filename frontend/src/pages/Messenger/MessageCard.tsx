@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { ImagePreview } from '../../components';
 import { cn, formateTime } from '../../utils';
 import { Trash2Icon } from 'lucide-react';
+import type { Message } from '../../types';
 
 type MessageCardProp = {
   sender: boolean;
-  item: MessageType;
+  item: Message;
   onDelete: () => void;
 };
 
@@ -27,7 +28,7 @@ const MessageCard = React.memo(({ item, onDelete, sender }: MessageCardProp) => 
           <Trash2Icon size={18} />
         </button>
         <div className='flex gap-2 items-end'>
-          nTrash2Icon {item?.content && <p>{item?.content}</p>}
+          {item?.content && <p>{item?.content}</p>}
           <small className='text-nowrap' style={{ fontWeight: 400 }}>
             {formateTime(item?.updatedAt)}
           </small>

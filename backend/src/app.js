@@ -27,7 +27,6 @@ import openaiRoute from './routes/openai.route.js';
 import dashboardRoute from './routes/dashboard.route.js';
 import messageRoute from './routes/message.route.js';
 import chatRoute from './routes/chat.route.js';
-import cloudinaryRoute from './routes/cloudinary.route.js';
 import reviewRoute from './routes/review.route.js';
 import orderRoute from './routes/order.route.js';
 import s3BucketRoute from './routes/s3Bucket.route.js';
@@ -89,10 +88,7 @@ const io = new Server(server, {
     credentials: true,
   },
 });
-
-// Instance in App for Global Access
 app.set('io', io);
-
 initializeSocketIO(io);
 
 // ─── Routes ───────────────────────────────────────────────────────────────────
@@ -108,7 +104,6 @@ app.use('/api/v1/openai', openaiRoute);
 app.use('/api/v1/dashboard', dashboardRoute);
 app.use('/api/v1/chats', chatRoute);
 app.use('/api/v1/messages', messageRoute);
-app.use('/api/v1/cloudinary', cloudinaryRoute);
 app.use('/api/v1/review', reviewRoute);
 app.use('/api/v1/s3-bucket', s3BucketRoute);
 app.use('/api/v1/image', imageRoute);

@@ -2,10 +2,11 @@ import { useParams } from 'react-router-dom';
 import { useApi } from '../../hooks';
 import { DataState, ProductForm } from '../../components';
 import { useEffect } from 'react';
+import type { Product } from '../../types';
 
 const ProductUpdatePage = () => {
   const { id } = useParams();
-  const { callApi, data, loading, error } = useApi<ProductType>();
+  const { callApi, data, loading, error } = useApi<Product>();
 
   useEffect(() => {
     callApi(`/product/${id}`);

@@ -9,12 +9,13 @@ import { errorHandler } from '../../services';
 import { addToCart } from '../../services/cartService';
 import { toast } from 'react-toastify';
 import { DataState, Button, ProductFavorite } from '../../components';
+import type { Product } from '../../types';
 
 const SingleProductPage = () => {
   const { id } = useParams();
   const [color, setColor] = useState<string>('black');
   const [quantity, setQuantity] = useState(1);
-  const { callApi, data, loading, error } = useApi<ProductType>();
+  const { callApi, data, loading, error } = useApi<Product>();
 
   useEffect(() => {
     callApi(`/product/${id}`);

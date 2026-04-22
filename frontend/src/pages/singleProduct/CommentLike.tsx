@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Heart } from 'lucide-react';
 import { useAppSelector } from '../../store/store';
-import { axiosInstance, errorHandler } from '../../services';
+import { api, errorHandler } from '../../services';
 
 const CommentLiked = ({ reviewId, likes }: { reviewId: string; likes: string[] }) => {
   const userId = useAppSelector((state) => state.auth.user?._id);
@@ -10,7 +10,7 @@ const CommentLiked = ({ reviewId, likes }: { reviewId: string; likes: string[] }
 
   const handleLike = async () => {
     try {
-      const res = await axiosInstance.patch(`/comment/${reviewId}/like`);
+      const res = await api.patch(`/comment/${reviewId}/like`);
       setTotalLike(res.data.data.likes);
       setLike(!like);
     } catch (error) {

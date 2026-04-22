@@ -1,6 +1,7 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { differenceInDays, format, isToday, isYesterday } from 'date-fns';
+import type { Category, Chat, Order, Product, User } from '../types';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -59,7 +60,7 @@ export const blobDownload = (csv: string, filename: string) => {
   document.body.removeChild(a);
 };
 
-export const downloadOrdersAsCSV = (orders: OrderType[], filename = 'orders') => {
+export const downloadOrdersAsCSV = (orders: Order[], filename = 'orders') => {
   const headers = [
     'order_id',
     'createdAt',
@@ -90,19 +91,18 @@ export const downloadOrdersAsCSV = (orders: OrderType[], filename = 'orders') =>
       order_id: order._id,
       createdAt: order.createdAt,
       updatedAt: order.updatedAt,
-      customer: order.customer,
+      customer: order.userId,
       status: order.status,
-      payment_id: order.payment?.id || '',
-      payment_status: order.payment?.status || '',
-      payment_method: order.payment?.method || '',
-      shipping_name: order.shipping_address.name,
-      shipping_email: order.shipping_address.email,
-      shipping_line1: order.shipping_address.addressLine1,
-      shipping_line2: order.shipping_address.addressLine2 || '',
-      shipping_city: order.shipping_address.city,
-      shipping_state: order.shipping_address.state,
-      shipping_country: order.shipping_address.country,
-      shipping_postal: order.shipping_address.postalCode,
+      payment_id: order.paymentId.stripeId || '',
+      payment_status: order.paymentId.status || '',
+      payment_method: order.paymentId.method || '',
+      shipping_name: order.addressId.title,
+      shipping_line1: order.addressId.addressLine1,
+      shipping_line2: order.addressId.addressLine2 || '',
+      shipping_city: order.addressId.city,
+      shipping_landmark: order.addressId.landmark,
+      shipping_country: order.addressId.country,
+      shipping_postal: order.addressId.postalCode,
       item_count: order.items.length.toString(),
       item_ids: itemIds,
       item_quantities: itemQuantities,
@@ -113,7 +113,7 @@ export const downloadOrdersAsCSV = (orders: OrderType[], filename = 'orders') =>
   blobDownload(csv, filename);
 };
 
-export const downloadProductsAsCSV = (products: ProductType[], filename = 'products') => {
+export const downloadProductsAsCSV = (products: Product[], filename = 'products') => {
   const headers = [
     '_id',
     'title',
@@ -147,7 +147,7 @@ export const downloadProductsAsCSV = (products: ProductType[], filename = 'produ
   blobDownload(csv, filename);
 };
 
-export const downloadCategoriesAsCSV = (categories: CategoryType[], filename = 'categories') => {
+export const downloadCategoriesAsCSV = (categories: Category[], filename = 'categories') => {
   const headers = [
     '_id',
     'title',
@@ -186,8 +186,8 @@ export const formateTime = (date: Date | string): string => {
 };
 
 export const getChatObjectMetadata = (
-  chat: ChatType, // The chat item for which metadata is being generated.
-  loggedInUser: UserType, // The currently logged-in user details.
+  chat: Chat, // The chat item for which metadata is being generated.
+  loggedInUser: User, // The currently logged-in user details.
 ) => {
   const lastMessage = chat?.lastMessage?.content
     ? chat?.lastMessage?.content

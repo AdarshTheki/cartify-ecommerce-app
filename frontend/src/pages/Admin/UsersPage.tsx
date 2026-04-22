@@ -5,7 +5,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 
 import { useApi } from '../../hooks';
 import { DeleteModal, Input, LazyImage, Select, DataTable } from '../../components';
-import type { Column, Pagination, TableQuery, User } from '../../types';
+import type { TableColumn, Pagination, TableQuery, User } from '../../types';
 import { errorHandler } from '../../services';
 import { userDeleteByAdmin } from '../../services/userService';
 import { useAppSelector } from '../../store/store';
@@ -42,7 +42,7 @@ const UsersPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
 
-  const columns: Column<User>[] = [
+  const columns: TableColumn<User>[] = [
     {
       header: '#',
       render: (_, index) => (query.page - 1) * query.limit + (index + 1),

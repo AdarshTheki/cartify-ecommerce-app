@@ -5,7 +5,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 
 import { useApi } from '../../hooks';
 import { DeleteModal, DataTable, Input, LazyImage, Select } from '../../components';
-import type { Category, Column, Pagination, TableQuery } from '../../types';
+import type { Category, TableColumn, Pagination, TableQuery } from '../../types';
 import { useAppSelector } from '../../store/store';
 import { categoryDelete } from '../../services/categoryService';
 import { errorHandler } from '../../services';
@@ -48,7 +48,7 @@ const CategoriesPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
 
-  const columns: Column<Category>[] = [
+  const columns: TableColumn<Category>[] = [
     {
       header: '#',
       render: (_, index) => (query.page - 1) * query.limit + (index + 1),

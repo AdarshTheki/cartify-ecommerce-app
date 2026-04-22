@@ -25,17 +25,17 @@ const OrderCard = React.memo(({ ...order }: Order) => {
 
       <div className='capitalize mb-2'>
         <p>
-          Payment: {order.payment.method?.toUpperCase()} - {order.payment.status}
+          Payment: {order.paymentId.method?.toUpperCase()} - {order.paymentId.status}
         </p>
-        <p>Customer: {order.shipping_address.name?.toLowerCase()}</p>
+        <p>Customer: {order.addressId.title?.toLowerCase()}</p>
         <p>Total: ${order?.totalPrice}</p>
       </div>
 
       <p className='mb-2'>
-        {order.shipping_address.addressLine1}, {order.shipping_address.addressLine2},
+        {order.addressId.addressLine1}, {order.addressId.addressLine2},
         <br />
-        {order.shipping_address.city} - {order.shipping_address.postalCode},{' '}
-        {order.shipping_address.state}, {order.shipping_address.country}
+        {order.addressId.city} - {order.addressId.postalCode}, {order.addressId.landmark},{' '}
+        {order.addressId.country}
       </p>
 
       <div className='mt-2'>

@@ -1,6 +1,6 @@
 import { Counter, Loading } from '../../../components';
 import { useFetch } from '../../../hooks';
-import { axiosInstance, errorHandler } from '../../../services';
+import { api, errorHandler } from '../../../services';
 import { downloadCategoriesAsCSV } from '../../../utils';
 import { Download, Loader } from 'lucide-react';
 import { useState } from 'react';
@@ -24,7 +24,7 @@ const TopCategories = () => {
   const handleDownloadCSV = async (name: string) => {
     try {
       setCategoryLoading(true);
-      const res = await axiosInstance.get(`/dashboard/download/${name}`);
+      const res = await api.get(`/dashboard/download/${name}`);
       if (res.data) {
         downloadCategoriesAsCSV(res.data.data, name);
       }

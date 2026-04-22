@@ -83,7 +83,7 @@ productSchema.index({
 productSchema.plugin(mongoosePaginate);
 
 productSchema.pre('save', function (next) {
-  if (this.isModified('name')) {
+  if (this.isModified('title')) {
     this.slug = this.title
       .toLowerCase()
       .trim()

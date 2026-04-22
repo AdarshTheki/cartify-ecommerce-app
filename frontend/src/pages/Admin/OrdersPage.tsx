@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { Input, Select, DataTable } from '../../components';
 import { useApi } from '../../hooks';
-import type { Column, Order, Pagination, TableQuery } from '../../types';
+import type { TableColumn, Order, Pagination, TableQuery } from '../../types';
 import { format } from 'date-fns';
 
 const defaultQuery: TableQuery = {
@@ -52,18 +52,18 @@ export default function OrdersPage() {
     }));
   };
 
-  const columns: Column<Order>[] = [
+  const columns: TableColumn<Order>[] = [
     {
       header: '#',
       render: (_, index) => (query.page - 1) * query.limit + (index + 1),
     },
     {
       header: 'Customer',
-      render: (order) => order.shipping_address.name,
+      render: (order) => order.addressId.title,
     },
     {
       header: 'City',
-      render: ({ shipping_address: a }) => `${a.city}, ${a.country}`,
+      render: ({ addressId }) => `${addressId.city}, ${addressId.country}`,
     },
     {
       header: 'Totals $',
@@ -71,7 +71,7 @@ export default function OrdersPage() {
     },
     {
       header: 'Payment',
-      render: ({ payment }) => `${payment.method} - ${payment.status}`,
+      render: ({ paymentId }) => `${paymentId.method} - ${paymentId.status}`,
     },
     {
       header: 'Status',

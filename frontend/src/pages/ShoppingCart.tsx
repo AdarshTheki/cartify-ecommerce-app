@@ -2,17 +2,18 @@ import { ArrowLeft, Loader, ShoppingBag, Trash2Icon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import React, { useEffect, useState } from 'react';
 import Certificate from './Home/Certificate';
-import { axiosInstance, errorHandler } from '../services';
+import { api, errorHandler } from '../services';
 import { Button } from '../components';
 import { DataState } from '../components';
 import { useApi } from '../hooks';
 import { removeFromCart, updateCartQuantity } from '../services/cartService';
 import Trending from './Home/Trending';
+import type { CartItem, Product } from '../types';
 
 const ShoppingCartPage = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const { callApi, data, setData, loading } = useApi<ItemsType[]>();
+  const { callApi, data, setData, loading } = useApi<CartItem[]>();
 
   useEffect(() => {
     callApi('/cart');
@@ -22,7 +23,7 @@ const ShoppingCartPage = () => {
   const handleCheckout = async () => {
     try {
       setIsLoading(true);
-      const res = await axiosInstance.post('/order/stripe-checkout');
+      const res = await api.post('/order/stripe-checkout');
       if (res.data) {
         window.location.href = res.data?.data?.url;
         setIsLoading(false);
@@ -73,9 +74,9 @@ const ShoppingCartPage = () => {
                   return (
                     <ShoppingCart
                       key={item._id}
-                      {...item}
                       onQtyChange={(qty) => handleUpdateQty(item.productId._id, qty)}
                       onRemove={() => handleRemoveItem(item._id)}
+                      {...item}
                     />
                   );
                 })}
@@ -134,14 +135,14 @@ const ShoppingCartPage = () => {
 export default ShoppingCartPage;
 
 type ShoppingCartProp = {
-  productId: ProductType;
-  quantity: number;
   onRemove: () => void;
   onQtyChange: (val: number) => void;
+  quantity: number;
+  productId: Omit<Product, 'createdBy'>;
 };
 
 const ShoppingCart = React.memo(
-  ({ productId, quantity, onRemove, onQtyChange }: ShoppingCartProp) => {
+  ({ onRemove, onQtyChange, productId, quantity }: ShoppingCartProp) => {
     const { _id, thumbnail, title, price, category, brand } = productId;
     const [qty, setQty] = useState<number>(quantity);
     const navigate = useNavigate();

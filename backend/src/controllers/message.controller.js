@@ -4,7 +4,11 @@ import { Message } from '../models/message.model.js';
 import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
-import { removeMultiImg, uploadMultiImg } from '../utils/cloudinary.js';
+import {
+  deleteManyOnCloudinary,
+  uploadManyOnCloudinary,
+  extractPublicId,
+} from '../utils/cloudinary.js';
 import { ChatEvents, emitSocketEvent } from '../config/socket.js';
 
 // @desc    Get messages by chat ID
@@ -46,10 +50,9 @@ export const createMessage = asyncHandler(async (req, res) => {
 
   let uploadedAttachments = [];
   if (Array.isArray(attachments) && attachments.length > 0) {
-    uploadedAttachments = await uploadMultiImg(attachments);
-    if (!uploadedAttachments?.length) {
-      throw new ApiError(500, 'Attachment upload failed');
-    }
+    uploadedAttachments = await uploadManyOnCloudinary(
+      attachments.map((file) => file.path)
+    );
   }
 
   const newMessage = await Message.create({
@@ -103,7 +106,9 @@ export const deleteMessage = asyncHandler(async (req, res) => {
   }
 
   if (message.attachments && message.attachments.length > 0) {
-    await removeMultiImg(message.attachments);
+    await deleteManyOnCloudinary(
+      message.attachments.map((att) => extractPublicId(att.url))
+    );
   }
 
   await Message.findByIdAndDelete(messageId);

@@ -5,7 +5,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 
 import { useApi } from '../../hooks';
 import { DeleteModal, Input, LazyImage, Select, DataTable } from '../../components';
-import type { Brand, Column, Pagination, TableQuery } from '../../types';
+import type { Brand, TableColumn, Pagination, TableQuery } from '../../types';
 import { useAppSelector } from '../../store/store';
 import { BrandDelete } from '../../services/brandService';
 import { errorHandler } from '../../services';
@@ -48,7 +48,7 @@ const BrandsPage = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
 
-  const columns: Column<Brand>[] = [
+  const columns: TableColumn<Brand>[] = [
     {
       header: '#',
       render: (_, index) => (query.page - 1) * query.limit + (index + 1),

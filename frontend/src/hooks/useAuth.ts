@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
-import { axiosInstance, errorHandler } from '../services';
+import { api, errorHandler } from '../services';
 import { login } from '../store/authSlice';
 import { useAppDispatch, useAppSelector } from '../store/store';
+import type { User } from '../types';
 
 const useAuth = () => {
   const dispatch = useAppDispatch();
@@ -22,7 +23,7 @@ const useAuth = () => {
         return;
       }
 
-      const res = await axiosInstance.post('/user/sign-in', {
+      const res = await api.post('/user/sign-in', {
         email,
         password,
       });
@@ -61,7 +62,7 @@ const useAuth = () => {
         return;
       }
 
-      const { data } = await axiosInstance.post('/user/sign-up', {
+      const { data } = await api.post('/user/sign-up', {
         fullName,
         email,
         password,
@@ -81,13 +82,13 @@ const useAuth = () => {
   const handleUpdateProfile = async (email: string, fullName: string) => {
     try {
       setFullNameAndEmailLoading(true);
-      const res = await axiosInstance.patch('/user/update', {
+      const res = await api.patch('/user/update', {
         email,
         fullName,
       });
       const data = res?.data?.data;
       if (data) {
-        dispatch(login({ ...user, email, fullName } as UserType));
+        dispatch(login({ ...user, email, fullName } as User));
       }
     } catch (error) {
       errorHandler(error);
@@ -99,7 +100,7 @@ const useAuth = () => {
   const handleChangePassword = async (oldPassword: string, newPassword: string) => {
     try {
       setPasswordLoading(true);
-      await axiosInstance.post('/user/password', {
+      await api.post('/user/password', {
         oldPassword,
         newPassword,
       });
@@ -115,10 +116,10 @@ const useAuth = () => {
       setAvatarLoading(true);
       const formData = new FormData();
       formData.append('avatar', file);
-      const res = await axiosInstance.post('/user/avatar', formData);
+      const res = await api.post('/user/avatar', formData);
       const data = res?.data?.data;
       if (data) {
-        dispatch(login({ ...user, avatar: data.avatar } as UserType));
+        dispatch(login({ ...user, avatar: data.avatar } as User));
       }
     } catch (error) {
       errorHandler(error);
@@ -129,7 +130,7 @@ const useAuth = () => {
 
   const handleLogout = async () => {
     try {
-      await axiosInstance.post('/user/logout');
+      await api.post('/user/logout');
       localStorage.removeItem('accessToken');
       sessionStorage.removeItem('accessToken');
       window.location.href = '/';

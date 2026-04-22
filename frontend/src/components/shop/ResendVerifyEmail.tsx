@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { useAppSelector } from '../../store/store';
-import { axiosInstance } from '../../services';
+import { api } from '../../services';
 import { Input } from '../index';
 
 const ResendVerifyEmail = () => {
@@ -15,7 +15,7 @@ const ResendVerifyEmail = () => {
     setMessage('');
 
     try {
-      const res = await axiosInstance.get('/user/resend-verify-email');
+      const res = await api.get('/user/resend-verify-email');
       if (res.data) setMessage('Mail has been sent to your mail ID');
     } catch {
       setMessage('Something went wrong. Please try again.');

@@ -1,7 +1,7 @@
 import { useEffect, useState, type ChangeEvent } from 'react';
 import { useAppSelector } from '../store/store';
 import { useDebounce } from '../hooks';
-import { axiosInstance } from '../services';
+import { api } from '../services';
 
 type S3FilesProps = {
   [key: string]: string;
@@ -15,7 +15,7 @@ export default function S3FileManager() {
   const [uploading, setUploading] = useState(false);
 
   async function load() {
-    const { data } = await axiosInstance.get(`/s3-bucket`, {
+    const { data } = await api.get(`/s3-bucket`, {
       params: { prefix: debounce },
     });
     setFiles(data.files || []);
@@ -34,7 +34,7 @@ export default function S3FileManager() {
     form.append('dir', dir);
     setUploading(true);
     try {
-      await axiosInstance.post(`/s3-bucket/upload`, form, {
+      await api.post(`/s3-bucket/upload`, form, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       await load();
@@ -46,7 +46,7 @@ export default function S3FileManager() {
 
   async function onDelete(key: string) {
     const encKey = encodeURIComponent(key);
-    await axiosInstance.delete(`/s3-bucket/${encKey}`);
+    await api.delete(`/s3-bucket/${encKey}`);
     load();
   }
 

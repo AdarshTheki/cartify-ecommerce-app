@@ -3,12 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { Loader, Sparkle, Trash2 } from 'lucide-react';
 import { toast } from 'react-toastify';
 
-import { errorHandler, axiosInstance } from '../../services';
+import { errorHandler, api } from '../../services';
 import { Input, Textarea, Select } from '../index';
 import useTitle from '../../hooks/useTitle';
 import { cn } from '../../utils';
+import type { Brand } from '../../types';
 
-const BrandForm = ({ item }: { item: BrandType | null }) => {
+const BrandForm = ({ item }: { item: Brand | null }) => {
   const navigate = useNavigate();
 
   useTitle(cn('Cartify:', item?._id ? 'Update Brand' : 'Add new brand'));
@@ -38,7 +39,7 @@ const BrandForm = ({ item }: { item: BrandType | null }) => {
       if (formData.description.length < 50)
         return toast.error('AI to enter at least 50 char entered');
       setAILoading(true);
-      const res = await axiosInstance.post('/openai/generate-text', {
+      const res = await api.post('/openai/generate-text', {
         userText: formData.description,
         prompt: `
         You are an expert in eCommerce product classification. 
@@ -85,7 +86,7 @@ const BrandForm = ({ item }: { item: BrandType | null }) => {
       const endpoint = `/brand${item?._id ? `/${item._id}` : ''}`;
       const method = item?._id ? 'patch' : 'post';
 
-      const response = await axiosInstance[method](endpoint, payload, {
+      const response = await api[method](endpoint, payload, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
 

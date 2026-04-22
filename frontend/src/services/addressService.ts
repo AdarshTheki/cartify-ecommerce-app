@@ -1,21 +1,22 @@
+import type { Address, AddressFormData } from '../types';
 import { api } from './api';
 
 export const getUserAddresses = () => {
-  return api.get<AddressProp[]>('/address');
+  return api.get<Address[]>('/address');
 };
 
-export const createAddress = (data: AddressProp) => {
-  return api.post<AddressProp>('/address', data);
+export const createAddress = (data: AddressFormData) => {
+  return api.post<Address>('/address', data);
 };
 
 export const getAddress = (id: string) => {
-  return api.get<AddressProp>(`/address/${id}`);
+  return api.get<Address>(`/address/${id}`);
 };
 
-export const updateAddress = (id: string, data: AddressProp) => {
-  return api.patch<AddressProp>(`/address/${id}`, data);
+export const updateAddress = (id: string, data: AddressFormData) => {
+  return api.patch<Address>(`/address/${id}`, data);
 };
 
 export const deleteAddress = (id: string) => {
-  return api.delete<AddressProp>(`/address/${id}`);
+  return api.delete<Address>(`/address/${id}`);
 };

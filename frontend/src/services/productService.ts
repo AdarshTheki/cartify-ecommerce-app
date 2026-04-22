@@ -1,33 +1,34 @@
+import type { Product, ProductFormData } from '../types';
 import { api } from './api';
 
 export const getProducts = () => {
-  return api.get<ProductType[]>('/product');
+  return api.get<Product[]>('/product');
 };
 
 export const getProduct = (id: string) => {
-  return api.get<ProductType>(`/product/:${id}`);
+  return api.get<Product>(`/product/:${id}`);
 };
 
 export const deleteProduct = (id: string) => {
   return api.delete(`/product/:${id}`);
 };
 
-export const updateProduct = (id: string, data: ProductType) => {
-  return api.patch<ProductType>(`/product/:${id}`, data);
+export const updateProduct = (id: string, data: ProductFormData) => {
+  return api.patch<Product>(`/product/:${id}`, data);
 };
 
-export const createProduct = (data: ProductType) => {
-  return api.post<ProductType>('/product', data);
+export const createProduct = (data: ProductFormData) => {
+  return api.post<Product>('/product', data);
 };
 
 export const getCategoryByProducts = (name: string) => {
-  return api.get<ProductType[]>(`/product/category/${name}`);
+  return api.get<Product[]>(`/product/category/${name}`);
 };
 
 export const getBrandByProducts = (name: string) => {
-  return api.get<ProductType[]>(`/product/brand/${name}`);
+  return api.get<Product[]>(`/product/brand/${name}`);
 };
 
 export const searchProducts = (name: string) => {
-  return api.get<ProductType[]>(`/product/search?q=${name}`);
+  return api.get<Product[]>(`/product/search?q=${name}`);
 };

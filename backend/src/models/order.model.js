@@ -5,7 +5,7 @@ export const orderStatus = ['pending', 'shipped', 'delivered', 'cancelled'];
 
 const orderSchema = new Schema(
   {
-    customer: {
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: true,
@@ -15,15 +15,10 @@ const orderSchema = new Schema(
       enum: orderStatus,
       default: 'pending',
     },
-    shipping_address: {
-      name: String,
-      email: String,
-      line1: String,
-      line2: String,
-      city: String,
-      country: String,
-      postal_code: String,
-      state: String,
+    addressId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Address',
+      required: true,
     },
     items: [
       {
@@ -40,11 +35,12 @@ const orderSchema = new Schema(
         },
       },
     ],
-    payment: {
-      id: String,
-      status: String,
-      method: String,
+    paymentId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Payment',
+      required: true,
     },
+    totalPrice: Number,
   },
   { timestamps: true }
 );

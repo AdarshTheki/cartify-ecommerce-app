@@ -3,7 +3,11 @@ import { Brand } from '../models/brand.model.js';
 import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
-import { removeSingleImg, uploadSingleImg } from '../utils/cloudinary.js';
+import {
+  deleteOnCloudinary,
+  uploadOnCloudinary,
+  extractPublicId,
+} from '../utils/cloudinary.js';
 
 // @desc    Get all brands
 // @route   GET /api/v1/brands
@@ -74,10 +78,7 @@ export const createBrand = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'All fields are required');
   }
 
-  const thumbnail = await uploadSingleImg(filePath);
-  if (!thumbnail) {
-    throw new ApiError(500, 'Thumbnail upload failed');
-  }
+  const thumbnail = await uploadOnCloudinary(filePath);
 
   const brand = await Brand.create({
     title,
@@ -111,11 +112,8 @@ export const updateBrand = asyncHandler(async (req, res) => {
 
   let thumbnail;
   if (filePath) {
-    await removeSingleImg(brand.thumbnail);
-    thumbnail = await uploadSingleImg(filePath);
-    if (!thumbnail) {
-      throw new ApiError(500, 'Thumbnail upload failed');
-    }
+    thumbnail = await uploadOnCloudinary(filePath);
+    await deleteOnCloudinary(extractPublicId(brand.thumbnail));
   }
 
   brand.title = title || brand.title;
@@ -145,7 +143,7 @@ export const deleteBrand = asyncHandler(async (req, res) => {
   }
 
   if (brand.thumbnail) {
-    await removeSingleImg(brand.thumbnail);
+    await deleteOnCloudinary(extractPublicId(brand.thumbnail));
   }
 
   return res

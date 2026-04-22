@@ -1,9 +1,9 @@
+import mongoose from 'mongoose';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { ApiError } from '../utils/ApiError.js';
 import { cloudinary } from '../utils/cloudinary.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import { Image } from '../models/image.model.js';
-import mongoose from 'mongoose';
 
 const imageUpload = asyncHandler(async (req, res) => {
   const file = req.file; // multer single file

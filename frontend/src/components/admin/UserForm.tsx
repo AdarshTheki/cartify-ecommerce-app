@@ -2,19 +2,20 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { useTitle } from '../../hooks';
-import { countries } from '../../utils';
-import { axiosInstance, errorHandler } from '../../services';
+import { api, errorHandler } from '../../services';
 import { Select, Input, Button } from '../index';
+import type { User, UserFormData } from '../../types';
 
-const UserForm = ({ userData }: { userData: UserType | null }) => {
-  const [user, setUser] = React.useState({
+const UserForm = ({ userData }: { userData: User | null }) => {
+  const [user, setUser] = React.useState<
+    Omit<UserFormData, 'avatar' | 'favorite' | 'isEmailVerified' | 'refreshToken'>
+  >({
     email: userData?.email || '',
-    password: userData?.password || '',
     fullName: userData?.fullName || '',
     role: userData?.role || '',
     status: userData?.status || '',
-    code: userData?.phoneNumber?.split('-')[0] || '',
-    phone: userData?.phoneNumber?.split('-')[1] || '',
+    password: userData?.password || '',
+    phoneNumber: userData?.phoneNumber || '',
   });
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -31,15 +32,9 @@ const UserForm = ({ userData }: { userData: UserType | null }) => {
     let response;
     try {
       if (userData?._id) {
-        response = await axiosInstance.patch(`/user/admin/${userData._id}`, {
-          ...user,
-          phoneNumber: `${user.code}-${user.phone}`,
-        });
+        response = await api.patch(`/user/admin/${userData._id}`, user);
       } else {
-        response = await axiosInstance.post('/user/admin', {
-          ...user,
-          phoneNumber: `${user.code}-${user.phone}`,
-        });
+        response = await api.post('/user/admin', user);
       }
       if (response.data) {
         navigate('/admin/users');
@@ -82,15 +77,6 @@ const UserForm = ({ userData }: { userData: UserType | null }) => {
             selected={user.status || 'select status'}
           />
         </div>
-        <div className='grid gap-1'>
-          <p className='capitalize text-sm font-medium text-gray-700'>country</p>
-          <Select
-            className='right-0 !w-[160px]'
-            list={countries.map((i) => i.title)}
-            selected={user.code || 'select country'}
-            onSelected={(e: string) => setUser({ ...user, code: e })}
-          />
-        </div>
       </div>
 
       <Input
@@ -115,10 +101,10 @@ const UserForm = ({ userData }: { userData: UserType | null }) => {
       <Input
         label='Phone Number'
         type='number'
-        name='phone'
+        name='phoneNumber'
         placeholder='Enter Phone Number'
         onChange={handleChange}
-        value={user.phone}
+        value={user.phoneNumber}
         required={true}
       />
       <div className='flex gap-5 items-center mt-10'>

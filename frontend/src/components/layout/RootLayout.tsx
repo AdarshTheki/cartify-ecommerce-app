@@ -140,13 +140,7 @@ export default function RootLayout() {
 
         {/* Content */}
         <main className='flex-1 overflow-y-auto px-3 sm:px-4 lg:px-6 py-4'>
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.25 }}
-            className='max-w-[1600px] mx-auto'>
-            <Outlet />
-          </motion.div>
+          <Outlet />
         </main>
 
         {/* Footer */}

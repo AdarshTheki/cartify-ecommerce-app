@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { axiosInstance } from '../services';
+import { api } from '../services';
 import type { Product } from '../types';
 
 // Async thunk with typed response
@@ -9,7 +9,7 @@ export const fetchProducts = createAsyncThunk<
   { rejectValue: string }
 >('products/fetchProducts', async (_, { rejectWithValue }) => {
   try {
-    const response = await axiosInstance.get(`/product`);
+    const response = await api.get(`/product`);
     if (response.data.data.docs.length === 0) return [];
     return response.data.data.docs;
   } catch {

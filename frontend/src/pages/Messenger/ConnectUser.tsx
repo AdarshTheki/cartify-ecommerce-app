@@ -1,14 +1,15 @@
 import { MessageCircle, Users, X } from 'lucide-react';
 import { memo, useCallback, useState, type ChangeEvent } from 'react';
 import { toast } from 'react-toastify';
+import type { Chat, User } from '../../types';
 
 type ConnectUserProp = {
   isOpen: boolean;
   onClose: () => void;
-  users: UserType[];
+  users: User[];
   onCreateGroupChat: (name: string, selects: string[], id: string) => void;
   onCreateOrGetChat: (select: string) => void;
-  chat: ChatType | null;
+  chat: Chat | null;
 };
 
 const ConnectUser = memo(

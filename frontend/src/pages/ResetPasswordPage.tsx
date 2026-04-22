@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { axiosInstance } from '../services';
+import { api } from '../services';
 
 export default function ResetPassword() {
   const navigate = useNavigate();
@@ -48,7 +48,7 @@ export default function ResetPassword() {
 
     try {
       setLoading(true);
-      const { data } = await axiosInstance.post(`/user/reset-password/${resetToken}`, {
+      const { data } = await api.post(`/user/reset-password/${resetToken}`, {
         newPassword: password,
       });
       if (data) {

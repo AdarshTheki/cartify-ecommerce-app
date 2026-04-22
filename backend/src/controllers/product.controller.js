@@ -4,10 +4,11 @@ import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
 import {
-  removeMultiImg,
-  removeSingleImg,
-  uploadMultiImg,
-  uploadSingleImg,
+  uploadOnCloudinary,
+  uploadManyOnCloudinary,
+  deleteOnCloudinary,
+  deleteManyOnCloudinary,
+  extractPublicId,
 } from '../utils/cloudinary.js';
 
 const selectedProduct = {
@@ -18,6 +19,8 @@ const selectedProduct = {
   thumbnail: 1,
   price: 1,
   rating: 1,
+  stock: 1,
+  discount: 1,
 };
 
 // @desc    Get all products with filters
@@ -106,10 +109,10 @@ export const createProduct = asyncHandler(async (req, res) => {
   }
 
   const thumbnail = req.files?.thumbnail
-    ? await uploadSingleImg(req.files.thumbnail[0].path)
+    ? await uploadOnCloudinary(req.files.thumbnail[0].path)
     : '';
   const images = req.files?.images
-    ? await uploadMultiImg(req.files.images)
+    ? await uploadManyOnCloudinary(req.files.images.map((file) => file.path))
     : [];
 
   const product = await Product.create({
@@ -159,16 +162,18 @@ export const updateProduct = asyncHandler(async (req, res) => {
 
   if (req.files?.thumbnail) {
     if (product.thumbnail) {
-      await removeSingleImg(product.thumbnail);
+      await deleteOnCloudinary(extractPublicId(product.thumbnail));
     }
-    product.thumbnail = await uploadSingleImg(req.files.thumbnail[0].path);
+    product.thumbnail = await uploadOnCloudinary(req.files.thumbnail[0].path);
   }
 
   if (req.files?.images) {
     if (product.images.length > 0) {
-      await removeMultiImg(product.images);
+      await deleteManyOnCloudinary(product.images.map(extractPublicId));
     }
-    product.images = await uploadMultiImg(req.files.images);
+    product.images = await uploadManyOnCloudinary(
+      req.files.images.map((file) => file.path)
+    );
   }
 
   product.title = title || product.title;
@@ -321,11 +326,11 @@ export const adminDeleteProduct = asyncHandler(async (req, res) => {
   }
 
   if (product.thumbnail) {
-    await removeSingleImg(product.thumbnail);
+    await deleteOnCloudinary(extractPublicId(product.thumbnail));
   }
 
   if (product.images.length > 0) {
-    await removeMultiImg(product.images);
+    await deleteManyOnCloudinary(product.images.map((i) => extractPublicId(i)));
   }
 
   return res

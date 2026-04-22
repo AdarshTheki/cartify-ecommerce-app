@@ -1,9 +1,9 @@
 import Markdown from 'react-markdown';
+import { useState } from 'react';
 import { Sparkles, Copy, RefreshCcw } from 'lucide-react';
+
 import { useApi, useTypewriter } from '../../hooks';
 import { cn } from '../../utils';
-import { Input } from '../../components';
-import { useState } from 'react';
 
 const categories = [
   'General',

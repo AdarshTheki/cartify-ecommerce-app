@@ -6,9 +6,10 @@ import { toast } from 'react-toastify';
 import { Input, Textarea, Select } from '../index';
 import useTitle from '../../hooks/useTitle';
 import { categories, brands } from '../../utils';
-import { axiosInstance, errorHandler } from '../../services';
+import { api, errorHandler } from '../../services';
+import type { Product, ProductFormData, ProductStatus } from '../../types';
 
-const ProductForm = ({ data }: { data: ProductType | null }) => {
+const ProductForm = ({ data }: { data: Product | null }) => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState<boolean>(false);
   const [AILoading, setAILoading] = useState<boolean>(false);
@@ -18,16 +19,16 @@ const ProductForm = ({ data }: { data: ProductType | null }) => {
   const [thumbnail, setThumbnail] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(data?.thumbnail || '');
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<Omit<ProductFormData, 'thumbnail' | 'images'>>({
     title: data?.title || '',
     category: data?.category || '',
     brand: data?.brand || '',
-    status: data?.status || '',
     description: data?.description || '',
-    discount: data?.discount,
-    price: data?.price,
-    rating: data?.rating,
-    stock: data?.stock,
+    discount: data?.discount || 0,
+    price: data?.price || 0,
+    rating: data?.rating || 0,
+    stock: data?.stock || 0,
+    status: data?.status || 'inactive',
   });
 
   interface ImageChangeEvent extends React.ChangeEvent<HTMLInputElement> {
@@ -109,7 +110,7 @@ const ProductForm = ({ data }: { data: ProductType | null }) => {
     try {
       const endpoint = data?._id ? `/product/${data._id}` : '/product';
       const method = data?._id ? 'patch' : 'post';
-      const res = await axiosInstance[method](endpoint, uploadData, {
+      const res = await api[method](endpoint, uploadData, {
         headers: { 'Content-Type': 'multipart/form-data' },
       });
       if (res.data) {
@@ -127,7 +128,7 @@ const ProductForm = ({ data }: { data: ProductType | null }) => {
       if (formData.description.length < 50)
         return toast.error('AI to enter at least 50 char entered');
       setAILoading(true);
-      const res = await axiosInstance.post('/openai/generate-text', {
+      const res = await api.post('/openai/generate-text', {
         userText: formData.description,
         prompt: `Generate a e-commerce product description under 1000 characters simple text formate of this context "${formData.description}"`,
       });
@@ -176,13 +177,8 @@ const ProductForm = ({ data }: { data: ProductType | null }) => {
             <div className='grid gap-1'>
               <p className='capitalize text-sm font-medium text-gray-700'>status</p>
               <Select
-                onSelected={(e: string) => setFormData({ ...formData, status: e })}
-                list={[
-                  ProductStatusEnum.active,
-                  ProductStatusEnum.inactive,
-                  ProductStatusEnum.outOfStock,
-                  ProductStatusEnum.pending,
-                ]}
+                onSelected={(e: string) => setFormData({ ...formData, status: e as ProductStatus })}
+                list={['active', 'inactive', 'out-of-stock', 'pending']}
                 selected={formData.status || 'select status'}
               />
             </div>

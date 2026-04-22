@@ -3,18 +3,18 @@ import { useNavigate } from 'react-router-dom';
 import { createAddress, updateAddress } from '../../services/addressService';
 import { errorHandler } from '../../services';
 import { Input } from '../index';
+import type { Address, AddressFormData } from '../../types';
 
-const AddressForm = ({ form }: { form: AddressProp | null }) => {
+const AddressForm = ({ form }: { form: Address | null }) => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState<AddressProp>({
-    _id: form?._id || '',
-    name: form?.name || '',
+  const [formData, setFormData] = useState<AddressFormData>({
+    title: form?.title || '',
     addressLine1: form?.addressLine1 || '',
     city: form?.city || '',
-    state: form?.state || '',
+    landmark: form?.landmark || '',
     postalCode: form?.postalCode || '',
     country: form?.country || '',
-    phone: form?.phone || 0,
+    phoneNumber: form?.phoneNumber || 0,
     isDefault: form?.isDefault || false,
     addressLine2: form?.addressLine2 || '',
   });
@@ -30,8 +30,8 @@ const AddressForm = ({ form }: { form: AddressProp | null }) => {
   const handleSubmitForm = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const res = formData._id
-        ? await updateAddress(formData._id, formData)
+      const res = form?._id
+        ? await updateAddress(form._id, formData)
         : await createAddress(formData);
       if (res.data) {
         navigate('/shipping-address');
@@ -49,11 +49,16 @@ const AddressForm = ({ form }: { form: AddressProp | null }) => {
       <div className='grid grid-cols-2 gap-5'>
         <Input
           onChange={handleChangeInput}
-          value={formData?.name}
+          value={formData?.title}
           label='shipping name'
-          name='name'
+          name='title'
         />
-        <Input onChange={handleChangeInput} value={formData?.phone} label='phone' name='phone' />
+        <Input
+          onChange={handleChangeInput}
+          value={formData?.phoneNumber}
+          label='phone'
+          name='phoneNumber'
+        />
       </div>
       <Input
         onChange={handleChangeInput}
@@ -69,8 +74,18 @@ const AddressForm = ({ form }: { form: AddressProp | null }) => {
       />
       <div className='grid grid-cols-2 gap-4'>
         <Input onChange={handleChangeInput} value={formData?.city} label='city' name='city' />
-        <Input onChange={handleChangeInput} value={formData?.state} label='state' name='state' />
-        <Input onChange={handleChangeInput} value={formData?.city} label='country' name='country' />
+        <Input
+          onChange={handleChangeInput}
+          value={formData?.landmark}
+          label='landmark'
+          name='landmark'
+        />
+        <Input
+          onChange={handleChangeInput}
+          value={formData?.country}
+          label='country'
+          name='country'
+        />
         <Input
           onChange={handleChangeInput}
           value={formData?.postalCode}

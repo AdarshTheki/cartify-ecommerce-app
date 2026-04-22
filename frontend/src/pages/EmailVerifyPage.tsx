@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/store';
-import { axiosInstance } from '../services';
+import { api } from '../services';
 import { login } from '../store/authSlice';
 
 const EmailVerify = () => {
@@ -21,7 +21,7 @@ const EmailVerify = () => {
       }
 
       try {
-        const res = await axiosInstance.get(`/user/verify-email/${verificationToken}`);
+        const res = await api.get(`/user/verify-email/${verificationToken}`);
         if (res.data) {
           setStatus('success');
           setMessage('Email verified successfully!');

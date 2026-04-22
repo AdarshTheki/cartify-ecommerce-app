@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { format } from 'date-fns';
 import CommentLike from './CommentLike';
 import { ChevronDown, ChevronUp } from 'lucide-react';
+import type { Comment } from '../../types';
 
 type CommentType = 'replies' | 'reports';
 
@@ -11,7 +12,7 @@ interface CommentTypeProp {
 }
 
 interface CommentReplyProp {
-  item: CommentItemType;
+  item: Comment;
   onReplyComment: (comment: string, text: string, type: CommentType) => Promise<void>;
 }
 

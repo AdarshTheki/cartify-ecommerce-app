@@ -30,7 +30,7 @@ export const ChatEvents = Object.freeze({
 
 const mountJoinChatEvent = (socket) => {
   socket.on(ChatEvents.JOIN_CHAT_EVENT, (chatId) => {
-    logger.warn(`User joined the chat 🤝. chatId: `, chatId);
+    logger.info(`User joined the chat 🤝. chatId: `, chatId);
     socket.join(chatId);
   });
 };
@@ -52,50 +52,54 @@ export const emitSocketEvent = (req, roomId, event, payload) => {
 };
 
 export const initializeSocketIO = (io) => {
-  return io.on('connection', async (socket) => {
+  const onlineUsers = new Map();
+
+  io.use(async (socket, next) => {
     try {
       const token =
-        // First try from cookies
-        Object.fromEntries(
-          (socket.handshake.headers?.cookie || '')
-            .split(';')
-            .map((c) => c.trim().split('=').map(decodeURIComponent))
-        )?.accessToken ||
-        // Then try from handshake auth
-        socket.handshake.auth?.token;
+        socket.handshake.auth?.token ||
+        socket.handshake.headers?.authorization?.split(' ')[1];
 
-      if (!token) throw new ApiError(401, 'Header token is missing');
+      logger.info('Socket authentication started 🔐', token);
 
-      const decodedToken = jwt.verify(token, process.env.SECRET_TOKEN); // decode the token
+      if (!token) throw new ApiError(404, 'Token missing');
 
-      if (!decodedToken?._id)
-        throw new ApiError(401, 'Invalid or expired token');
+      const decoded = jwt.verify(token, process.env.SECRET_TOKEN);
 
-      const user = await User.findById(decodedToken?._id).select(
-        '-password -refreshToken'
-      );
+      const user = await User.findById(decoded._id);
 
-      if (!user) throw new ApiError(401, 'User not found');
+      if (!user) throw new ApiError(404, 'User not found');
 
-      socket.user = user; // mount te user object to the socket
-      socket.join(user._id.toString()); // user join yourself room with self notification used
-      logger.warn('User connected 🗼:', user._id.toString());
-
-      // socket.emit(ChatEvents.CONNECTED_EVENT,); // emit the connected event so that client is aware
-
-      // Common events that needs to be mounted on the initialization
-      mountJoinChatEvent(socket);
-      mountParticipantTypingEvent(socket);
-      mountParticipantStoppedTypingEvent(socket);
-
-      socket.on(ChatEvents.DISCONNECT_EVENT, () => {
-        logger.warn('user disconnected 🚫' + socket.user?._id);
-        socket.leave(socket.user?._id);
-      });
+      socket.user = user;
+      next();
     } catch (error) {
-      logger.error(error?.message);
-      socket.emit(ChatEvents.SOCKET_ERROR_EVENT, error?.message);
-      socket.disconnect(true);
+      socket.emit(ChatEvents.SOCKET_ERROR_EVENT, {
+        message: error?.message || 'Unauthorized',
+      });
+      next(new ApiError(401, error?.message || 'Unauthorized'));
     }
+  });
+
+  io.on('connection', async (socket) => {
+    const user = socket.user; // get the user object from the socket
+    socket.join(user._id.toString()); // user join yourself room with self notification used
+    logger.info('User connected 🗼:', user._id.toString());
+
+    // socket.emit(ChatEvents.CONNECTED_EVENT); // emit the connected event so that client is aware
+
+    onlineUsers.set(user._id.toString(), socket.id); // add the user to the online users map
+
+    io.emit('onlineUsers', Array.from(onlineUsers.keys())); // emit the online users to all clients
+
+    // Common events that needs to be mounted on the initialization
+    mountJoinChatEvent(socket);
+    mountParticipantTypingEvent(socket);
+    mountParticipantStoppedTypingEvent(socket);
+
+    socket.on('disconnect', () => {
+      logger.info('user disconnected 🚫' + socket.user?._id);
+      onlineUsers.delete(user._id.toString()); // remove the user from the online users map
+      io.emit('onlineUsers', Array.from(onlineUsers.keys())); // emit the updated online users to all clients
+    });
   });
 };

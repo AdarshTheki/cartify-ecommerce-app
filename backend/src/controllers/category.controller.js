@@ -3,7 +3,11 @@ import { Category } from '../models/category.model.js';
 import { ApiError } from '../utils/ApiError.js';
 import { ApiResponse } from '../utils/ApiResponse.js';
 import { asyncHandler } from '../utils/asyncHandler.js';
-import { removeSingleImg, uploadSingleImg } from '../utils/cloudinary.js';
+import {
+  extractPublicId,
+  deleteOnCloudinary,
+  uploadOnCloudinary,
+} from '../utils/cloudinary.js';
 
 // @desc    Get all categories
 // @route   GET /api/v1/categories
@@ -76,7 +80,7 @@ export const createCategory = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'All fields are required');
   }
 
-  const thumbnail = await uploadSingleImg(filePath);
+  const thumbnail = await uploadOnCloudinary(filePath);
   if (!thumbnail) {
     throw new ApiError(500, 'Thumbnail upload failed');
   }
@@ -113,11 +117,8 @@ export const updateCategory = asyncHandler(async (req, res) => {
 
   let thumbnail;
   if (filePath) {
-    thumbnail = await uploadSingleImg(filePath);
-    await removeSingleImg(category.thumbnail);
-    if (!thumbnail) {
-      throw new ApiError(500, 'Thumbnail upload failed');
-    }
+    thumbnail = await uploadOnCloudinary(filePath);
+    await deleteOnCloudinary(extractPublicId(category.thumbnail));
   }
 
   category.title = title || category.title;
@@ -147,7 +148,7 @@ export const deleteCategory = asyncHandler(async (req, res) => {
   }
 
   if (category.thumbnail) {
-    await removeSingleImg(category.thumbnail);
+    await deleteOnCloudinary(extractPublicId(category.thumbnail));
   }
 
   return res
